@@ -1,0 +1,6 @@
+﻿<meta>	
+	<script src="codeClient.lua" type="client" protected="true"/>	
+	<script src="codeServer.lua" type="server" cache="false"/>
+	<file src="files/myriadproregular.ttf" />
+	<oop>true</oop>
+</meta>

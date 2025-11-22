@@ -1,0 +1,20 @@
+<meta>
+<info author="Aleex" type="gamemode" name="MATA-MATA" description="Varios sistemas adicionados" version="1.1"/>
+
+	<script src="broph.lua"/>
+
+
+
+		<script src="cAchievements.lua" type="client" cache="false" />
+	
+	<file src="Files/lasv.png"/>
+	<file src="Files/sanf.png"/>
+	<file src="Files/los.png"/>
+	<file src="Files/walpaper.png"/>
+
+	<file src="files2/BlurShader.fx" />
+    <file src="files2/Calibri.ttf" />
+    <file src="files2/song.mp3" />
+    <file src="files2/sound.mp3" />
+
+</meta>

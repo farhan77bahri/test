@@ -1,0 +1,182 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Date: 11 May 2014
+-- Resource: GTIweapons/rent_weapon.slua
+-- Type: Server Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+
+-- Exchange Weapon
+------------------->>
+
+function exchangeWeapon(player, weapon, ammo)
+	local slot = getSlotFromWeapon(weapon)
+	local plr_weapon = getPedWeapon(player, slot)
+	if (plr_weapon ~= 0 and plr_weapon ~= weapon) then
+		local plr_ammo = getPedTotalAmmo(player, slot)
+		if (plr_ammo ~= 0) then 
+			addWeaponToStorage(player, plr_weapon, plr_ammo)
+		end
+	end
+	
+	takeWeapon(player, plr_weapon)
+	takeWeapon(player, weapon)
+	giveWeapon(player, weapon, ammo, true)
+	addRentedWeapon(player, weapon)
+	return true
+end
+
+-- Take Back Weapon
+-------------------->>
+
+function takeBackWeapon(player, weapon, ammo)
+	removeWeaponFromStorage(player, weapon)
+	
+	local slot = getSlotFromWeapon(weapon)
+	local plr_weapon = getPedWeapon(player, slot)
+	if (plr_weapon ~= 0) then
+		takeWeapon(player, plr_weapon)
+	end
+	
+	takeWeapon(player, weapon)
+	giveWeapon(player, weapon, ammo, true)
+	removeRentedWeapon(player, weapon)
+	return true
+end
+
+-- Stored Weapons
+------------------>>
+
+function getStoredWeapons(player)
+	local account = getPlayerAccount(player)
+	local weapons = "" --exports.bgo_accounts:invGet(account, "rentals.storage") or ""
+	local weapTable = {}
+	weapTable = split(weapons, ";")
+	for i,weap in ipairs(weapTable) do
+		weap = split(weap, ",")
+		weapTable[i] = {tonumber(weap[1]), tonumber(weap[2])}
+	end
+	return weapTable
+end
+
+function addWeaponToStorage(player, weapon, ammo)
+		-- Follow Global Max Ammo Limits
+	if (ammo > 1) then
+		ammo = 1
+	end
+	local weapons = getStoredWeapons(player)
+	for i,weap in ipairs(weapons) do
+		if (weap[1] == weapon) then
+			ammo = weap[2]+ammo
+			if (ammo > 50) then
+				ammo = 50
+			end
+			weapons[i] = {weapon, ammo}
+			setStoredWeapons(player, weapons)
+			return true
+		end
+	end
+	
+	table.insert(weapons, {weapon, ammo})
+	setStoredWeapons(player, weapons)
+	return true
+end
+
+function removeWeaponFromStorage(player, weapon)
+	local weapons = getStoredWeapons(player)
+	for i,weap in ipairs(weapons) do
+		if (weap[1] == weapon) then
+			table.remove(weapons, i)
+			setStoredWeapons(player, weapons)
+			return true
+		end
+	end
+	return false
+end
+
+function setStoredWeapons(player, weapons)
+	local weapTable = {}
+	for i,weap in ipairs(weapons) do
+		weapTable[i] = table.concat(weap, ",")
+	end
+	local weapString = table.concat(weapTable, ";")
+	if (weapString == "") then weapString = nil end
+	
+	local account = getPlayerAccount(player)
+	--exports.bgo_accounts:invSet(account, "rentals.storage", weapString)
+	return true
+end
+
+-- Rented Weapons
+------------------>>
+
+function getRentedWeapons(player)
+	local account = getPlayerAccount(player)
+	local weapons = " " --exports.bgo_accounts:invGet(account, "rentals.rentweap") or ""
+	local weapTable = {}
+	weapTable = split(weapons, ",")
+	for i,weap in ipairs(weapTable) do
+		weapTable[i] = tonumber(weap)
+	end
+	return weapTable
+end
+
+function addRentedWeapon(player, weapon)
+	local weapons = getRentedWeapons(player)
+	for i,weap in ipairs(weapons) do
+		if (weap == weapon) then
+			return true
+		end
+	end
+	table.insert(weapons, weapon)
+	setRentedWeapons(player, weapons)
+	return true
+end
+
+function removeRentedWeapon(player, weapon)
+	local weapons = getRentedWeapons(player)
+	for i,weap in ipairs(weapons) do
+		if (weap == weapon) then
+			table.remove(weapons, i)
+			setRentedWeapons(player, weapons)
+			return true
+		end
+	end
+	return false
+end
+
+function removeAllRentedWeapons(player)
+	local weapons = getRentedWeapons(player)
+	for i,weap in ipairs(weapons) do
+		takeWeapon(player, weap)
+	end
+	setRentedWeapons(player, {})
+	return true
+end
+
+function setRentedWeapons(player, weapons)
+	local weapons = table.concat(weapons, ",")
+	local account = getPlayerAccount(player)
+	if (weapons == "") then weapons = nil end
+	--exports.bgo_accounts:invSet(account, "rentals.rentweap", weapons)
+	return true
+end
+
+-- Return Weapons on Quit
+-------------------------->>
+
+function returnAllStoredWeapons(_, resign)
+	removeAllRentedWeapons(source)
+	local weapons = getStoredWeapons(source)
+	for i,weap in ipairs(weapons) do
+			-- Take Current Weapon
+		local slot = getSlotFromWeapon(weap[1])
+		local plr_weapon = getPedWeapon(source, slot)
+		takeWeapon(source, plr_weapon)
+			-- Return Stored Weapon
+		giveWeapon(source, weap[1], weap[2])
+	end
+	setStoredWeapons(source, {})
+end
+addEvent("onPlayerQuitJob", true)
+addEventHandler("onPlayerQuitJob", root, returnAllStoredWeapons)

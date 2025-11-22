@@ -1,0 +1,867 @@
+﻿--[232] = 78
+
+
+local deadPlayer = {}
+local state = false
+local AccidentBlip = {}
+createdeadPed = {}
+local animTimer = {}
+
+local weaponID = {
+	44,
+	45,
+	46,
+	47,
+	48,
+	49,
+	50,
+	51,
+	52,
+	53,
+	68,
+	103,
+	128,
+}
+
+addEventHandler('onPlayerWasted', root, function(ammo, attacker, weapon, bodypart)
+	if bodypart == 9 then 
+		if weapon ~= 23 then 
+			setElementData(source, 'dead.info', 9 )
+		end
+	end
+	 if not isPedInVehicle(source) then
+		 --createPedToPlayer(source)
+	 end
+end)
+
+function createPedToPlayer(element)
+	local player = element
+	if isElement(createdeadPed[player]) then 
+		destroyElement(createdeadPed[player])
+		createdeadPed[player] = false
+	end
+	-- if not createdeadPed[player] then 
+		outputDebugString('Criado!!')
+		local skin = getElementModel(player)
+		local x, y, z = getElementPosition(player)
+		local rot = getPedRotation(player)
+		createdeadPed[player] = createPed(skin, x, y, z, rot)
+		setElementAlpha(createdeadPed[player], 0)
+		setElementData(createdeadPed[player], 'Ped:Name', " ")
+		setElementHealth(createdeadPed[player], 1)
+		setElementData(createdeadPed[player], 'ammoInBody', getElementData(player, 'ammoInBody'))
+		setElementData(createdeadPed[player], 'dead.info', getElementData(player, 'dead.info'))
+		setElementData(createdeadPed[player], 'owner->element', player)
+		setElementData(createdeadPed[player], 'deadped', true)
+		
+		setPedAnimation(player, "ped", "FLOOR_hit", -1, false, false, false)
+		setPedAnimation(createdeadPed[player], "ped", "FLOOR_hit_f", -1, false, false, true)
+		attachElements(createdeadPed[player], player)
+	-- end
+end
+addEvent('sanMTA->#createPedToPlayer', true)
+addEventHandler('sanMTA->#createPedToPlayer', root, createPedToPlayer)
+
+function setPlayerAnimation(player, animName, animtoName, animTime, loop)
+	setPedAnimation(player, animName, animtoName, animTime, loop, false, false)
+end
+addEvent('sanMTA->#setPlayerAnimation', true)
+addEventHandler('sanMTA->#setPlayerAnimation', root, setPlayerAnimation)
+
+addEvent('sanMTA->#killPed', true)
+addEventHandler('sanMTA->#killPed', root, function(player)
+	setElementHealth(player, 0)
+end)
+
+addEvent('sanMTA->#destroyBlipS', true)
+addEventHandler('sanMTA->#destroyBlipS', root, function(marker)
+	-- setElementHealth(player, 0)
+	triggerClientEvent(root, 'sanMTA->#destroyBlip', root)
+end)
+
+addEvent('sanMTA->#spawnPed', true)
+addEventHandler('sanMTA->#spawnPed', root, function(player)
+	local skin = getElementModel(player)
+	local x, y, z, rot = 1188.037109375, -1334.2099609375, 13.561615943909
+	setElementData(player , 'char:hunger' , 20)
+	setElementData(player , 'char:thirst' , 20)
+	
+	
+	spawnPlayer(player, x, y, z, rot, skin, 0, 0)
+	
+	
+	
+	setPlayerVoiceIgnoreFrom ( player, player)
+
+	local empty = exports.bgo_voice:getNextEmptyChannel() 
+	exports.bgo_voice:setPlayerChannel(player, empty)  
+
+	setElementData(player, 'PlayerCaido', false)
+	setElementData(player, "char:money", getElementData(player, "char:money") - (math.floor(getElementData(player, "char:money")/2)))
+	
+	--takeAllWeapons(player)
+	exports["san_items"]:deleteItemById(player, 283, false)
+	exports["san_items"]:deleteItemById(player, 284, false)
+	exports["san_items"]:deleteItemById(player, 285, false)
+	exports["san_items"]:deleteItemById(player, 286, false)
+	--[[exports['san_items']:deleteItemById(player, 38, false)
+	exports['san_items']:deleteItemById(player, 32, false)
+	exports['san_items']:deleteItemById(player, 64, false)
+	exports['san_items']:deleteItemById(player, 84, false)
+	exports['san_items']:deleteItemById(player, 52, false)
+	exports['san_items']:deleteItemById(player, 50, false)
+	exports['san_items']:deleteItemById(player, 49, false)
+	exports['san_items']:deleteItemById(player, 44, false)
+	exports['san_items']:deleteItemById(player, 51, false)
+    exports['san_items']:deleteItemById(player, 53, false)
+    exports['san_items']:deleteItemById(player, 44, false)]]--
+	
+	for index, value in ipairs(weaponID) do
+		local hasItem, slot, a, c = exports.san_items:hasItemS(player, value)
+		if hasItem then
+			triggerEvent("sanMTA->#takePlayerItemToID", player, player, value, true)
+		end
+	end
+end)
+
+addEvent('sanMTA->#startPlaySound', true)
+addEventHandler('sanMTA->#startPlaySound', root, function(vehicle, state)
+	triggerClientEvent(root, 'sanMTA->#playSound', vehicle, state)
+end)
+
+addEvent("sanMTA->#openDoor", true)
+addEventHandler("sanMTA->#openDoor", root, function(vehicle, door)
+	if getVehicleDoorOpenRatio(vehicle, door) == 0 then
+		setVehicleDoorOpenRatio(vehicle, door, 1, 800)
+	else
+		setVehicleDoorOpenRatio(vehicle, door, 0, 800)
+	end
+end)
+
+addEvent("sanMTA->#stopEngine", true)
+addEventHandler("sanMTA->#stopEngine", root, function(vehicle)
+	setVehicleEngineState(vehicle, false)
+	setElementData(vehicle, "engine", 0, false)
+end)
+
+addEvent("sanMTA->#messagetoFireman", true)
+addEventHandler("sanMTA->#messagetoFireman", root, function(player, ID)
+	if not state then 
+		exports["san_groups"]:SendMessageToTeam (ID, "#D75656[bombeiros]: #ffffffUm acidente aconteceu com urgência na Cidade! #F7CA18Enviamos as coordenadas no radar!", 231, 217, 176,true)
+		triggerClientEvent(root, 'sanMTA->#createMarkerAndBlip', player)
+		state = true
+		setTimer(function() state = false end, 300, 1)
+	end
+end)
+
+addEvent("sanMTA->#setFrozen", true)
+addEventHandler("sanMTA->#setFrozen", root, function(vehicle, state)
+	setElementFrozen(vehicle, state)
+	if not state then 
+		setElementData(vehicle, 'car->stuck', false)
+	end
+end)
+
+addEvent("sanMTA->#setVisible", true)
+addEventHandler("sanMTA->#setVisible", root, function(vehicle, doorNumber)
+	setVehicleLocked(vehicle, false)
+	setVehicleDoorState (vehicle, doorNumber, 4)
+	setElementData(vehicle, 'car->stuckDoor' ..doorNumber, false)
+end)
+
+addEvent("sanMTA->#removePlayerVehicle", true)
+addEventHandler("sanMTA->#removePlayerVehicle", root, function(player, warpedPlayer)
+	  local x,y,z = getElementPosition(warpedPlayer)
+	  setElementPosition(player, x,y,z)
+	  removePedFromVehicle(player)
+	  setElementData(player, 'char->stuck', false)
+	  setPlayerAnimation(player, "BEACH", "ParkSit_M_loop", 1, true)
+	  createPedToPlayer(player)
+end)
+
+addEvent("sanMTA->#removePlayerToVehicle", true)
+addEventHandler("sanMTA->#removePlayerToVehicle", root, function(player, warpedPlayer)
+	removePedFromVehicle(player)
+	setTimer(function()
+		createPedToPlayer(player)
+	end, 100, 1)
+end)
+
+addEventHandler( "onPlayerSpawn", getRootElement(), function()
+	if isElement(createdeadPed[source]) then
+		detachElements ( createdeadPed[source] )
+		local x, y, z = getElementPosition(source)
+		setElementPosition(source, x, y, z+1)
+		setTimer(function(source)
+			destroyElement(createdeadPed[source])
+		end, 100, 1, source)
+	end	
+end)
+
+addEventHandler( "onPlayerQuit", getRootElement(), function()
+	if isElement(createdeadPed[source]) then 
+		setTimer(function(source)
+			detachElements ( createdeadPed[source] )
+			destroyElement(createdeadPed[source])
+		end, 100, 1, source)
+	end	
+end)
+
+function logMe( message )
+
+	local logMeBuffer = getElementData(getRootElement(), "killog") or { }
+
+	local r = getRealTime()
+
+	exports.global:sendMessageToAdmins(message)
+
+	table.insert(logMeBuffer,"["..("%02d:%02d"):format(r.hour,r.minute).. "] " ..  message)
+
+	if #logMeBuffer > 30 then
+		table.remove(logMeBuffer, 1)
+	end
+	setElementData(getRootElement(), "killog", logMeBuffer)
+
+end
+
+function startBleeding(attacker, weapon, bodypart)
+
+	local health = getElementHealth(source)
+
+	local bleeding = getElementData(source, "bleeding")
+
+	
+
+	if (health<=20) and (health>0) and (bleeding~=1) then
+
+		setElementData(source, "bleeding", 1, false)
+
+		--exports.global:sendLocalMeAction(source, "começou a sangrar.")
+
+		setTimer(bleedPlayer, 3000, 1, source, getPlayerName(source))
+
+	end
+
+end
+
+--addEventHandler("onPlayerDamage", getRootElement(), startBleeding)
+
+
+
+function bleedPlayer(thePlayer, playerName)
+
+	if (isElement(thePlayer)) then -- still logged in & playing
+
+		if (playerName==getPlayerName(thePlayer)) then -- make sure they havent changed character
+
+			local health = getElementHealth(thePlayer)
+
+			
+
+			if (health<=20) and (health>0) then
+
+				setElementHealth(thePlayer, health-2)
+
+				setTimer(bleedPlayer, 60000, 1, thePlayer, playerName)
+
+			else
+
+				setElementData(thePlayer, "bleeding", 0, false)
+
+			end
+
+		end
+
+	end
+
+end
+
+
+
+
+
+local playerInjuries = {} -- create a table to save the injuries
+
+
+
+function copy( t )
+
+	local r = {}
+
+	if type(t) == 'table' then
+
+		for k, v in pairs( t ) do
+
+			r[k] = v
+
+		end
+
+	end
+
+	return r
+
+end
+
+
+
+function isMelee( weapon )
+
+	return weapon and weapon <= 15
+
+end
+
+
+
+function killknockedout(source)
+
+	setElementHealth(source, 0)
+
+end
+
+
+
+function knockout()
+
+	if playerInjuries[source] and not isTimer( playerInjuries[source]['knockout'] ) then
+
+	--	outputChatBox("#7CC576[Információ] #ffffffElvesztetted az eszméleted!", source, 255, 0, 0,true)
+
+		exports['san_info']:createDebugNotification(source, "Você perdeu sua consciência!", "error")
+
+		toggleAllControls(source, false, true, false)
+
+		
+
+		fadeCamera(source, false, 120)
+
+		playerInjuries[source]['knockout'] = setTimer(killknockedout, 120000, 1, source)
+
+		
+		setPedAnimation( source, "CRACK", "crckidle2", -1, true, false, true)
+		--setPedAnimation( source, "CRACK", "crckidle2", -1, true, false, true)
+
+		setElementData(source, "injuriedanimation", true)
+
+	end
+
+end
+
+
+
+function injuries(attacker, weapon, bodypart, loss)
+
+	if not loss or loss < 0.5 then
+
+		return
+
+	end
+
+	-- if weapon == 23 then 
+		-- setElementHealth(source, getElementHealth(source) + loss) 
+	-- end
+
+	-- drowning
+
+	if weapon == 53 then
+
+		return
+
+	end
+
+	
+
+	-- source = jogador que foi atingido
+
+	if not bodypart and getPedOccupiedVehicle(source) then
+
+		bodypart = 3
+
+	end
+
+	
+
+	-- ARMADURA CORPORAL
+
+	if ( bodypart == 3 or bodypart == 9 ) and getPedArmor(source) > 0 then -- OBTEVE torso / cabeça) PROTECÇÃO?
+
+		cancelEvent()
+
+		return
+
+	end
+
+
+
+	-- katana kill
+
+	if weapon == 8 then
+
+		setPedHeadless(source, true)
+
+		killPed(source, attacker, weapon, bodypart)
+
+		return
+
+	end
+
+
+
+	-- 2% de chance de nocaute corpo-a-corpo
+
+	if isMelee( weapon ) then
+
+		if math.random( 1, 50 ) == 1 then
+
+			--knockout()
+
+		end
+
+		return
+
+	end
+
+	
+
+	-- se temos lesões salvas para o jogador, nós adicionamos à sua mesa
+
+	local injuredBefore = copy( playerInjuries[source] )
+
+	if playerInjuries[source] then
+
+		playerInjuries[source][bodypart] = true
+
+	else
+
+		-- create a new table for that player
+
+		playerInjuries[source] = { [bodypart] = true } -- table
+
+	end
+
+	
+
+	if ( bodypart == 3 and loss >= 15 ) or bodypart == 7 or bodypart == 8 then -- danificou a perna esquerda ou direita
+
+		if bodypart == 3 then
+
+			bodypart = math.random( 7, 8 )
+
+			if not injuredBefore[bodypart] then
+
+--				outputChatBox("#ffffff[#7CC576san #ffffff- #FFA700Death#ffffff] Eltörted a #D75656" .. ( bodypart == 7 and "bal" or "jobb" ) .. " #fffffflábad!", source, 255, 0, 0,true)
+
+			    exports['san_info']:createDebugNotification(source, "Você quebrou um " .. ( bodypart == 7 and "esquerda" or "direito" ) .. " seus pés!", "error")
+				
+				setElementData(source, 'injured', true)
+
+			end
+
+			playerInjuries[source][bodypart] = true
+
+		elseif not injuredBefore[bodypart] then
+
+--			outputChatBox("#ffffff[#7CC576san #ffffff- #FFA700Death#ffffff] Megütötted a #D75656" .. ( bodypart == 7 and "bal" or "jobb" ) .. " #fffffflábad!", source, 255, 0, 0,true)
+
+			exports['san_info']:createDebugNotification(source, "Você acertou o " .. ( bodypart == 7 and "esquerda" or "direito" ) .. " seus pés!", 1)
+			
+			setElementData(source, 'injured', true)
+
+		end
+
+
+
+		if playerInjuries[source][7] and playerInjuries[source][8] then -- both were already hit
+
+			toggleControl(source, 'forwards', false) -- desabilitar o avanço para o jogador que foi atingido
+
+			toggleControl(source, 'left', false)
+
+			toggleControl(source, 'right', false)
+
+			toggleControl(source, 'backwards', false)
+
+			toggleControl(source, 'enter_passenger', false)
+
+			toggleControl(source, 'enter_exit', false)
+			
+			setElementData(source, 'injured', true)
+		end
+
+		
+
+		-- podemos ter certeza de que pelo menos uma das pernas foi atingida aqui, já que verificamos acima
+
+		toggleControl(source, 'sprint', false) -- disable running forwards for the player who was hit
+
+		toggleControl(source, 'jump', false) -- tried jumping with broken legs yet?
+
+	elseif bodypart == 5 or bodypart == 6 then -- damaged either arm
+
+		if playerInjuries[source][5] and playerInjuries[source][6] then -- both were already hit
+
+			toggleControl(source, 'fire', false) -- disable firing weapons for the player who was hit
+
+		end
+
+
+
+		toggleControl(source, 'aim_weapon', false) -- disable aiming for the player who was hit (can still fire, but without crosshair)
+
+		toggleControl(source, 'jump', false) -- can't climb over the wall with a broken arm
+
+		setElementData(source, 'injured', true)
+		
+				
+--		outputChatBox("#ffffff[#7CC576san #ffffff- #FFA700Death#ffffff] Megütötted a #D75656" .. ( bodypart == 5 and "bal" or "jobb" ) .. " #ffffffkezed!", source, 255, 0, 0,true)
+
+		exports['san_info']:createDebugNotification(source, "Você acertou o " .. ( bodypart == 5 and "esquerda" or "direito" ) .. " sua mão!", "error")
+
+	elseif bodypart == 9 then -- headshot
+
+		if not attacker or weapon ~= 23 or getElementData(attacker, "deaglemode") ~= 0 then
+			
+			setPedHeadless(source, true)
+
+			killPed(source, attacker, weapon, bodypart)
+
+			return
+
+		end
+
+	end
+
+	
+
+	--if ( getElementHealth(source) < 20 or ( isElement( attacker ) and getElementType( attacker ) == "vehicle" and getElementHealth(source) < 40 ) ) and math.random( 1, 3 ) <= 2 then
+
+	--	knockout()
+
+	--end
+
+end
+
+function getPlayerInjured(player)
+	if playerInjuries[player] and (playerInjuries[player][5] or playerInjuries[player][6]) then 
+		return true
+	end
+	return false
+end
+addEvent('sanMTA->#getPlayerInjured', true)
+addEventHandler('sanMTA->#getPlayerInjured', root, getPlayerInjured)
+
+
+--addEventHandler( "onPlayerDamage", getRootElement(), injuries )
+
+addCommandHandler( "fakeinjury",
+
+	function(thePlayer, command, weapon, bodypart, loss)
+
+		if exports.global:isPlayerAdmin(thePlayer) then
+
+			source = thePlayer
+
+			loss = tonumber(loss)
+
+			setElementHealth(thePlayer, math.max(0, getElementHealth(thePlayer) - loss))
+
+			injuries(nil, tonumber(weapon), tonumber(bodypart), loss)
+
+		end
+
+	end
+
+)
+
+
+
+function stabilize()
+	if playerInjuries[source] and not isPedHeadless(source) then
+		if playerInjuries[source]['knockout'] then
+
+			setElementData(source, "injuriedanimation")
+
+			if isTimer(playerInjuries[source]['knockout']) then
+
+				killTimer(playerInjuries[source]['knockout'])
+
+				playerInjuries[source]['knockout'] = nil
+
+				
+
+				fadeCamera(source, true, 2)
+
+				setPedAnimation(source)
+
+				--setPedAnimation(source)
+				setPedAnimation(source)
+
+
+				toggleControl(source, 'forwards', true)
+
+				toggleControl(source, 'left', true)
+
+				toggleControl(source, 'right', true)
+
+				toggleControl(source, 'backwards', true)
+
+				toggleControl(source, 'enter_passenger', true)
+
+				setElementHealth(source, math.max( 20, getElementHealth(source) ) )
+
+			end
+
+		end
+
+		
+
+		if playerInjuries[source][7] and playerInjuries[source][8] then
+
+			toggleControl(source, 'forwards', true)
+
+			toggleControl(source, 'left', true)
+
+			toggleControl(source, 'right', true)
+
+			toggleControl(source, 'backwards', true)
+
+			toggleControl(source, 'enter_passenger', true)
+
+		end
+
+	end
+
+end
+
+
+
+addEvent( "onPlayerStabilize", false )
+
+addEventHandler( "onPlayerStabilize", getRootElement(), stabilize )
+
+
+
+function examine(to)
+
+	local name = getPlayerName(source):gsub("_", " ")
+
+	if isPedDead(source) then
+
+	--	outputChatBox(name .. " halott.", to, 255, 0, 0)
+
+	elseif playerInjuries[source] and not isPedHeadless(source) then
+
+		if playerInjuries[source]['knockout'] then
+
+	--		outputChatBox(name.. " kiütve.", to, 255, 255, 0)
+
+		end
+
+
+
+		if playerInjuries[source][7] and playerInjuries[source][8] then
+
+	--		outputChatBox("Mindkét lába " .. name .. "-nak/nek el van törve.", to, 255, 255, 0)
+
+		elseif playerInjuries[source][7] then
+
+	--		outputChatBox(name .. "bal lába el van törve.", to, 255, 255, 0)
+
+		elseif playerInjuries[source][8] then
+
+	--		outputChatBox(name .. " jobb lába el van törve.", to, 255, 255, 0)
+
+		end
+
+
+
+		if playerInjuries[source][5] and playerInjuries[source][6] then
+
+	--		outputChatBox("Mindkét keze " .. name .. "-nak/nek el van törve.", to, 255, 255, 0)
+
+		elseif playerInjuries[source][5] then
+
+	--		outputChatBox(name .. " bal keze el van törve.", to, 255, 255, 0)
+
+		elseif playerInjuries[source][6] then
+
+	--		outputChatBox(name .. " jobb keze el van törve.", to, 255, 255, 0)
+
+		end
+
+	else
+
+	--	outputChatBox(name .. " nincs megsérülve.", to, 255, 255, 0)
+
+	end
+
+end
+
+
+
+addEvent( "onPlayerExamine", false )
+
+addEventHandler( "onPlayerExamine", getRootElement(), examine )
+
+
+
+function healInjuries(healed)
+
+	if playerInjuries[source] and not isPedHeadless(source) then
+
+		if playerInjuries[source]['knockout'] then
+
+			setElementData(source, "injuriedanimation")
+
+			if isTimer(playerInjuries[source]['knockout']) then
+
+				killTimer(playerInjuries[source]['knockout'])
+
+				playerInjuries[source]['knockout'] = nil
+
+				
+
+				if healed then
+
+					fadeCamera(source, true, 2)
+
+					setPedAnimation(source)
+
+					setPedAnimation(source)
+
+				end
+
+			end
+
+			toggleAllControls(source, true, true, false)
+
+		else
+
+			if playerInjuries[source][7] and playerInjuries[source][8] then
+
+				toggleControl(source, 'forwards', true) -- disable walking forwards for the player who was hit
+
+				toggleControl(source, 'left', true)
+
+				toggleControl(source, 'right', true)
+
+				toggleControl(source, 'backwards', true)
+
+				toggleControl(source, 'enter_passenger', true)
+
+				toggleControl(source, 'enter_exit', true)
+
+			end
+
+			if playerInjuries[source][7] or playerInjuries[source][8] then
+
+				toggleControl(source, 'sprint', true)
+
+				toggleControl(source, 'jump', true)
+
+			end
+
+			
+
+			if playerInjuries[source][5] and playerInjuries[source][6] then
+
+				toggleControl(source, 'fire', true)
+
+			end
+
+			if playerInjuries[source][5] or playerInjuries[source][6] then
+
+				toggleControl(source, 'aim_weapon', true)
+
+				toggleControl(source, 'jump', true)
+
+			end
+
+		end
+
+		playerInjuries[source] = nil
+
+	end
+
+end
+
+
+
+addEvent( "onPlayerHeal", false ) -- add a new event for it (called from /heal)
+
+addEventHandler( "onPlayerHeal", getRootElement(), healInjuries)
+
+
+
+function restoreInjuries( )
+
+	if playerInjuries[source] and not isPedHeadless(source) then
+
+		if playerInjuries[source][7] and playerInjuries[source][8] then
+
+			toggleControl(source, 'forwards', false)
+
+			toggleControl(source, 'left', false)
+
+			toggleControl(source, 'right', false)
+
+			toggleControl(source, 'backwards', false)
+
+			toggleControl(source, 'enter_passenger', false)
+
+			toggleControl(source, 'enter_exit', false)
+
+		end
+
+		if playerInjuries[source][7] or playerInjuries[source][8] then
+
+			toggleControl(source, 'sprint', false)
+
+			toggleControl(source, 'jump', false)
+
+		end
+
+		
+
+		if playerInjuries[source][5] and playerInjuries[source][6] then
+
+			toggleControl(source, 'fire', false)
+
+		end
+
+		if playerInjuries[source][5] or playerInjuries[source][6] then
+
+			toggleControl(source, 'aim_weapon', false)
+
+			toggleControl(source, 'jump', false)
+
+		end
+
+	end
+
+end
+
+addEventHandler( "onPlayerStopAnimation", getRootElement(), restoreInjuries )
+
+
+
+function resetInjuries() -- it actually has some parameters, but we only need source right now - the wiki explains them though
+
+	setPedHeadless(source, false)
+
+
+
+	if playerInjuries[source] then
+
+		-- reset injuries
+
+		healInjuries()
+
+	end
+
+end
+
+
+
+addEventHandler( "onPlayerSpawn", getRootElement(), resetInjuries) -- make sure old injuries don't carry over
+
+addEventHandler( "onPlayerQuit", getRootElement(), resetInjuries) -- cleanup when the player quits

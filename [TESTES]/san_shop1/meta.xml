@@ -1,0 +1,10 @@
+<meta>
+	<script src="async.lua" type="shared" />
+    <script src="sourceG.lua" type="shared" />
+	<script src="sourceC.lua" type="client" protected="true"/>
+    <script src="sourceS.lua" type="server" cache="false"/>
+	
+	<file src = 'files/Calibri.ttf'/>
+	<file src = 'Fonte.ttf'/>
+	<file src = 'files/shopIcon.png'/>
+</meta>

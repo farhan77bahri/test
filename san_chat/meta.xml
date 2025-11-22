@@ -1,0 +1,17 @@
+<meta>
+    
+    <script src="sourceC.lua" type="client" cache="false" />
+    <script src="sourceS.lua" type="server" cache="false"/>
+    <export function="sendLocalMeMessage" type="client" />
+    <export function="sendLocalMeAction" type="shared" />
+    <export function="toggleOOCChat" type="shared" />
+    <export function="localIC" type="server" />
+
+    
+    <export function="sendLocalDoAction" type="client" />
+    <export function="sendLocalDoAction" type="server" />
+    
+    <file src="files/ws.wav" />
+    <file src="files/error.wav" />
+    <file src="files/walkie.mp3" />
+</meta>

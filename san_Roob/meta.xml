@@ -1,0 +1,5 @@
+<meta>
+<info autostart="true" />
+<script src="storeRob_c.lua" type="client" protected="true"/>
+<script src="storeRob_s.lua" type="server" cache="false" />
+</meta>

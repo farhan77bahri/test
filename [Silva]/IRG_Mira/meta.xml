@@ -1,0 +1,6 @@
+<meta>
+	<file src="texreplace.fx" />
+	<file src="siteM16.png" />
+	<script type="client" src="client.lua" cache="false"/>
+	<script type="server" src="C_shader_siteM16.lua" />
+</meta>

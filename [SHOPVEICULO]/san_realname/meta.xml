@@ -1,0 +1,10 @@
+<meta>
+    <script src="sourceG.lua" type="shared" cache="false" />
+
+    
+    <export function="getVehicleRealName" type="shared" />
+    <export function="getVehicleShopCost" type="shared" />
+      <export function="getVehicleShopCost2" type="shared" />  
+    <oop>true</oop>
+    <min_mta_version client="1.3.5"></min_mta_version>
+</meta>

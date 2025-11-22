@@ -1,0 +1,48 @@
+<meta>
+    <script src="codeClient.lua" type="client" />
+    <file src="ak47.txd" />
+    <file src="ak47.dff" />      
+	<file src="axe.txd" />
+	<file src="axe2.txd" />
+    <file src="axe.dff" />     
+	<file src="aso.txd" />
+    <file src="aso.dff" />    
+	<file src="pick.txd" />
+    <file src="pick.dff" />	
+	<file src="pick2.txd" />
+    <file src="pick2.dff" />
+    <file src="desert_eagle.txd" />
+    <file src="desert_eagle.dff" />
+    <file src="grenade.txd" />
+    <file src="grenade.dff" />
+    <file src="katana.txd" />
+    <file src="katana.dff" />
+    <file src="knifecur.txd" />
+    <file src="knifecur.dff" />
+    <file src="m4.txd" />
+    <file src="m4.dff" />
+    <file src="micro_uzi.txd" />
+    <file src="micro_uzi.dff" />
+    <file src="sniper.txd" />
+    <file src="sniper.dff" />
+    <file src="shotgspa.txd" />
+    <file src="shotgspa.dff" />
+    <file src="chromegun.txd" />
+    <file src="chromegun.dff" />
+    <file src="mp5lng.txd" />
+    <file src="mp5lng.dff" />
+	<file src="sawnoff.txd" />
+    <file src="sawnoff.dff" />
+    <file src="tec9.txd" />
+    <file src="tec9.dff" />
+
+    <!--
+    <file src="silenced.txd" />
+    <file src="silenced.dff" />
+        -->
+	<file src="fire_ex.txd" />
+    <file src="fire_ex.dff" />
+	<file src="rifle.txd" />
+    <file src="rifle.dff" />
+
+</meta>

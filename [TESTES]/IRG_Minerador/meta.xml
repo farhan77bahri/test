@@ -1,0 +1,10 @@
+<meta>
+	<script src="async.lua" type="shared" />
+	
+    <script src="sourceC.lua" type="client" protected="true" />
+    <script src="sourceS.lua" type="server" cache="false"/>
+	
+	<file src="files/calibris.ttf"/>
+	<file src="files/pickaxe.mp3"/>
+	<file src="files/crash.mp3"/>
+</meta>

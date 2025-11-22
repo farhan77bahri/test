@@ -1,0 +1,7 @@
+<meta>
+	<info author="[M]ister"/>
+	<script src="server.lua" type="server"cache="false" />
+	<script src="client.lua" type="client"  cache="false"/>
+	<file src="anim.ifp"/>
+	<min_mta_version server="1.3.0-9.04570" client="1.3.0-9.04570" />
+</meta>

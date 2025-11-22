@@ -1,0 +1,8 @@
+<meta> <info author="~#TinokoSCR" version="1.0" type="script" />
+    <script src="client.lua" type="client" cache ="false" />
+    <script src="server.lua" type="server" cache ="false" />
+    <file src="OpenSans-Bold.ttf" cache="false" />
+    <file src="Circulo.png" cache = "false" />
+    <file src="tinoko.ttf" cache = "false" />	
+    <file src="1.png" cache = "false" />	
+</meta>

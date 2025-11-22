@@ -1,0 +1,7 @@
+<meta>
+    <script src="client.lua" type="client" protected="true"/>
+    <script src="server.lua" type="server" cache="false" />
+    <file src="data/taser.dff" />
+    <file src="data/taser.txd" />
+    <file src="data/Fire.wav" />
+</meta>

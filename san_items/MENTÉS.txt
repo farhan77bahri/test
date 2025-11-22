@@ -1,0 +1,389 @@
+	[36] = {
+		name = 'Iskola Craft 1',
+		level = 0,
+		giveCraftItem = 281,
+		craftDimension = false,
+		craftFaction = false,
+		craftTool = false,
+		craftMaxWant = 1,
+		craftProgress = 2100,
+		craftSlots  = {
+			-- [Slot] = {ItemID, Darabszám}
+			[6] = {278, 25},
+		},
+	},	
+	
+	[37] = {
+		name = 'Iskola Craft 2',
+		level = 0,
+		giveCraftItem = 281,
+		craftDimension = false,
+		craftFaction = false,
+		craftTool = false,
+		craftMaxWant = 1,
+		craftProgress = 2100,
+		craftSlots  = {
+			-- [Slot] = {ItemID, Darabszám}
+			[6] = {279, 35},
+		},
+	},	
+	
+	[38] = {
+		name = 'Iskola Craft 3',
+		level = 0,
+		giveCraftItem = 281,
+		craftDimension = false,
+		craftFaction = false,
+		craftTool = false,
+		craftMaxWant = 1,
+		craftProgress = 2100,
+		craftSlots  = {
+			-- [Slot] = {ItemID, Darabszám}
+			[6] = {280, 30},
+		},
+	},	
+	
+	[39] = {
+		name = 'Iskola Craft 4',
+		level = 0,
+		giveCraftItem = 281,
+		craftDimension = false,
+		craftFaction = false,
+		craftTool = false,
+		craftMaxWant = 1,
+		craftProgress = 2100,
+		craftSlots  = {
+			-- [Slot] = {ItemID, Darabszám}
+			[6] = {93, 30},
+		},
+	},	
+	
+	[40] = {
+		name = 'Iskola Craft 5',
+		level = 0,
+		giveCraftItem = 281,
+		craftDimension = false,
+		craftFaction = false,
+		craftTool = false,
+		craftMaxWant = 1,
+		craftProgress = 2100,
+		craftSlots  = {
+			-- [Slot] = {ItemID, Darabszám}
+			[6] = {101, 30},
+		},
+	},	
+	
+	[41] = {
+		name = 'Iskola Craft 6',
+		level = 0,
+		giveCraftItem = 109,
+		craftDimension = false,
+		craftFaction = false,
+		craftTool = false,
+		craftMaxWant = 1,
+		craftProgress = 2100,
+		craftSlots  = {
+			-- [Slot] = {ItemID, Darabszám}
+			[6] = {281, 30},
+		},
+	},	
+	
+	[42] = {
+		name = 'Iskola Craft 7',
+		level = 0,
+		giveCraftItem = 151,
+		craftDimension = false,
+		craftFaction = false,
+		craftTool = false,
+		craftMaxWant = 1,
+		craftProgress = 2100,
+		craftSlots  = {
+			-- [Slot] = {ItemID, Darabszám}
+			[6] = {281, 20},
+		},
+	},	
+	
+	[43] = {
+		name = 'Iskola Craft 8',
+		level = 0,
+		giveCraftItem = 224,
+		craftDimension = false,
+		craftFaction = false,
+		craftTool = false,
+		craftMaxWant = 1,
+		craftProgress = 2100,
+		craftSlots  = {
+			-- [Slot] = {ItemID, Darabszám}
+			[6] = {281, 40},
+		},
+	},	
+	
+	[44] = {
+		name = 'Iskola Craft 9',
+		level = 0,
+		giveCraftItem = 124,
+		craftDimension = false,
+		craftFaction = false,
+		craftTool = false,
+		craftMaxWant = 1,
+		craftProgress = 2100,
+		craftSlots  = {
+			-- [Slot] = {ItemID, Darabszám}
+			[6] = {281, 40},
+		},
+	},	
+	
+	[45] = {
+		name = 'Iskola Craft 10',
+		level = 0,
+		giveCraftItem = 120,
+		craftDimension = false,
+		craftFaction = false,
+		craftTool = false,
+		craftMaxWant = 1,
+		craftProgress = 2100,
+		craftSlots  = {
+			-- [Slot] = {ItemID, Darabszám}
+			[6] = {281, 40},
+		},
+	},	
+	
+	[46] = {
+		name = 'Iskola Craft 11',
+		level = 0,
+		giveCraftItem = 124,
+		craftDimension = false,
+		craftFaction = false,
+		craftTool = false,
+		craftMaxWant = 1,
+		craftProgress = 2100,
+		craftSlots  = {
+			-- [Slot] = {ItemID, Darabszám}
+			[6] = {281, 40},
+		},
+	},	
+	
+	[47] = {
+		name = 'Iskola Craft 12',
+		level = 0,
+		giveCraftItem = 115,
+		craftDimension = false,
+		craftFaction = false,
+		craftTool = false,
+		craftMaxWant = 1,
+		craftProgress = 2100,
+		craftSlots  = {
+			-- [Slot] = {ItemID, Darabszám}
+			[6] = {281, 40},
+		},
+	},	
+	
+	[48] = {
+		name = 'Iskola Craft 13',
+		level = 0,
+		giveCraftItem = 243,
+		craftDimension = false,
+		craftFaction = false,
+		craftTool = false,
+		craftMaxWant = 1,
+		craftProgress = 2100,
+		craftSlots  = {
+			-- [Slot] = {ItemID, Darabszám}
+			[6] = {281, 40},
+		},
+	},	
+	
+	[49] = {
+		name = 'Iskola Craft 14',
+		level = 0,
+		giveCraftItem = 246,
+		craftDimension = false,
+		craftFaction = false,
+		craftTool = false,
+		craftMaxWant = 1,
+		craftProgress = 2100,
+		craftSlots  = {
+			-- [Slot] = {ItemID, Darabszám}
+			[6] = {281, 40},
+		},
+	},	
+	
+	[50] = {
+		name = 'Iskola Craft 15',
+		level = 0,
+		giveCraftItem = 76,
+		craftDimension = false,
+		craftFaction = false,
+		craftTool = false,
+		craftMaxWant = 1,
+		craftProgress = 2100,
+		craftSlots  = {
+			-- [Slot] = {ItemID, Darabszám}
+			[6] = {281, 65},
+		},
+	},	
+	
+	[51] = {
+		name = 'Iskola Craft 16',
+		level = 0,
+		giveCraftItem = 77,
+		craftDimension = false,
+		craftFaction = false,
+		craftTool = false,
+		craftMaxWant = 1,
+		craftProgress = 2100,
+		craftSlots  = {
+			-- [Slot] = {ItemID, Darabszám}
+			[6] = {281, 110},
+		},
+	},	
+	
+	[52] = {
+		name = 'Iskola Craft 17',
+		level = 0,
+		giveCraftItem = 72,
+		craftDimension = false,
+		craftFaction = false,
+		craftTool = false,
+		craftMaxWant = 1,
+		craftProgress = 2100,
+		craftSlots  = {
+			-- [Slot] = {ItemID, Darabszám}
+			[6] = {281, 265},
+		},
+	},	
+	
+	[53] = {
+		name = 'Iskola Craft 18',
+		level = 0,
+		giveCraftItem = 70,
+		craftDimension = false,
+		craftFaction = false,
+		craftTool = false,
+		craftMaxWant = 1,
+		craftProgress = 2100,
+		craftSlots  = {
+			-- [Slot] = {ItemID, Darabszám}
+			[6] = {281, 30},
+		},
+	},	
+	
+	[54] = {
+		name = 'Iskola Craft 19',
+		level = 0,
+		giveCraftItem = 71,
+		craftDimension = false,
+		craftFaction = false,
+		craftTool = false,
+		craftMaxWant = 1,
+		craftProgress = 2100,
+		craftSlots  = {
+			-- [Slot] = {ItemID, Darabszám}
+			[6] = {281, 30},
+		},
+	},	
+	
+	[55] = {
+		name = 'Iskola Craft 20',
+		level = 0,
+		giveCraftItem = 268,
+		craftDimension = false,
+		craftFaction = false,
+		craftTool = false,
+		craftMaxWant = 1,
+		craftProgress = 2100,
+		craftSlots  = {
+			-- [Slot] = {ItemID, Darabszám}
+			[6] = {281, 320},
+		},
+	},	
+	
+	[56] = {
+		name = 'Iskola Craft 21',
+		level = 0,
+		giveCraftItem = 269,
+		craftDimension = false,
+		craftFaction = false,
+		craftTool = false,
+		craftMaxWant = 1,
+		craftProgress = 2100,
+		craftSlots  = {
+			-- [Slot] = {ItemID, Darabszám}
+			[6] = {281, 320},
+		},
+	},	
+	
+	[57] = {
+		name = 'Iskola Craft 22',
+		level = 0,
+		giveCraftItem = 270,
+		craftDimension = false,
+		craftFaction = false,
+		craftTool = false,
+		craftMaxWant = 1,
+		craftProgress = 2100,
+		craftSlots  = {
+			-- [Slot] = {ItemID, Darabszám}
+			[6] = {281, 320},
+		},
+	},	
+	
+	[58] = {
+		name = 'Iskola Craft 23',
+		level = 0,
+		giveCraftItem = 265,
+		craftDimension = false,
+		craftFaction = false,
+		craftTool = false,
+		craftMaxWant = 1,
+		craftProgress = 2100,
+		craftSlots  = {
+			-- [Slot] = {ItemID, Darabszám}
+			[6] = {281, 1000},
+		},
+	},	
+	
+	[59] = {
+		name = 'Iskola Craft 24',
+		level = 0,
+		giveCraftItem = 266,
+		craftDimension = false,
+		craftFaction = false,
+		craftTool = false,
+		craftMaxWant = 1,
+		craftProgress = 2100,
+		craftSlots  = {
+			-- [Slot] = {ItemID, Darabszám}
+			[6] = {281, 1000},
+		},
+	},	
+
+	[60] = {
+		name = 'Iskola Craft 25',
+		level = 0,
+		giveCraftItem = 267,
+		craftDimension = false,
+		craftFaction = false,
+		craftTool = false,
+		craftMaxWant = 1,
+		craftProgress = 2100,
+		craftSlots  = {
+			-- [Slot] = {ItemID, Darabszám}
+			[6] = {281, 1000},
+		},
+	},	
+	
+	[61] = {
+		name = 'Iskola Craft 26',
+		level = 0,
+		giveCraftItem = 41,
+		craftDimension = false,
+		craftFaction = false,
+		craftTool = false,
+		craftMaxWant = 1,
+		craftProgress = 2100,
+		craftSlots  = {
+			-- [Slot] = {ItemID, Darabszám}
+			[6] = {281, 200},
+		},
+	},	

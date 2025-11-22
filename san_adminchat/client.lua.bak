@@ -1,0 +1,227 @@
+local msg = ""
+local r, g, b = 255, 255, 0
+window = guiCreateWindow(413, 364, 480, 169, "Admin Mensagen", false)
+guiWindowSetSizable(window, false)
+guiSetVisible(window, false)
+guiCreateLabel(18, 37, 81, 26, "Mensagen:", false, window)
+message = guiCreateEdit(97, 37, 371, 26, "", false, window)
+guiCreateLabel(18, 80, 81, 26, "R, G, B:", false, window)
+r2 = guiCreateEdit(99, 80, 91, 26, "255", false, window)
+g2 = guiCreateEdit(190, 80, 91, 26, "255", false, window)
+b2 = guiCreateEdit(281, 80, 91, 26, "0", false, window)
+IncludeName = guiCreateCheckBox(18, 123, 125, 29, "Incluir meu nome", true, false, window)
+Cancel = guiCreateButton(143, 124, 119, 28, "Cancelar", false, window)
+Execute = guiCreateButton(272, 124, 119, 28, "Enviar", false, window)
+addEvent("Shouts:onPlayerChangeMenu", true)
+addEventHandler("Shouts:onPlayerChangeMenu", root, function()
+  local tostate = not guiGetVisible(window)
+  guiSetVisible(window, tostate)
+  showCursor(tostate)
+  if tostate == true then
+    guiSetInputMode("no_binds_when_editing")
+    return
+  end
+end)
+addEventHandler("onClientGUIClick", root, function()
+  if source == Cancel then
+    guiSetText(message, "")
+    guiSetVisible(window, false)
+    showCursor(false)
+  elseif source == Execute then
+    if guiGetText(message) ~= "" then
+      if guiGetText(r2) ~= "" and guiGetText(g2) ~= "" and guiGetText(b2) ~= "" then
+	    local messText = guiGetText(message)
+        triggerServerEvent("Shouts:onPlayerTriggerServerShout", localPlayer, messText:gsub("#%x%x%x%x%x%x", ""), guiCheckBoxGetSelected(IncludeName), guiGetText(r2), guiGetText(g2), guiGetText(b2))
+        guiSetText(message, "")
+        guiSetVisible(window, false)
+        showCursor(false)
+      else
+        outputChatBox("Você precisa adicionar todas as cores.", 255, 0, 0)
+        return
+      end
+    else
+      outputChatBox("Você precisa digitar uma mensagem.", 255, 0, 0)
+      return
+    end
+  elseif source == cPicker then
+    openPicker(59553532, "#000000", "Painel de cores")
+  end
+end)
+addEvent("AS:onColorPickerOK", true)
+addEventHandler("AS:onColorPickerOK", root, function(inpu, r, g, b)
+  guiSetText(r2, r3)
+  guiSetText(g2, g3)
+  guiSetText(b2, b3)
+end)
+addEvent("Shouts:onPlayerGetText", true)
+addEventHandler("Shouts:onPlayerGetText", root, function(inpu, r, g, b)
+  msg = inpu
+  rx = r
+  gx = g
+  bx = b
+  addEventHandler("onClientRender", root, drawMsg)
+  setTimer(function()
+    msg = ""
+    r = 255
+    g = 255
+    b = 0
+    removeEventHandler("onClientRender", root, drawMsg)
+  end, 10000, 1)
+end)
+local rx, ry = guiGetScreenSize()
+function drawMsg()
+  dxDrawBorderedText(string.gsub(msg, "#%x%x%x%x%x%x", ""), 0, 0, rx, ry, tocolor(rx, gx, bx, 255), 2.3, "default-bold", "center", "center", true, true, true)
+end
+function dxDrawBorderedText(text, x, y, w, h, color, scale, font, alignX, alignY, clip, wordBreak, postGUI)
+  local wh = 1
+  dxDrawText(text, x - wh, y - wh, w - wh, h - wh, tocolor(0, 0, 0, 255), scale, font, alignX, alignY, clip, wordBreak, false)
+  dxDrawText(text, x + wh, y - wh, w + wh, h - wh, tocolor(0, 0, 0, 255), scale, font, alignX, alignY, clip, wordBreak, false)
+  dxDrawText(text, x - wh, y + wh, w - wh, h + wh, tocolor(0, 0, 0, 255), scale, font, alignX, alignY, clip, wordBreak, false)
+  dxDrawText(text, x + wh, y + wh, w + wh, h + wh, tocolor(0, 0, 0, 255), scale, font, alignX, alignY, clip, wordBreak, false)
+  dxDrawText(text, x - wh, y, w - wh, h, tocolor(0, 0, 0, 255), scale, font, alignX, alignY, clip, wordBreak, false)
+  dxDrawText(text, x + wh, y, w + wh, h, tocolor(0, 0, 0, 255), scale, font, alignX, alignY, clip, wordBreak, false)
+  dxDrawText(text, x, y - wh, w, h - wh, tocolor(0, 0, 0, 255), scale, font, alignX, alignY, clip, wordBreak, false)
+  dxDrawText(text, x, y + wh, w, h + wh, tocolor(0, 0, 0, 255), scale, font, alignX, alignY, clip, wordBreak, false)
+  dxDrawText(text, x, y, w, h, color, scale, font, alignX, alignY, clip, wordBreak, postGUI)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local controls = { "fire", "next_weapon", "previous_weapon", "forwards", "backwards", "left", "right", "zoom_in", "zoom_out",
+ "change_camera", "jump", "sprint", "look_behind", "crouch", "action", "walk", "aim_weapon", "conversation_yes", "conversation_no",
+ "group_control_forwards", "group_control_back", "enter_exit", "vehicle_fire", "vehicle_secondary_fire", "vehicle_left", "vehicle_right",
+ "steer_forward", "steer_back", "accelerate", "brake_reverse", "radio_next", "radio_previous", "radio_user_track_skip", "horn", "sub_mission",
+ "handbrake", "vehicle_look_left", "vehicle_look_right", "vehicle_look_behind", "vehicle_mouse_look", "special_control_left", "special_control_right",
+ "special_control_down", "special_control_up" }
+
+local boundControlsKeys = {}
+local bindsData = {}
+
+
+function unbindControlKeys(control)
+    -- Ensure the argument has got the appropiate type
+    assert(type(control) == "string", "Bad argument @ unbindControlKeys [string expected, got " .. type(control) .. "]")
+    -- Check if we have a valid control
+    local validControl
+    for _, controlComp in ipairs(controls) do
+        if control == controlComp then
+            validControl = true
+            break
+        end
+    end
+    assert(validControl, "Bad argument @ unbindControlKeys [Invalid control name]")
+    -- Have we got a bind on this control?
+    assert(boundControlsKeys[control], "Bad argument @ unbindControlKeys [There is no bind on such control]")
+    -- Unbind each key of the control
+    for _, bindData in pairs(bindsData[control]) do
+        unbindKey(unpack(bindData))
+    end
+    -- Remove references
+    boundControlsKeys[control] = nil
+    bindsData[control] = nil
+    return true
+end
+
+function bindControlKeys(control, ...)
+    -- Ensure the argument has got the appropiate type
+    assert(type(control) == "string", "Bad argument 1 @ bindControlKeys [string expected, got " .. type(control) .. "]")
+    -- Check if we have a valid control
+    local validControl
+    for _, controlComp in ipairs(controls) do
+        if control == controlComp then -- Is the specified control in the table?
+            validControl = true -- If so, it's a valid control
+            break
+        end
+    end
+    assert(validControl, "Bad argument 1 @ bindControlKeys [Invalid control name]")
+    -- Do we already have this control bound?
+    if boundControlsKeys[control] then
+        unbindControlKeys(control) -- Delete the first control keys bind
+    end
+    boundControlsKeys[control] = getBoundKeys(control) -- Store the keys of that control that will be bound
+    bindsData[control] = {} -- Store bind data, so we can unbind each key of the control later
+    for key in pairs(boundControlsKeys[control]) do
+        -- Can we bind the key with the specified arguments?
+        assert(bindKey(key, unpack(arg)), "Bad arguments @ bindControlKeys [Could not create key bind]")
+        -- If so, register the bind data and continue
+        table.insert(bindsData[control], { key, unpack(arg) })
+    end
+    return true
+end
+
+-- The keys bound to a control can be changed in Settings. The next function updates the binds properly in that case.
+-- Also note that the next function IS NOT MEANT to be exported or called by the script.
+local function keepControlKeyBindsAccurate()
+    if next(boundControlsKeys) then -- Have we got any control keys bound?
+        for boundControl, boundKeys in pairs(boundControlsKeys) do
+            if toJSON(boundKeys) ~= toJSON(getBoundKeys(boundControl)) then -- Have we changed the keys bound to a control?
+                -- Update our custom control bind
+                for _, bindData in ipairs(bindsData[boundControl]) do
+                    unbindKey(unpack(bindData)) -- Unbind every key of that cotnrol that we have bound before
+                    -- Bind again the appropiate keys
+                    for key in pairs(getBoundKeys(boundControl)) do
+                        local bindDataNoKey = bindData -- Copy bindData into another variable
+                        table.remove(bindDataNoKey, 1) -- Ignore the key of our bindData
+                        bindKey(key, unpack(bindDataNoKey)) -- Bind again the data, but with the updated key
+                        bindData[1] = key -- Update the key in the references
+                    end
+                end
+                boundControlsKeys[boundControl] = getBoundKeys(boundControl) -- Update the control bound keys list
+            end
+        end
+    end
+end
+addEventHandler("onClientRender", root, keepControlKeyBindsAccurate)
+
+local function toggleDriveby()
+	local weaponType = getPedWeapon (localPlayer)
+		-- If a weapon type was returned then
+		if ( weaponType == 30 or weaponType == 31 ) then
+
+    if isPedInVehicle(localPlayer) then
+        setPedDoingGangDriveby(localPlayer, not isPedDoingGangDriveby(localPlayer))
+    end
+end
+end
+unbindControlKeys("aim_weapon", "both", toggleDriveby)
+
+
+function onClientPlayerWeaponFireFunc(weapon, ammo, ammoInClip, hitX, hitY, hitZ, hitElement )
+
+	if weapon == 30 or weapon == 31 or weapon == 29 then 
+		if (isPedInVehicle(localPlayer)) then
+		setPedDoingGangDriveby (hitElement, false )
+		injekcioTimer = setTimer(function() 
+			toggleControl ( "vehicle_fire", false )
+			toggleControl ( "vehicle_secondary_fire", true )
+		end, 1, 1)
+		toggleControl ( "vehicle_fire", false ) 
+		toggleControl ( "vehicle_secondary_fire", false )
+	end
+
+    
+	end
+	
+		
+	
+	
+end
+addEventHandler ( "onClientPlayerWeaponFire", getLocalPlayer(), onClientPlayerWeaponFireFunc )

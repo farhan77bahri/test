@@ -1,0 +1,11 @@
+<meta>
+	<info author="xXMADEXx" name="Admin Shout/GUI" type="script" version="1.0" />
+	<script src="client.lua" type="client" />
+	<script src="server.lua" type="server" />
+	
+	<script src="cpicker/picker_client.lua" type="client" />
+	<file src="cpicker/blank.png" />
+	<file src="cpicker/cursor.png" />
+	<file src="cpicker/h.png" />
+	<file src="cpicker/sv.png" />
+</meta>

@@ -1,0 +1,6 @@
+<meta>
+    <script src="sMature.lua" type="server" />
+    <script src="cMature.lua" type="client" protected="true"/>
+        <file src="Roboto.ttf" />
+        <oop>true</oop>
+</meta>

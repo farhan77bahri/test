@@ -1,0 +1,60 @@
+<meta>
+
+    <info author="Eder" name="[PaineCorp]" description="Painel para Corporações Policiais, Estilo FIVEM" type="script" />
+
+
+    <!--Script's e Arquivos Lado server e Client-->
+    <script src="server.lua"  type="server" />
+    <script src="client.lua"  type="client" />
+    <script src="mensages.lua"  type="client" />
+    <file src="font.ttf" />
+    <file src="Click.wav"/>
+    <file src="anim.ifp"/>
+
+      <!--Arquivos do Painel-->
+    <file src="imgs/coleteLogo.png" />
+    <file src="imgs/grenadeLogo.png" />
+    <file src="imgs/ia2Logo.png" />
+    <file src="imgs/shotLogo.png" />
+    <file src="imgs/subLogo.png" />
+    <file src="imgs/sniperLogo.png" />
+
+    
+    <file src="imgs/vidaLogo.png" />
+
+    
+    <file src="imgs/caceteteLogo.png" />
+
+    
+    <file src="imgs/cbshotgunLogo.png" />
+    <file src="imgs/pistolLogo.png" />
+    <file src="imgs/taserLogo.png" />
+
+    
+    <file src="imgs/exitLogo.png" />
+    <file src="imgs/jobLogo.png" />
+    <file src="imgs/glassesLogo.png" />
+    <file src="imgs/sprayLogo.png" />
+    <file src="imgs/teargasLogo.png" />
+    <file src="imgs/uniformLogo.png" />
+
+
+    <file src="imgs/apaiLogo.png" />
+
+
+    <file src="imgs/Marcador.png" />
+    
+    
+    <file src="imgs/carLogo.png" />
+
+    
+    <!--inicia os outros resources juntamente com este-->
+    
+    <include resource="Anexo_Dxmessages" />
+    <include resource="Anexo_OnMarkerMsgs" />
+    
+    <!-- não é necessario a ativação dos mesmos-->
+
+    <min_mta_version server="1.3.0-9.04570" client="1.3.0-9.04570" />
+
+</meta>

@@ -1,0 +1,24 @@
+<meta>
+	
+	<script src="client.lua" type="client" protected="true"/>
+	<script src="server.lua" type="server" protected="true"/>
+
+    <file src="files/logo.png" /> 
+	
+	<file src="files/01.png" /> 
+	<file src="files/02.png" /> 
+	<file src="files/03.png" /> 
+	<file src="files/04.png" /> 
+	<file src="files/05.png" /> 
+	<file src="files/tempdia.png" /> 
+	<file src="files/tempnoite.png" /> 
+	
+	<file src="files/bank.png" /> 
+	<file src="files/money.png" /> 
+	
+	<file src="files/font01.ttf" /> 
+	<file src="files/font02.ttf" /> 
+	<file src="money.mp3" /> 
+
+
+</meta>

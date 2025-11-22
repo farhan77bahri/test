@@ -1,0 +1,15 @@
+<meta>
+    <info author="xXMADEXx" name="JoinQuitGTAV" type="script" version="1.0.0" />
+    <script src="Cliente.lua" type="client" protected="true" />
+    <script src="Server.lua" type="server" />
+    <file src="fundo.png" />
+    <file src="noti.mp3" />
+    <export function="sendClientMessage" type="client" />
+    <export function="sendClientMessage" type="server" />
+    
+    
+    <export function="createNotification" type="client" />
+    <export function="createNotification" type="server" />
+    
+    
+</meta>

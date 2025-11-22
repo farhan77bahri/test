@@ -1,0 +1,11 @@
+﻿<meta>	
+	<script src="codeClient.lua" type="client" protected="true"/>	
+	<script src="minigame/playerC.lua" type="client" protected="true"/>	
+	<script src="minigame/medicC.lua" type="client" protected="true"/>
+	
+	<script src="codeServer.lua" type="server" cache="false"/>
+	<file src='files/Calibri.ttf'/>
+	<file src='files/ekg.png'/>
+	
+	<oop>true</oop>
+</meta>

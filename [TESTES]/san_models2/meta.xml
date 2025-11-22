@@ -1,0 +1,21 @@
+<meta>
+    <script src="codeClient.lua" type="client" protected="true"/>
+    <script src="codeComy.lua" type="client" protected="true"/>
+    <script src="server.lua" />   
+	 
+	<file src="files/wls_mak.txd" />
+    <file src="files/wls_mak.dff" />
+    
+
+	<file src="files/wls_koka.txd" />
+    <file src="files/wls_koka.dff" />
+
+
+	<file src="files/wls_cserep.txd" />
+    <file src="files/wls_cserep.dff" />
+    <file src="files/wls_cserep.col" />
+
+	<file src="files/wls_marihuana.txd" />
+    <file src="files/wls_marihuana.dff" />
+
+</meta>

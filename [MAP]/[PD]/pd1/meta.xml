@@ -1,0 +1,8 @@
+<meta>
+	<info author="Kalit" name="lspd" type="misc" version="1.7" />
+	<file src="policest02_lan.txd" />
+	<script src="texture.lua" type="client" />
+	<script src="client.lua" type="client" />
+	<file src="policest02_lan.dff" type="client"/>
+	<file src="policest02_lan.col" type="client"/>
+</meta>

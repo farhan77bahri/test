@@ -1,0 +1,69 @@
+﻿addEvent("GTITrashCollector.marker", true)
+addEventHandler("GTITrashCollector.marker", root, function()
+local theVeh =  exports.san_rentals:getPlayerRentalVehicle(client)
+if ( isElement(theVeh) ) and ( getElementModel(theVeh) == 408 ) then
+local SX,SY,SZ = getElementPosition(theVeh)
+triggerClientEvent ( client, "GTITrashCollector.createmarker", resourceRoot, SX, SY, SZ, theVeh )
+end
+end )
+
+	local blip = createBlip (-73.43132019043,-1122.1293945313,0.53910094499588, 42)
+	setElementData(blip,"blip >> name", "Trabalho de Lixeiro")
+	
+	
+addEvent("GTITrashCollector.pay", true)
+addEventHandler("GTITrashCollector.pay", root, function()
+	local pay = math.random(500,800)
+	setElementData(client,"char:money", getElementData(client,"char:money") + pay)
+	exports.san_hud:dm("Você Ganhou +R$"..pay.." por entregar os lixos", client, 255, 200, 0)
+
+
+--[[
+	local level = getElementData(client,"Level") or 0
+	local exp = getElementData(client,"LSys:EXP") or 0
+	if tonumber(exp) >= 20 then
+	setElementData(client,"LSys:EXP",0)
+	setElementData(client,"Level",tonumber(level)+1)
+          	 exports.san_hud:dm("[ UP ] - Você Ganhou +1 De Experiência ( 20/20 )",client, 255, 255, 255)
+           	 exports.san_hud:dm("[ UP ] - Você Juntou 20 De Experiência, E Ganhou +1 Level ( "..tonumber(level)+1 .." )",client, 255, 255, 255)
+	playSoundFrontEnd (client, 101 )
+	else
+           	 exports.san_hud:dm("[ UP ] - Você Ganhou +3 De Experiência ( ".. tonumber(exp)+3 .."/20 )",client, 255, 255, 255)
+	setElementData(client,"LSys:EXP",tonumber(exp)+3)
+	playSoundFrontEnd (client, 101 )]]--
+
+
+	local ganho = math.random (20, 115)
+	exports.san_Level:givePlayerExp(client, ganho )
+	
+	
+	--end
+end)
+
+function trashEnter ( thePlayer, seat, jacked )
+    if isElement(source) and ( getElementModel ( source ) == 408 ) and (exports.san_rentals:getPlayerRentalVehicle(thePlayer) == source) and (seat == 0) and (exports.san_employment:getPlayerJob(thePlayer,true) == "Lixeiro") then 
+       triggerClientEvent ( thePlayer, "GTITrashCollector.onWasteEnter", resourceRoot )
+    end
+end
+addEventHandler ( "onVehicleEnter", getRootElement(), trashEnter )
+
+addEvent("GTITrashCollector.freeze", true)
+addEventHandler("GTITrashCollector.freeze", root, function(fre)
+    local theveh = exports.san_rentals:getPlayerRentalVehicle(client) 
+    if fre == false then
+        setElementFrozen(theveh,false)
+    elseif fre == true then 
+        setElementFrozen(theveh,true)
+    end
+end )
+addEvent("GTITrashCollector.anim", true)
+addEventHandler("GTITrashCollector.anim", root, function(anim)
+if anim == 1 then
+    exports.san_anims:setJobAnimation(client, "CARRY", "crry_prtial", 50, false, true, false, false)
+    exports.san_anims:setJobAnimation(client, "CARRY", "crry_prtial", 50, false, true, false, true)
+elseif anim == 2 then 
+    exports.san_anims:setJobAnimation(client, "CARRY", "liftup", 1000, true, false, false, false)
+elseif anim == 3 then 
+	exports.san_anims:setJobAnimation(client, "GRENADE", "WEAPON_throwu", 500, true, false, false, false)
+end
+end )

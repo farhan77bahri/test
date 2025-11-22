@@ -1,0 +1,52 @@
+<meta>
+    <script type="shared" src="global.lua" />
+    <script type="client" src="client.luac" />
+    <script type="server" src="server.lua" />
+    
+    <export type="shared" function="getWeaponWeaponShaderName" />
+    <export type="shared" function="isStickerValid" />
+    
+    <file src="fx/replace.fx" />
+    
+    <file src="stickers/ak_1.jpg" />
+    <file src="stickers/ak_2.jpg" />
+    <file src="stickers/ak_3.jpg" />
+    <file src="stickers/ak_4.jpg" />
+    <file src="stickers/ak_5.jpg" />
+    <file src="stickers/ak_6.jpg" />
+    <file src="stickers/mp_1.jpg" />
+    <file src="stickers/mp_2.jpg" />
+    <file src="stickers/mp_3.jpg" />
+    <file src="stickers/mp_4.jpg" />
+    <file src="stickers/mp_5.jpg" />
+    <file src="stickers/mp_6.jpg" />
+    <file src="stickers/desert_1.jpg" />
+    <file src="stickers/desert_2.jpg" />
+    <file src="stickers/desert_3.jpg" />
+    <file src="stickers/m4_1.jpg" />
+    <file src="stickers/m4_2.jpg" />
+    <file src="stickers/m4_3.jpg" />
+    <file src="stickers/m4_4.jpg" />
+    <file src="stickers/uzi_1.jpg" />
+    <file src="stickers/uzi_2.jpg" />
+    <file src="stickers/uzi_3.jpg" />
+    <file src="stickers/sniper_1.jpg" />
+    <file src="stickers/sniper_2.jpg" />
+    <file src="stickers/sniper_3.jpg" />
+    <file src="stickers/sniper_4.jpg" />
+    <file src="stickers/sniper_5.jpg" />
+    <file src="stickers/sniper_6.jpg" />
+    <file src="stickers/shoutgun_1.jpg" />
+    <file src="stickers/shoutgun_2.jpg" />
+    <file src="stickers/tec9_1.jpg" />
+    <file src="stickers/tec9_2.jpg" />
+    <file src="stickers/knife_1.jpg" />
+    <file src="stickers/knife_2.jpg" />
+    <file src="stickers/knife_3.jpg" />
+    <file src="stickers/knife_4.jpg" />
+    <file src="stickers/knife_5.jpg" />
+    <file src="stickers/colt_1.jpg" />
+    <file src="stickers/colt_2.jpg" />
+    <file src="stickers/halloween.jpg" />
+    
+</meta>

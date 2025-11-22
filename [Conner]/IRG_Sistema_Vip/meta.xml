@@ -1,0 +1,15 @@
+<meta>	
+	<settings>
+<setting name='*KeyToOpen' friendlyname='The Key to open the VIP panel' value='F10' desc='The Key to open the VIP panel' />
+</settings>
+
+
+
+	<script src="files/data/donator/donator_s.lua" type="server" cache="false"/>
+	<script src="files/data/donator/donator_c.lua" type="client" protected="true"  />
+	<file src="files/vipregister.png" />
+	<file src="files/font/font.ttf" />
+	
+
+	
+</meta>

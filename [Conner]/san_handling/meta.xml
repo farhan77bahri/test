@@ -1,0 +1,4 @@
+<meta>
+    <script src="script.lua" type="server" cache="false"/>
+    <export function="loadHandling" type="server"  />
+</meta>

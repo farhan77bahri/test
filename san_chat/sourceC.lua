@@ -1,0 +1,356 @@
+﻿if fileExists("sourceC.lua") then
+	fileDelete("sourceC.lua")
+end
+
+
+data = { }
+function datachange(value)
+	if (data[value] == nil) then
+		data[value] = 1
+	else
+		data[value] = data[value] + 1
+	end
+end
+--addEventHandler("onClientElementDataChange", getRootElement(), datachange)
+
+function playSounds(asd)
+
+	sound = playSound("files/".. asd ..".wav")
+	setSoundMinDistance(sound,5)
+end
+addEvent("playSounds",true)
+addEventHandler("playSounds",getRootElement(),playSounds)
+
+function sendLocalMeMessage(player, msg)
+	triggerServerEvent("sendLocalMeAction",player,player,msg)
+end
+addEvent("sendLocalMeMessage", true)
+addEventHandler("sendLocalMeMessage", root, sendLocalMeMessage)
+
+--bindKey("b", "down", "chatbox", "LocalOOC")
+-- BindKey("", "down", "chatbox","OOC")
+ bindKey("o", "down", "chatbox", "OOC")
+ bindKey("f9", "down","hud")
+ bindKey("e", "down","duty585858")
+ bindKey("k", "down","lock123")
+ bindKey("pgup", "down","bala1")
+ bindKey("pgdn", "down","paein1")
+ bindKey("pgdn", "down","paein3")
+ bindKey("pgup", "down","bala3")
+ 
+ 
+
+
+--local interface = exports["san_interface"]
+
+
+function dxCreateBorder(x,y,w,h,color)
+	dxDrawRectangle(x,y,w+1,1,color) -- Fent
+	dxDrawRectangle(x,y+1,1,h,color) -- Bal Oldal
+	dxDrawRectangle(x+1,y+h,w,1,color) -- Lent Oldal
+	dxDrawRectangle(x+w,y+1,1,h,color) -- Jobb Oldal
+end
+
+function radioMessage()
+
+	playSoundFrontEnd(47)
+	setTimer(playSoundFrontEnd, 700, 1, 48)
+	setTimer(playSoundFrontEnd, 800, 1, 48)
+
+end
+addEvent("radioMessage", true)
+addEventHandler("radioMessage",  getRootElement(), radioMessage)
+
+
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+local textsToDraw = {}
+
+local hideown
+local showtime
+local characteraddition
+local maxbubbles
+
+--local font = dxCreateFont( "fontok/myriadproregular.ttf", 12 )
+
+local showthebubbles = true
+
+function income(message,messagetype)
+	if source ~= getLocalPlayer() or not hideown then
+		addText(source,message,messagetype)
+	end
+end
+
+function addText(source,message,messagetype)
+	local notfirst = false
+	for i,v in ipairs(textsToDraw) do
+		if v[1] == source then
+			v[4] = v[4] + 1
+			notfirst = true
+		end
+	end
+	local infotable = {source,message,messagetype,0}
+	table.insert(textsToDraw,infotable)
+	if not notfirst then
+		setTimer(removeText,showtime + (#message * characteraddition),1,infotable)
+	end
+end
+
+function removeText(sinfotable)
+	for i,v in ipairs(textsToDraw) do
+		if v[1] == sinfotable[1] and v[2] == sinfotable[2] then
+			for i2,v2 in ipairs(textsToDraw) do
+				if v2[1] == v[1] and v[4] - v2[4] == 1 then
+					if(v[4] > maxbubbles) then -- Régieket töröljük amit nem látunk
+						setTimer(removeText,50,1,v2)
+					else
+						setTimer(removeText,showtime + (#v2[2] * characteraddition),1,v2)
+					end
+				end
+			end
+			table.remove(textsToDraw,i)
+			break
+		end
+	end
+end
+
+function getTextsToRemove()
+	for i,v in ipairs(textsToDraw) do
+		if v[1] == source then
+			removeText(v)
+		end
+	end
+end
+
+function handleDisplay()
+	if showthebubbles then
+		for i,v in ipairs(textsToDraw) do
+			if isElement(v[1]) then
+				if getElementHealth(v[1]) > 0 then
+					local camPosXl, camPosYl, camPosZl = getPedBonePosition (v[1], 6)
+					local camPosXr, camPosYr, camPosZr = getPedBonePosition (v[1], 7)
+					local x,y,z = (camPosXl + camPosXr) / 2, (camPosYl + camPosYr) / 2, (camPosZl + camPosZr) / 2
+					local cx,cy,cz = getCameraMatrix()
+					local px,py,pz = getElementPosition(v[1])
+					local distance = getDistanceBetweenPoints3D(cx,cy,cz,px,py,pz)
+					local posx,posy = getScreenFromWorldPosition(x,y,z+0.3)
+					local elementtoignore1 = getPedOccupiedVehicle(getLocalPlayer()) or getLocalPlayer()
+					local elementtoignore2 = getPedOccupiedVehicle(v[1]) or v[1]
+					if posx and distance <= 15 and ( isLineOfSightClear(cx,cy,cz,px,py,pz,true,true,false,true,false,true,true,elementtoignore1) or isLineOfSightClear(cx,cy,cz,px,py,pz,true,true,false,true,false,true,true,elementtoignore2) ) and ( not maxbubbles or  v[4] < maxbubbles ) then 
+						local width = dxGetTextWidth(v[2],0.9,"default")
+						local kozep = posx - (22 + (0.5 * width))
+						
+						local r,g,b = 255,255,255
+						local kieg = ""
+						-- Do
+						if v[3] == 1 then
+							r,g,b = 255, 51, 102
+						-- Me
+						elseif v[3] == 2 then
+							r,g,b = 194, 162, 218
+						elseif v[3] == 3 then
+							kieg = "_s"						
+						elseif v[3] == 4 then
+							kieg = "_s"						
+						end
+						
+						dxDrawRectangle(posx - (0.5 * width)-10,posy - (v[4] * 25)-20,width + 23,20,tocolor(0,0,0,170))
+						dxDrawText(v[2],posx - (0.5 * width),posy - (v[4] * 25)-18,posx - (0.5 * width),posy - (v[4] * 25)+150,tocolor(r,g,b,255),0.9,"default","left","top",false,false,false,true,true)
+					end
+				end
+			end
+		end
+	end
+end
+
+function roundedRectangle(x, y, w, h, borderColor, bgColor, postGUI)
+	if (x and y and w and h) then
+		if (not borderColor) then
+			borderColor = tocolor(0, 0, 0, 200);
+		end
+		
+		if (not bgColor) then
+			bgColor = borderColor;
+		end
+		
+		--> Background
+		dxDrawRectangle(x, y, w, h, bgColor, postGUI);
+		
+		--> Border
+		dxDrawRectangle(x + 2, y - 1, w - 4, 1, borderColor, postGUI); -- top
+		dxDrawRectangle(x + 2, y + h, w - 4, 1, borderColor, postGUI); -- bottom
+		dxDrawRectangle(x - 1, y + 2, 1, h - 4, borderColor, postGUI); -- left
+		dxDrawRectangle(x + w, y + 2, 1, h - 4, borderColor, postGUI); -- right
+	end
+end
+
+function round(num, idp)
+  if idp and idp>0 then
+    local mult = 10^idp
+    return math.floor(num * mult + 0.5) / mult
+  end
+  return math.floor(num + 0.4)
+end
+
+
+function getServerSettings()
+    triggerServerEvent("onAskForBubbleSettings",getLocalPlayer())
+end
+
+function saveSettings(settings)
+	showtime = settings[1]
+	characteraddition = settings[2]
+	maxbubbles = settings[3]
+	hideown = settings[4]
+	addEvent("onMessageIncome",true)
+	addEventHandler("onMessageIncome",getRootElement(),income)
+end
+
+addEventHandler("onClientPlayerQuit",getRootElement(),getTextsToRemove)
+addEventHandler("onClientRender",getRootElement(),handleDisplay)
+addEventHandler("onClientResourceStart",getResourceRootElement(getThisResource()),getServerSettings)
+addEvent("onBubbleSettingsReturn",true)
+addEventHandler("onBubbleSettingsReturn",getRootElement(),saveSettings)
+
+
+setElementData(localPlayer,"chatbubbles",1)
+
+
+
+--local sx,sy = guiGetScreenSize ()
+
+local sx1, sy1 = guiGetScreenSize()
+local sx,sy = ( sx1 / 1024 ), ( sy1 / 768 )
+
+
+local chatData = getChatboxLayout()
+local oocState = true
+local maxLines = 10
+local oocMessages = {}
+local font = "default-bold"
+local _,scale = chatData["chat_scale"]
+local bg = {chatData["chat_color"]}
+--local color = {205,205,205,255}
+local color = {255,255,255,255}
+local lines = chatData["chat_lines"]
+local chatX,chatY = 14.515625*sx, 87
+local szint = ""
+
+addEventHandler ("onClientRender",root,
+	function ()
+		local line = getChatboxLayout()["chat_lines"]
+		local font = getChatboxLayout()["chat_font"]	
+		local scale2 = 1.5 --getChatboxLayout()["chat_scale"]
+		Font1 = "default-bold"
+		--[[
+		if font == 0 then
+			Font1 = "default"
+		elseif font == 1 then
+			Font1 = "clear"
+		elseif font == 2 then
+			Font1 = "default-bold"
+		elseif font == 3 then
+			Font1 = "arial"
+		end
+		]]--
+		Chat1 = (line-3)*30
+		
+
+		
+
+
+	end
+)
+
+addEventHandler ("onClientRender",getRootElement(),
+	function ()
+		if getElementData(getLocalPlayer(), "loggedin") == true then
+		if (getElementData(getLocalPlayer(), "screen") or false) == true then return end
+	--	if ( getElementData ( getLocalPlayer(), "onCarshop" ) or false ) == true then return end
+		player = localPlayer
+		--if getElementData(player,"acc:admin") >= 8 or getElementData(player, "char:dutyfaction") == 1 or getElementData(player, "char:dutyfaction") == 2  or getElementData(player, "char:dutyfaction") == 3 or getElementData(player, "char:dutyfaction") == 4 or getElementData(player, "char:dutyfaction") == 5 or getElementData(player, "char:dutyfaction") == 6 or getElementData(player, "char:dutyfaction") == 7 or  getElementData(player, "char:dutyfaction") == 8 or getElementData(player, "char:dutyfaction") == 9 or getElementData(player, "char:dutyfaction") == 10 or getElementData(player, "char:dutyfaction") == 11 or getElementData(player, "char:dutyfaction") == 12 or getElementData(player, "char:dutyfaction") == 13 or  getElementData(player, "char:dutyfaction") == 14 or getElementData(player, "char:dutyfaction") == 15 then
+
+			if oocState then
+			if getElementData(player, "hud") then return end
+--				dxDrawText ("Copom Polícial Ativo",chatX+1,chatY+1+Chat1,0,0,tocolor(0,0,0,255),1,Font1,"left","top",false,false,false)
+--				dxDrawText ("Copom Polícial Ativo",chatX,chatY+Chat1,0,0,tocolor(color[1],color[2],color[3],color[4]),1,Font1,"left","top",false,false,false)
+				for k,v in ipairs(oocMessages) do
+					local tx,ty = chatX,chatY + (maxLines+2)*15 - k*27
+					dxDrawText (removeHex(v),tx+1,ty+Chat1+1,sx*0,sy*0,tocolor(0,0,0,255), sy* (getChatboxLayout()["chat_font"])*0.43 ,Font1,"left","top",false,false,false)
+					dxDrawText (v,tx,ty+Chat1,sx*0,sy*0,tocolor(color[1],color[2],color[3],color[1]), sy*  (getChatboxLayout()["chat_font"])*0.43 ,Font1,"left","top",false,false,false,true)
+					
+					end
+				end
+			end
+		--end
+	end
+)
+
+function removeHex(text, digits)
+    assert(type(text) == "string", "Bad argument 1 @ removeHex [String expected, got " .. tostring(text) .. "]")
+    assert(digits == nil or (type(digits) == "number" and digits > 0), "Bad argument 2 @ removeHex [Number greater than zero expected, got " .. tostring(digits) .. "]")
+    return string.gsub(text, "#" .. (digits and string.rep("%x", digits) or "%x+"), "")
+end
+
+addEvent ("onOOCMessageSend",true)
+addEventHandler ("onOOCMessageSend",getRootElement(),
+	function (message,_,szin)
+		local player = source
+		local int,dim = getElementInterior (player),getElementDimension(player)
+		if int == getElementInterior (getLocalPlayer()) and dim == getElementDimension (getLocalPlayer()) then
+				local length = #oocMessages
+				if #oocMessages >= maxLines then
+					table.remove (oocMessages,maxLines)
+				end
+				szint = szin
+				--[[
+				local r = getRealTime()
+				local hour = r.hour
+				local minute = r.minute
+				if hour < 10 then
+					hour = "0"..hour
+				end
+				if minute < 10 then
+					minute = minute .."0"
+				end
+				local time = hour ..":"..minute
+				local text =  "["..time.."] " .. message
+
+
+				]]--
+
+				local text =  message
+
+				table.insert (oocMessages,1,text)
+				if player ~= getLocalPlayer () then
+					outputConsole (text)
+				end
+		end
+	end
+)
+
+function isOOCChatToggled ()
+	return oocState
+end
+
+function toggleOOCChat (state)
+	if state ~= oocState then
+		oocState = state
+	end
+end
+
+function togOOCCMD (cname,arg)
+		toggleOOCChat ( not oocState )
+end
+addCommandHandler ("desativarcopom",togOOCCMD)
+
+function co ()
+	for k in pairs (oocMessages) do
+    oocMessages[k] = nil
+end
+end
+addCommandHandler ("limparcopom",co)
+
+-- تابع برای بررسی صندلی و فعال کردن تیراندازی
+

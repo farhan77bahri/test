@@ -1,0 +1,43 @@
+<meta>
+    <info author="Milionario" type="script" version="0.1" name="Uteis" />
+    
+    <oop>true</oop>
+    <script src="server.lua" type="server" cache="false" />
+    <script src="server_db.lua" type="server" cache="false" />
+    <script src="client.lua" type="client" cache="false" />
+    
+    <export function="setPlayerBlipColor" type="server" />
+    <export function="setPlayerBlipColor" type="client" />
+    <export function="getMesNome" type="client" />
+    <export function="createShader" type="client" />
+    <export function="WarpTrueOrFalseVehicle" type="server" />
+    <export function="getMarcha" type="client" />
+    <export function="getVehicleSpeed" type="client" />
+    <export function="getVehicleRPM" type="client" />
+    <export function="setGPS" type="client" />
+    <export function="setGPS" type="server" />
+    <export function="convertFtoN" type="client" />
+    <export function="convertFtoN" type="server" />
+    <export function="convertNtoF" type="client" />
+    <export function="convertNtoF" type="server" />
+    <export function="isPlayerInACL" type="server" />
+    <export function="arredondar" type="client" />
+    <export function="arredondar" type="server" />
+    <export function="convertS" type="client" />
+    <export function="convertS" type="server" />
+    <export function="isBoolean" type="client" />
+    <export function="isBoolean" type="server" />
+    <export function="isNumber" type="client" />
+    <export function="isNumber" type="server" />
+    <export function="isFloatNumber" type="client" />
+    <export function="isFloatNumber" type="server" />
+    <export function="getTempoReal" type="client" />
+    <export function="getTempoReal" type="server" />
+    <export function="qtdatual" type="server" />
+    <export function="isTruecamp" type="server" />
+    <export function="isTruecamp" type="client" />
+    <export function="RGBToHex" type="server" />
+    <export function="RGBToHex" type="client" />
+    
+    <min_mta_version server="1.3.4-0.00000" client="1.5.2-9.07903"></min_mta_version>
+</meta>

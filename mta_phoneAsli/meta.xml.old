@@ -1,0 +1,69 @@
+<meta>
+    
+    <script src="sourceC.lua" type="client" protected="true" />
+    <script src="sourceS.lua" type="server" />
+    
+    <file src="files/telefon.png" />
+    <file src="files/call.png" />
+    <file src="files/delete.png" />
+    <file src="files/wallpapers/1.png" />
+    <file src="files/wallpapers/2.png" />
+    <file src="files/wallpapers/3.png" />
+    <file src="files/wallpapers/4.png" />
+    <file src="files/wallpapers/5.png" />
+    <file src="files/wallpapers/6.png" />
+    <file src="files/wallpapers/7.png" />
+    <file src="files/wallpapers/8.png" />
+    <file src="files/wallpapers/9.png" />
+    <file src="files/x.png" />
+    <file src="files/ncall.png" />
+    <file src="files/edit.png" />
+    <file src="files/send.png" />
+    <file src="files/phonecall.png" />
+    <file src="files/bejovo.png" />
+    <file src="files/callyou.png" />
+    <file src="files/calling.png" />
+    <file src="files/masikfel.png" />
+    <file src="files/sajatuzenet.png" />
+    <file src="files/battery.png" />
+    <file src="files/nevjegyzekek.png" />
+    <file src="files/calls.png" />
+    <file src="files/music.png" />
+    <file src="files/ad.png" />
+    
+    <!-- Zenék -->
+    <file src="files/sounds/sms.mp3" />
+    <file src="files/sounds/call/1.mp3" />
+    <file src="files/sounds/call/2.mp3" />
+    <file src="files/sounds/call/3.mp3" />
+    <file src="files/sounds/call/4.mp3" />
+    <file src="files/sounds/call/5.mp3" />
+    <file src="files/sounds/call/6.mp3" />
+    <file src="files/sounds/call/7.mp3" />
+    <file src="files/sounds/call/8.mp3" />
+    <file src="files/sounds/call/9.mp3" />
+    <file src="files/sounds/call/10.mp3" />
+    
+    <file src="files/icons/calculator.png" />
+    <file src="files/icons/clock.png" />
+    <file src="files/icons/chrome2.png" />
+    <file src="files/icons/camera-alt.png" />
+    <file src="files/icons/contacts2.png" />
+    <file src="files/icons/fbmessenger-alt.png" />
+    <file src="files/icons/flashlight.png" />
+    <file src="files/icons/gmail_new2.png" />
+    <file src="files/icons/youtube2.png" />
+    <file src="files/icons/angrybirds2.png" />
+    <file src="files/icons/comic.png" />
+    <file src="files/icons/gallery_nokia.png" />
+    <file src="files/icons/market.png" />
+    <file src="files/icons/music_purple.png" />
+    <file src="files/icons/news_alt.png" />
+    <file src="files/icons/phone.png" />
+    <file src="files/icons/Restaurant.png" />
+    <file src="files/icons/sms.png" />
+    <file src="files/icons/settings.png" />
+    
+    <export function="showPhoneFunction" type="client" />
+    <export function="addPhone" type="server" />
+</meta>

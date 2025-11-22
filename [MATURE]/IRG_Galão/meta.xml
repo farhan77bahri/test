@@ -1,0 +1,4 @@
+<meta>
+    <script src="sAchievements.lua" type="server" cache="false" />
+    <script src="cAchievements.lua" type="client"  cache="false"/>
+</meta>

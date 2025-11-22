@@ -1,0 +1,13 @@
+<meta>
+	<info author="jflm" description="Vehicle radio 3D resource" type="script" version="1.2.0" />
+	
+	<script src="sVehRadio3D.lua" />
+	<script src="cVehRadio3D.lua" type="client" />
+	
+	<settings>
+		<setting name="*streamLimit" value="[4]" />
+		<setting name="*toggleAntifloodTick" value="[2000]" />
+		<setting name="*radioEnabledIdleTime" value="[60000]" />
+		<setting name="*radioIdlePlayerDistanceCheck" value="[100.00]" />
+	</settings>
+</meta>

@@ -1,0 +1,32 @@
+<meta>
+    <script src="sourceC.lua" type="client" cache="false" />
+    <script src="speedoTempomat.lua" type="client" cache="false" />
+    <script src="sourceS.lua" type="server" />
+    
+    <file src="files/bg.png" />
+    <file src="files/fuelbg.png" />
+    <file src="files/fuelbar.png" />
+    <file src="files/fuelicon.png" />
+    <file src="files/r_index.png" />
+    <file src="files/l_index.png" />
+    <file src="files/nitroalap.png" />
+    <file src="files/nitrocsik.png" />
+    <file src="files/nitroicon.png" />
+    <file src="files/belt.png" />
+    <file src="files/numberbg.png" />
+    <file src="files/needle.png" />
+    <file src="files/light.png" />
+    <file src="files/lock.png" />
+    <file src="files/white.png" />
+    <file src="files/mask.png" />
+    <file src="files/calibri.ttf" />
+    <file src="files/mask3d.fx" />
+    <file src="files/tex_matrix.fx" />
+    <file src="files/circle/circle1.png" />
+    <file src="files/circle/circle2.png" />
+    <file src="files/circle/circle3.png" />
+    
+    <file src="files/ov/files/ov.mp3" />
+    <file src="files/ov/files/ovki.mp3" />
+    <file src="files/ov/files/ovbe.mp3" />
+</meta>

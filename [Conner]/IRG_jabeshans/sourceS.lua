@@ -1,0 +1,97 @@
+﻿local boxTable = {}
+
+local boxToItemID = {104, 105, 106, 108}
+
+ local boxPosition = {
+	-- {X, y, Z}
+	{2016.8173828125, -1306.73046875, 20.876401901245},
+	{2382.00390625, -1474.9833984375, 23.813777923584},
+	{2295.3818359375, -2015.904296875, 13.543203353882},
+	{1667.7900390625, -2113.9384765625, 13.546875},
+	{1096.68359375, -1830.96875, 16.59375},
+	{763.8798828125, -1089.591796875, 24.0859375},
+	{1536.0634765625, -782.8544921875, 76.899681091309},
+	{1857.1923828125, -1034.431640625, 23.998817443848},
+	{2024.4609375, -1776.3408203125, 13.546875},
+}
+
+-- function createEventBox()
+	-- for index, value in ipairs(boxPosition) do
+		-- if isElement(boxTable[index]) then 
+			-- destroyElement((boxTable[index]))
+		-- end
+		-- boxTable[index] = createObject(1271, value[1], value[2], value[3]-0.6)
+		-- setElementData(boxTable[index], 'eventBox->ID', index)
+		-- setElementData(boxTable[index], 'eventBox->isEventBox', true)
+		-- setElementData(boxTable[index], 'eventBox->Use', false)
+		-- setElementFrozen(boxTable[index], true)
+	-- end
+-- end
+-- createEventBox()
+
+function createEventBox1()
+	local id = math.random(#boxPosition)
+	boxTable[id] = {}
+	boxTable[id] = createObject(1271, boxPosition[id][1], boxPosition[id][2], boxPosition[id][3]-0.6)
+	setElementData(boxTable[id], 'eventBox->ID', id)
+	setElementData(boxTable[id], 'eventBox->isEventBox', true)
+	setElementData(boxTable[id], 'eventBox->Use', false)
+	local x,y,z = boxPosition[id][1], boxPosition[id][2], boxPosition[id][3]
+		--exports.san_admin:outputAdminMessage("#7cc576 A posição do premio está em "..x.." "..y.." "..z.."!")
+		
+		
+		
+	setElementFrozen(boxTable[id], true)
+end
+createEventBox1()
+
+addEvent('btcMTA->#giveItem', true)
+addEventHandler('btcMTA->#giveItem', root, function(element, itemID, objects, count)
+	local status,msg = exports["san_items"]:giveItem(element, itemID, 1, count, 0)
+	 if status then 
+		if isElement(objects) then
+			local id = getElementData(objects,"eventBox->ID")
+			setElementData(objects,"eventBox->Use",false)
+			destroyElement(objects)
+		end		
+		setTimer(function()
+			setElementData(element,"btcMTA:Event",false)
+		-- end,30*60*1000,1)
+		end, 100,1)
+		outputChatBox('Você ganhou uma: #D24D57' .. exports['san_items']:getItemName(itemID), element, 255, 255, 255, true)
+		--outputChatBox('Boa sorte!', element, 124, 197, 118, true)
+		--createEventBox1()
+	else
+		setElementData(objects,"eventBox->Use",false)
+		outputChatBox(msg,element)
+	 end
+end)
+
+
+addCommandHandler("roleta",
+	function(thePlayer, commandName)
+		if getElementData(thePlayer, "acc:admin") >= 9 then
+			for k,v in ipairs(getElementsByType("player")) do
+			    triggerClientEvent("btcMTA->iniciarEvent",v,v)
+				outputChatBox("#7cc576[Presente - IRG]: " .. getPlayerName(thePlayer):gsub("_"," ") .. "#ffffff deu para todos uma #7cc576Roleta#ffffff.", v, 255, 255, 255, true)
+			end
+		end
+	end
+)
+
+addEvent("btcMTA >> eventTime",true)
+addEventHandler("btcMTA >> eventTime",getRootElement(),function(player)
+	if isElement(player) and getElementData(player,"btcMTA:Event") then
+		setTimer(function()
+			for k,v in ipairs(getElementsByType("player")) do
+				if getElementData(v,"btcMTA:Event") then
+					setElementData(v,"btcMTA:Event",false)
+				end
+			end
+		-- end,30*60*1000,1)
+		end,100,1)
+	end
+end)
+
+
+--setTimer(function

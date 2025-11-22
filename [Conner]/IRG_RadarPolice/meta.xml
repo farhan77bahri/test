@@ -1,0 +1,12 @@
+<meta>
+    <script src="sourceC.lua" type="client" cache="false" />
+    <script src="sourceS.lua" type="server" cache="false" />
+	<script src="object.lua" type="client" />
+    <file src="texture.txd" />
+    <file src="trafi.dff" />
+    <file src="trafi.col" />
+    <file src="files/shutter.mp3" />
+    <file src="files/speedcam-pointer.png" />
+    
+    <oop>true</oop>
+</meta>

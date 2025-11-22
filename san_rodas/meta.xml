@@ -1,0 +1,30 @@
+<meta>
+
+	<script src="sourceC.luac" type="client" cache="false" />
+	
+	<file src="files/wheel_gn1.dff"/>
+	<file src="files/wheel_gn2.dff"/>
+	<file src="files/wheel_gn3.dff"/>
+	<file src="files/wheel_gn4.dff"/>
+	<file src="files/wheel_gn5.dff"/>
+	<file src="files/wheel_lr1.dff"/>
+	<file src="files/wheel_lr2.dff"/>
+	<file src="files/wheel_lr3.dff"/>
+	<file src="files/wheel_lr4.dff"/>
+	<file src="files/wheel_lr5.dff"/>
+	<file src="files/wheel_sr1.dff"/>
+	<file src="files/wheel_sr2.dff"/>
+	<file src="files/wheel_sr3.dff"/>
+	<file src="files/wheel_sr4.dff"/>
+	<file src="files/wheel_sr5.dff"/>
+	<file src="files/wheel_sr6.dff"/>
+	<file src="files/wheel1.dff"/>
+	<file src="files/wheels.txd"/>
+	
+	<!--
+		--INFO--
+		See Script.
+		Lua nincs hozzá, csak luac.
+		Metát írta: Csoki
+	-->
+</meta>

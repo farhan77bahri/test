@@ -1,0 +1,8 @@
+<meta>
+    <script src="sourceS.lua" type="server"  cache="false"/>
+    <script src="sourceC.lua" type="client" protected="true"/>
+	
+    <file src="files/myriadproregular.ttf" />
+	<file src="font.ttf"/>
+		<file src="files/font.ttf"/>
+</meta>

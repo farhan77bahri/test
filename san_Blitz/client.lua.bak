@@ -1,0 +1,207 @@
+﻿local monitorSize = {guiGetScreenSize()}
+local panelSize = {200, 350}
+local show = false
+local sirenaMove
+local font = dxCreateFont("files/myriadproregular.ttf",9) --<[ Font ]>--
+local objectID
+local ClientObject
+local tempObjectRot
+local tempObjectPosX, tempObjectPosY, tempObjectPosZ, tempObjectPosRot = nil
+local current = -1
+
+local roadblocks = {
+	{978, "Bloqueio de estrada pequena", 180}, 
+	{981, "Bloqueiro Grande", 0}, 
+	{3578, "Cerca amarela", 0}, 
+	{1228, "Cerca de aviso pequena", 0}, 
+	{1282, "Cerca de aviso pequena com luz", 0}, 
+	{1422, "Guia pequeno", 0}, 
+	{1424, "Bloco de calçada", 0}, 
+	{1425, "líder ->", 0}, 
+	{1459, "cauteloso", 0}, 
+	{3091, "veículo ->", 0}, 
+}
+
+addCommandHandler("rbs", function ()
+	if not localPlayer:getData("loggedin") then return end
+	--if exports["ex_dashboard"]:isPlayerInFaction(1) or exports["ex_dashboard"]:isPlayerInFaction(3) or exports["ex_dashboard"]:isPlayerInFaction(4) or exports["ex_dashboard"]:isPlayerInFaction(22) then 
+
+	--if localPlayer:getData("acc:admin") >= 1 or localPlayer:getData("char:dutyfaction") == 16 or localPlayer:getData("char:dutyfaction") == 2 or localPlayer:getData("char:dutyfaction") == 20 then
+
+		if getElementData(localPlayer, "char:dutyfaction") >= 1 and getElementData(localPlayer, "char:dutyfaction") <= 15 or getElementData(localPlayer, "char:adminduty") == 1 then
+		
+		
+		
+
+		if not isPedInVehicle(localPlayer) then 
+			if not show then 
+				show = true
+				createGui("create")
+				setElementData(localPlayer, "system:blitz", true)
+				removeEventHandler("onClientRender", root, panelRender)
+				addEventHandler("onClientRender", root, panelRender)			
+				removeEventHandler("onClientClick", root, panelClick)
+				addEventHandler("onClientClick", root, panelClick)
+			else
+			setElementData(localPlayer, "system:blitz", false)
+				removeEventHandler("onClientRender", root, panelRender)
+				removeEventHandler("onClientClick", root, panelClick)
+				show = false
+				createGui("remove")
+				current = -1
+			end
+		else
+			outputChatBox("#D24D57[BV - RBS]#ffffff Você não pode usar este comando em um veiculo.", 0, 0, 0, true)
+		end
+	end
+end
+)
+   
+function createGui(type)
+	if type == "create" then 
+		sirenaMove = guiCreateWindow( monitorSize[1]-panelSize[1]-10, monitorSize[2]/2-panelSize[2]/2,panelSize[1], panelSize[2], "", false)
+		guiSetAlpha(sirenaMove,0)
+		guiWindowSetSizable ( sirenaMove, false )
+	else
+		if isElement(sirenaMove) then destroyElement(sirenaMove) end
+	end
+end
+
+function panelClick(button, state, clickx, clicky)
+	if button == "left" and state == "down" then 
+		local x, y = guiGetPosition ( sirenaMove, false )
+		for index, value in ipairs (roadblocks) do 
+			if dobozbaVan(x+5, y+index*30, panelSize[1]-10, 25,clickx, clicky) then 
+				if isElement(ClientObject) then destroyElement(ClientObject) end
+				current = index
+				local x, y, z = getElementPosition(localPlayer)
+				ClientObject = createObject(value[1], x,y,z)
+				setElementAlpha(ClientObject, 150)
+				setElementInterior ( ClientObject, getElementInterior ( localPlayer ) )
+				setElementDimension ( ClientObject, getElementDimension ( localPlayer ) )
+				tempObjectRot = value[3]
+				objectID = value[1]
+				bindKey("e", "down", createObjectServer)
+				updateRoadblockObject()
+				removeEventHandler("onClientPreRender",getRootElement(),updateRoadblockObject)
+				addEventHandler("onClientPreRender",getRootElement(),updateRoadblockObject)
+			end
+		end
+	end
+end
+
+function panelRender()
+	local x, y = guiGetPosition ( sirenaMove, false )
+	dxDrawRectangle(x, y, panelSize[1], panelSize[2], tocolor(0, 0, 0, 170))
+	dxDrawRectangle(x, y, panelSize[1], 25, tocolor(0, 0, 0, 230))
+	dxDrawText("BV - #7cc576Blitz",x+ 5, y+ 5, panelSize[1], 25, tocolor(255, 255, 255, 255), 1, font, "left", "top", false, false, false, true)
+	for index, value in ipairs (roadblocks) do 
+		if isInSlot(x+5, y+index*30, panelSize[1]-10, 25) or current == index then 
+			dxDrawRectangle(x+5, y+index*30, panelSize[1]-10, 25, tocolor(124, 197, 118, 230))
+			dxDrawText(value[2] ,x+ 10,  y+index*30+5, panelSize[1], 25, tocolor(0, 0, 0, 255), 1, font, "left", "top", false, false, false, true)
+		else
+			dxDrawRectangle(x+5, y+index*30, panelSize[1]-10, 25, tocolor(0, 0, 0, 230))
+			dxDrawText(value[2] ,x+ 10,  y+index*30+5, panelSize[1], 25, tocolor(255, 255, 255, 255), 1, font, "left", "top", false, false, false, true)
+		end
+	end
+end
+
+function updateRoadblockObject(key, keyState)
+	if (isElement(ClientObject)) then
+		local distance = 6
+		local px, py, pz = getElementPosition ( localPlayer )
+		local rz = getPedRotation ( localPlayer )    
+
+		local x = distance*math.cos((rz+90)*math.pi/180) 
+		local y = distance*math.sin((rz+90)*math.pi/180)
+		local b2 = 15 / math.cos(math.pi/180)
+		local nx = px + x
+		local ny = py + y
+		local nz = pz - 0.5
+		  
+		local objrot =  rz + tempObjectRot
+		if (objrot > 360) then
+			objrot = objrot-360
+		end
+		  
+		setElementRotation ( ClientObject, 0, 0, objrot )
+		moveObject ( ClientObject, 10, nx, ny, nz)
+		
+		tempObjectPosX = nx
+		tempObjectPosY = ny
+		tempObjectPosZ = nz
+		tempObjectPosRot = objrot
+	end
+end
+
+function createObjectServer()
+	triggerServerEvent("createObjectToServer", localPlayer, localPlayer, objectID, tempObjectPosX, tempObjectPosY, tempObjectPosZ, tempObjectPosRot)
+	if (isElement(ClientObject)) then
+		destroyElement(ClientObject)
+		tempObjectPosX, tempObjectPosY, tempObjectPosZ, tempObjectPosRot = nil
+		tempObjectRot = nil
+		unbindKey ( "e", "down", createObjectServer)
+		current = -1
+	end
+	removeEventHandler("onClientPreRender",getRootElement(),updateRoadblockObject)
+end
+
+function isInSlot(xS,yS,wS,hS)
+	if(isCursorShowing()) then
+		XY = {guiGetScreenSize()}
+		local cursorX, cursorY = getCursorPosition()
+		cursorX, cursorY = cursorX*XY[1], cursorY*XY[2]
+		if(dobozbaVan(xS,yS,wS,hS, cursorX, cursorY)) then
+			return true
+		else
+			return false
+		end
+	end	
+end
+
+
+function dobozbaVan(dX, dY, dSZ, dM, eX, eY)
+	if(eX >= dX and eX <= dX+dSZ and eY >= dY and eY <= dY+dM) then
+		return true
+	else
+		return false
+	end
+end
+
+function dxCreateBorder(x,y,w,h,color)
+	dxDrawRectangle(x,y,w+1,1,color) -- Fent
+	dxDrawRectangle(x,y+1,1,h,color) -- Bal Oldal
+	dxDrawRectangle(x+1,y+h,w,1,color) -- Lent Oldal
+	dxDrawRectangle(x+w,y+1,1,h,color) -- Jobb Oldal
+end
+
+
+
+
+
+
+
+
+
+
+
+function tag(source)
+  local px, py, pz, tx, ty, tz, dist
+  px, py, pz = getCameraMatrix( )
+  for _, v in ipairs( getElementsByType 'player' ) do
+    tx, ty, tz = getElementPosition( v )
+    dist = math.sqrt( ( px - tx ) ^ 2 + ( py - ty ) ^ 2 + ( pz - tz ) ^ 2 )
+    if dist < 50.0 then
+      if isLineOfSightClear( px, py, pz, tx, ty, tz, true, false, false, true, false, false, false,localPlayer ) then
+        local sx, sy, sz = getPedBonePosition( v, 5 )
+        local x,y = getScreenFromWorldPosition( sx, sy, sz + 0.3 )
+        if x then
+          if getElementData(v, "system:blitz") then
+           dxDrawImage(x - 10, y - 75, 40, 40, "tag.png", 0, 0, 0, tocolor(255, 255, 255, 255), false)
+          end
+        end
+      end
+    end
+  end
+end
+addEventHandler("onClientRender", root, tag)

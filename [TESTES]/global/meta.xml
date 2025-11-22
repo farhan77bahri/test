@@ -1,0 +1,105 @@
+<meta>
+    <oop>true</oop>
+    
+	<script src="codeFindPlayer.lua" type="shared" />
+	<export function="findPlayer" type="shared" />
+	
+    <script src="codeChatGlobals.lua" type="shared" />
+    <export function="getOOCState" type="server" />
+    <export function="setOOCState" type="server" />
+    <export function="sendMessageToAdmins" type="server" />
+    <export function="getNearbyElements" type="server" />
+    <export function="sendLocalText" type="server" />
+    <export function="sendLocalMeAction" type="shared" />
+    <export function="sendLocalDoAction" type="shared" />
+    <export function="findPlayerByPartialNick" type="shared" />
+    
+    <script src="codeAdminGlobals.lua" type="shared" />
+    <export function="isRpSeged" type="shared" />
+    <export function="isEgyesAdmin" type="shared" />
+    <export function="isKettesAdmin" type="shared" />
+    <export function="isHarmasAdmin" type="shared" />
+    <export function="isNegyesAdmin" type="shared" />
+    <export function="isFoAdmin" type="shared" />
+    <export function="isTulaj" type="shared" />
+    <export function="isSuperAdmin" type="shared" />
+    <export function="isVezerScripter" type="shared" />
+    <export function="isOtosAdmin" type="shared" />
+    <export function="isScripter" type="shared" />
+    <export function="isPlayerAdmin" type="shared" />
+    <export function="isPlayerFullAdmin" type="shared" />
+    <export function="isPlayerSuperAdmin" type="shared" />
+    <export function="isPlayerHeadAdmin" type="shared" />
+    <export function="isPlayerLeadAdmin" type="shared" />
+    <export function="isRendszerGazda" type="shared" />
+    <export function="getPlayerAdminLevel" type="shared" />
+    <export function="getPlayerAdminTitle" type="shared" />
+    <export function="isPlayerScripter" type="shared" />
+    <export function="getAdmins" type="shared" />
+    <export function="getPlayerAdminNick" type="shared" />
+    
+    <script src="codeVehicleGlobals.lua" type="shared" />
+    <export function="getVehicleVelocity" type="shared" />
+    <export function="relateVelocity" type="shared" />
+    <export function="getVehiclesOwnedByCharacter" type="shared" />
+    <export function="canPlayerBuyVehicle" type="shared" />
+    
+    <script src="codeVehicleSGlobals.lua" type="server" />
+    <!-- <export function="getVehiclesOwnedByCharacter" type="server" /> -->
+    <!-- <export function="canPlayerBuyVehicle" type="server" /> -->
+    
+    
+    <script src="codeAllMoneyGlobals.lua" type="server" />
+    <script src="codeMoneyGlobals.lua" type="client" />
+    <export function="giveMoney" type="server" />
+    <export function="takeMoney" type="shared" />
+    <export function="setMoney" type="server" />
+    <export function="hasMoney" type="server" />
+    <export function="hasMoney" type="client" />
+    <export function="getMoney" type="server" />
+    <export function="getMoney" type="client" />
+    <export function="formatMoney" type="server" />
+    <export function="formatMoney" type="client" />
+    <export function="checkMoneyHacks" type="server" />
+    
+    <script src="codeAnticheatGlobals.lua" type="server" />
+    <export function="giveWeapon" type="server" />
+    <export function="setWeaponAmmo" type="server" />
+    <export function="takeAllWeapons" type="server" />
+    <export function="takeWeapon" type="server" />
+    
+    <script src="codeItemsGlobals.lua" type="server" />
+    <export function="hasSpaceForItem" type="server" />
+    <export function="hasItem" type="shared" />
+    <export function="giveItem" type="server" />
+    <export function="takeItem" type="server" />
+    <export function="takeAllItem" type="server" />
+    <export function="getItems" type="server" />
+    <export function="updateItemValue" type="server" />
+    
+    <script src="codeAnimationGlobals.lua" type="client" />
+    
+    <script src="codeAnimationSGlobals.lua" type="server" />
+    <export function="applyAnimation" type="shared" />
+    <export function="removeAnimation" type="shared" />
+    
+    <script src="codeNametagGlobals.lua" type="server" />
+    <export function="updateNametagColor" type="server" />
+    
+    <script src="codeZoneGlobals.lua" type="server" />
+    <export function="getElementZoneName" type="server" />
+    
+    <script src="codeFactionGlobals.lua" type="server" />
+    <export function="SendMessageToTeam" type="server" />
+    <export function="FrakcioUzenet" type="server" />
+
+
+
+ <script src="c_animation_globals.lua" type="client" />
+    <export function="applyAnimation" type="client" />
+    <export function="removeAnimation" type="client" />
+    
+    <script src="s_animation_globals.lua" type="server" />
+    <export function="applyAnimation" type="server" />
+    <export function="removeAnimation" type="server" />
+</meta>

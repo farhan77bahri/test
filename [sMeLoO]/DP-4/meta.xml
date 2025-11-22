@@ -1,0 +1,38 @@
+<meta>
+    <info author="+Tawan" name="TXD Arvores" version="1.4.1" type="script" />
+    <script src="replace.lua" type="client" />
+    <file src="TXDD.txd" />
+    <file src="TXD.txd" />
+	<file src="789.dff" />
+	<file src="739.dff" />
+	<file src="673.dff" />
+	<file src="707.dff" />
+	<file src="671.dff" />
+	<file src="669.dff" />
+	<file src="691.dff" />
+	<file src="708.dff" />
+	<file src="672.dff" />
+	<file src="700.dff" />
+	<file src="703.dff" />
+	<file src="705.dff" />
+	<file src="706.dff" />
+	<file src="709.dff" />
+	<file src="713.dff" />
+	<file src="714.dff" />
+	<file src="715.dff" />
+	<file src="648.dff" />
+	<file src="621.dff" />
+	<file src="622.dff" />
+	<file src="620.dff" />
+	<file src="645.dff" />
+	<file src="623.dff" />
+	<file src="624.dff" />
+	<file src="619.dff" />
+	<file src="615.dff" />
+	<file src="616.dff" />
+	<file src="618.dff" />
+	<file src="710.dff" />
+	<file src="712.dff" />
+	<file src="718.dff" />
+	<file src="740.dff" />
+</meta>

@@ -1,0 +1,35 @@
+<meta>
+    <info name="Trabalho" author="#DaNiLiN" ></info>
+	
+                       <!-- ARQUIVOS DNL -->
+	<script src="Painel_DX.lua" type="client" cache="false" />
+	<script src="Balance_C.lua" type="client" cache="false" />
+	<script src="Save_S.lua" type="server" cache="false" />
+	
+	<script src="Danilin_S.lua" type="server"cache="false" />
+	<script src="Danilin_C.lua" type="client" cache="false" />
+	
+                      <!--  FONT'S -->
+	<file src="font/font.ttf" cache="false" />
+	<file src="font/font1.ttf" cache="false" />
+	<file src="font/OpenSans-Bold.ttf" cache="false" />
+	<file src="font/fontNick.ttf" cache="false" />
+	
+                       <!-- IMAGENS -->
+    <file src="Img/botao.png" cache="false" />
+    <file src="Img/arch.png" cache="false" />
+    <file src="Img/pasekon.png" cache="false" />
+    <file src="Img/pasekoff.png" cache="false" />
+    <file src="Img/pointer.png" cache="false" />
+	
+						 <!-- SOM -->
+    <file src="Som/line_sound.mp3" cache="false" />
+	
+						 <!-- TXD -->
+    <file src="Txd/Vara.txd" cache="false" />
+    <file src="Txd/Vara.dff" cache="false" />
+    <file src="Txd/Vara.col" cache="false" />
+	
+                      <!-- DX GRID -->
+	<script src="dx_lib/Dx_Grid.lua" type="client" cache="false" />
+</meta>

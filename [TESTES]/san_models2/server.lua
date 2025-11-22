@@ -1,0 +1,7 @@
+﻿removeWorldModel(3465,10000,0,0,0)
+removeWorldModel(1244,10000,0,0,0)
+removeWorldModel(1686,10000,0,0,0)
+removeWorldModel(1676,10000,0,0,0)
+removeWorldModel(8685,10000,0,0,0)
+removeWorldModel(1468,10000,0,0,0)
+removeWorldModel(1412,10000,0,0,0)

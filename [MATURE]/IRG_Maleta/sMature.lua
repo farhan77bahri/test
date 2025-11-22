@@ -1,0 +1,218 @@
+object = {}
+my     = {}
+maleta = {}
+aream  = {}
+saida  = {}
+
+function exitCar (player)
+local vehicle = getPedOccupiedVehicle (player)
+     if (vehicle) then
+	     if (getElementModel(vehicle) == 525) then
+		     if isElement(my[player]) then 
+                 destroyElement(my[player])
+             end
+	     end
+	 end
+end
+--addEventHandler("onVehicleEnter", getRootElement(), exitCar)
+
+
+function startCar (player)
+local vehicle = getPedOccupiedVehicle (player)
+     if (vehicle) then
+		 if (getElementModel(vehicle) == 525) then
+			if (getElementData(player, "char:dutyfaction") == 17) then
+	         local xX, yY, zZ = getElementPosition(vehicle)
+		     if isElement(my[vehicle]) then 
+                 destroyElement(my[vehicle])
+             end
+		     my[vehicle] = createColSphere (xX, yY, zZ, 1.5)
+			 setElementData(my[vehicle], "col:mec", true)
+		     attachElements (my[vehicle], vehicle, 0 + 1.5, 0 + 0.5, 0 - 0.5)
+		    removeEventHandler("onColShapeHit", my[vehicle], enterCol)
+			 addEventHandler("onColShapeHit", my[vehicle], enterCol)
+			 
+			 addEventHandler( "onElementDestroy", vehicle,
+			 function ()
+				if isElement(my[source]) then 
+					destroyElement(my[source])
+				end
+			 end
+             )
+             
+
+		 	end
+		end
+	end
+end
+addEventHandler("onVehicleStartExit", getRootElement(), startCar)
+
+addEventHandler("onPlayerQuit", root,
+function ()
+		if isElement(my[source]) then 
+			destroyElement(my[source])
+		end
+		if isElement(object[source]) then 
+			destroyElement(object[source])
+		end
+		if isElement(aream[source]) then 
+			destroyElement(aream[source])
+		end
+		if isElement(saida[source]) then 
+			destroyElement(saida[source])
+		end
+
+
+
+end
+)
+
+function enterCol (thePlayer)
+    -- if (source == my[thePlayer]) then
+        
+        if (getElementData(thePlayer, "char:dutyfaction") == 17) then
+            
+		if (getElementData(thePlayer, "mec:maleta") == true) then	
+	     if isElement(object[thePlayer]) then
+		 destroyElement(object[thePlayer])
+         end
+         setElementData(thePlayer, "mec:maleta", false)
+		 else
+         object[thePlayer] = createObject(1210, 0, 0, 0)
+         exports["bone_attach"]:attachElementToBone(object[thePlayer],thePlayer,11,0,0.0,0,0,-80,0)
+		 setElementData(thePlayer, "mec:maleta", true)
+		 setElementData(thePlayer, "maleta:area", false)
+
+
+	 --end
+	end
+	 end
+end
+--addEventHandler("onColShapeHit", getRootElement(), enterCol)
+
+
+
+function soltarMaleta(thePlayer)
+	 if (getElementData(thePlayer, "char:dutyfaction") == 17) then
+		
+--		if (getElementData(thePlayer, "maleta:chao") == true) then
+--			outputChatBox("#FFA000[BV] #FFFFFFVocê ja tem uma maleta no chão.", thePlayer, 255,255,255, true)
+--		return end
+
+		 if (getElementData(thePlayer, "mec:maleta") == false) then
+		     outputChatBox("#FFA000[BV] #FFFFFFVocê precisa de um KIT REPARO para solta-lo.", thePlayer, 255,255,255, true)
+			 else
+			     local x,y,z = getElementPosition(thePlayer)
+				exports.bone_attach:detachElementFromBone(object[thePlayer]) 
+				setElementPosition(object[thePlayer], x, y + 0.5, z -0.65)
+				setElementRotation(object[thePlayer], 0,90,0)
+				aream[thePlayer] = createColSphere (x, y + 1, z, 3)
+				setPedAnimation(thePlayer, "BOMBER","BOM_Plant_2Idle", -1, false, false, true)
+				setTimer(function()
+				setPedAnimation(thePlayer)
+				end, 1000,1)
+				setElementData(thePlayer, "maleta:soltar", true)
+				setElementData(thePlayer, "maleta:chao", true)
+				setElementData(thePlayer, "maleta:area", true)
+
+				saida[thePlayer] = createColSphere (x, y + 1, z, 16)
+		 end
+	 end
+end
+addCommandHandler("abzar", soltarMaleta)
+
+
+addEventHandler("onColShapeLeave", getRootElement(),
+function(thePlayer)
+	if (source == saida[thePlayer]) then
+	--	if (getElementData(thePlayer, "char:dutyfaction") == 17) then
+			if isElement(saida[thePlayer]) then
+				destroyElement(saida[thePlayer])
+            end
+            if isElement(aream[thePlayer]) then 
+                destroyElement(aream[thePlayer])
+            end
+            if isElement(object[thePlayer]) then
+                destroyElement(object[thePlayer])
+                setElementData(thePlayer, "mec:maleta", false)
+            end
+			setElementData(thePlayer, "maleta:chao", false)
+			setElementData(thePlayer, "maleta:area", false)
+		--removeEventHandler("onColShapeLeave", root, saida)
+	-- end
+	end
+end)
+
+
+
+addEventHandler("onColShapeLeave", getRootElement(),
+function (thePlayer)
+     if (source == aream[thePlayer]) then
+	    -- if (getElementData(thePlayer, "char:dutyfaction") == 17) then
+	     outputChatBox("#FFA000[BV] #FFFFFFShoma Az Abzar Dor Shodi!.", thePlayer, 255,255,255, true)
+		 setElementData(thePlayer, "maleta:area", false)
+		-- end
+	 end
+end)
+
+addEventHandler("onColShapeHit", getRootElement(),
+function (thePlayer)
+     if (source == aream[thePlayer]) then
+	    -- if (getElementData(thePlayer, "char:dutyfaction") == 17) then
+		 setElementData(thePlayer, "maleta:area", true)
+		-- end
+	 end
+end)
+
+function pegarMaleta(thePlayer)
+     if (getElementData(thePlayer, "char:dutyfaction") == 17) then
+	     if (getElementData(thePlayer, "mec:maleta") == false) then
+		     outputChatBox("#FFA000[BV] #FFFFFFVocê precisa de um KIT REPARO para solta-lo.", thePlayer, 255,255,255, true)
+			 else
+			 	 if (getElementData(thePlayer, "maleta:soltar") == false) then
+		         outputChatBox("#FFA000[BV] #FFFFFFAbzar Ra Bar Dar.", thePlayer, 255,255,255, true)
+			     else
+				     if (getElementData(thePlayer, "maleta:area") == false) then
+					 outputChatBox("#FFA000[BV] #FFFFFFAbzar Dor Ast.", thePlayer, 255,255,255, true)
+					 else
+					    outputChatBox("#FFA000[BV] #FFFFFFMaleta recuperada.", thePlayer, 255,255,255, true)
+
+
+						if isElement(aream[thePlayer]) then 
+							destroyElement(aream[thePlayer])
+						end
+
+						if isElement(saida[thePlayer]) then
+							destroyElement(saida[thePlayer])
+						end
+
+						setPedAnimation(thePlayer, "BOMBER","BOM_Plant_2Idle", -1, false, false, true)
+						setTimer(function()
+						setPedAnimation(thePlayer)
+						end, 1000,1)
+
+						--exports["bone_attach"]:attachElementToBone(object[thePlayer],thePlayer,11,0,0.1,0.28,0,180,0)
+						exports["bone_attach"]:attachElementToBone(object[thePlayer],thePlayer,11,0,0.0,0,0,-80,0)
+
+						setElementData(thePlayer, "maleta:chao", false)
+						setElementData(thePlayer, "maleta:area", false)
+                       -- exports["bone_attach"]:attachElementToBone(object[thePlayer],thePlayer,11,0,0.1,0.28,0,180,0)
+			     end
+		     end
+	     end
+	 end
+end
+addCommandHandler("Abzar", pegarMaleta)
+
+function enterMec (player, seat, jacked)
+     if (getElementModel(source) == 525) then
+	     if (getElementData(player, "mec:maleta") == true) then
+		      cancelEvent()
+		      outputChatBox("#FFA000[BV] #FFFFFFBa Abzar Nemitoni Savar Shi.", player, 255,255,255, true)
+		      else
+		 end
+	 end
+end
+addEventHandler("onVehicleStartEnter", getRootElement(), enterMec)
+
+

@@ -1,0 +1,21 @@
+<meta>
+	<script src="server.lua" type="server" />
+	<script src="client.lua" type="client" cache="false" />
+	<script src="frame.lua" type="client" cache="false" />
+	<script src="configuracoes.lua" type="shared" cache="false" />
+	<file src="Simagens/sem_imagem.jpg" />
+	<file src="Imagens/close.png" />
+	<file src="Imagens/music.png" />
+	<file src="Imagens/volume.png" />
+	<file src="Imagens/add.png" />
+	<file src="Imagens/subtract.png" />
+	<file src="Imagens/transparent.png" />
+	<file src="Imagens/soundcloud.png" />
+	<file src="Imagens/back.png" />
+	<file src="Imagens/next.png" />
+	<file src="Imagens/play.png" />
+	<file src="Imagens/pause.png" />
+	<file src="Imagens/search.png" />
+	<file src="Imagens/car.png" />
+	<file src="Imagens/radio.png" />
+</meta>

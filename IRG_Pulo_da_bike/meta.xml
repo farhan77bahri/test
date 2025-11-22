@@ -1,0 +1,5 @@
+<meta>
+    <info name="Pulo da Bike" author="Conner" version="1.0.0" description=""></info>
+    <script src="server.lua" type="server" cache="false"></script>
+    <script src="client.lua" type="client" validate="false"></script>
+</meta>

@@ -1,0 +1,6 @@
+txd = engineLoadTXD("predio.txd", 6342 )
+engineImportTXD(txd, 6342)
+dff = engineLoadDFF("predio.dff", 6342 )
+engineReplaceModel(dff, 6342)
+col = engineLoadCOL ( "predio.col" )
+engineReplaceCOL ( col, 6342 )

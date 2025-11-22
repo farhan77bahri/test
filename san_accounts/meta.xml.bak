@@ -1,0 +1,31 @@
+﻿<meta>
+    <!--
+		Scriptet Írta: Csoki
+		SanMTA
+		Account Rendszer
+	-->
+    <script src="Szerver.lua" type="server" cache="false" />
+    <script src="Kliens.lua" type="client" cache="false"/>
+    
+    <file src="files/music.mp3" />
+    <file src="files/BlurShader.fx" />
+    <file src="files/beta.png" />
+    <file src="files/OpenSansB.ttf" />
+    <file src="files/OpenSans.ttf" />
+    <file src="files/OpenSansL.ttf" />
+    <file src="files/OpenSansSB.ttf" />
+    
+    <file src="files/bong.mp3" />
+    <file src="files/login/logo.png" />
+    <file src="files/login/main.png" />
+    <file src="files/login/register.png" />
+    <file src="files/login/register_active.png" />
+    <file src="files/login/login_active.png" />
+    <file src="files/login/reg_active.png" />
+    <file src="files/login/pipa.png" />
+    <file src="san.mp3" />
+	<file src="bong.mp3" />
+
+
+    
+</meta>

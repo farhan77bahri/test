@@ -1,0 +1,9 @@
+﻿<meta>
+<file src="newstuff_sfn.txd" />
+		<file src="factory_door.txd" />
+ <map src="mapa-eletricista.map" dimension="0"></map>
+	<script src="serve.lua" type="server" />
+	<script src="client.lua" type="client"/>
+<file src="choque.mp3"/>
+<script src="Script.lua" type="client" />
+</meta>

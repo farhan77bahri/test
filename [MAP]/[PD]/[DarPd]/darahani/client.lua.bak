@@ -1,0 +1,8 @@
+﻿
+
+txd = engineLoadTXD ( "dar.txd" )
+engineImportTXD ( txd, 1502 )
+dff = engineLoadDFF ( "dar.dff" )
+engineReplaceModel ( dff, 1502 )
+
+

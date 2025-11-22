@@ -1,0 +1,653 @@
+﻿local con = exports.san_mysql:getConnection()
+
+function getElementDistance( a, b )
+	if not isElement(a) or not isElement(b) or getElementDimension(a) ~= getElementDimension(b) then
+		return math.huge
+	else
+		local x, y, z = getElementPosition( a )
+		return getDistanceBetweenPoints3D( x, y, z, getElementPosition( b ) )
+	end
+end
+
+local gpn = getPlayerName
+function getPlayerName(p)
+	local name = gpn(p) or getElementData(p, "char:name") or getElementData(p, "ped:name")  
+	return string.gsub(name, "_", " ")
+end
+
+function utf8_fix(msg)
+	msg = msg:gsub("Ü", "U")
+	msg = msg:gsub("Ú", "U")
+	msg = msg:gsub("Ű", "U")
+	msg = msg:gsub("Ő", "O")
+	msg = msg:gsub("Ó", "O")
+	msg = msg:gsub("Ö", "O")
+	msg = msg:gsub("Á", "A")
+	msg = msg:gsub("É", "E")
+	msg = msg:gsub("Í", "I")
+	msg = msg:gsub("ü", "u")
+	msg = msg:gsub("ú", "u")
+	msg = msg:gsub("ű", "u")
+	msg = msg:gsub("ő", "o")
+	msg = msg:gsub("ó", "o")
+	msg = msg:gsub("ö", "o")
+	msg = msg:gsub("á", "a")
+	msg = msg:gsub("é", "e")
+	msg = msg:gsub("í", "i")
+	return msg
+end
+
+local hungarianLetters = {[utfChar(252)] = "Ü",["ö"] = "Ö",["ú"] = "Ó",["ú"] = "Ú",["ű"] = "Ű",["é"] = "É",["í"] = "Í",["á"] = "Á"}
+function firstToUpper(str)
+	local first = utfSub(str,1,1):upper()
+	if hungarianLetters[first] then
+		first = hungarianLetters[first]
+	end
+    return (first..utfSub(str,2,#str))
+end
+
+counter = {}
+ptimer = {}
+
+function localIC(source, message, language)
+	local x, y, z = getElementPosition(source)
+	local playerName = getPlayerName(source)
+	
+	message = string.gsub(message, "#%x%x%x%x%x%x", "")
+
+	local dimension = getElementDimension(source)
+	local interior = getElementInterior(source)
+	local shownto = 1
+	
+	-- Chat Commands tooltip
+	local kieg = ""
+	for key, nearbyPlayer in ipairs(getElementsByType( "player" )) do
+		local dist = getElementDistance( source, nearbyPlayer )
+		
+		if dist < 20 then
+			local nearbyPlayerDimension = getElementDimension(nearbyPlayer)
+			local nearbyPlayerInterior = getElementInterior(nearbyPlayer)
+
+			if (nearbyPlayerDimension==dimension) and (nearbyPlayerInterior==interior) then
+				local logged = getElementData(nearbyPlayer, "loggedin")
+				if not (isPedDead(nearbyPlayer)) and (logged) and (nearbyPlayer~=source) then
+					local message2 = message
+					local pveh = getPedOccupiedVehicle(source)
+					local jatekos = nearbyPlayer
+					outputChatBox("#e7d9b0[Chat Local] #00ff00" .. playerName .. ": #ffffff" .. firstToUpper(message2).. "", jatekos, 255, 255, 255, true)
+						
+					shownto = shownto + 1
+				end
+			end
+		end
+	end
+	
+	outputChatBox("#e7d9b0[Chat Local] #00ff00" ..playerName .. " : #ffffff" .. firstToUpper(message).. "", source, 255, 255, 255, true)
+	triggerClientEvent("onMessageIncome",source,""..message,0)
+	counter[source] = (counter[source] or 0) + 1
+	if counter[source] > 15 then
+		exports.san_admin:outputAdminMessage("#ff0000[atenção] #ffffff" .. getPlayerName(source) .. " (" .. getElementData(source, "playerid") .. ") Dentro de 15 segundos ele escreveu 15 vezes no chat.")
+		counter[source] = 0
+	end
+	
+	if isTimer(ptimer[source]) then
+		killTimer(ptimer[source])
+	end
+	
+	ptimer[source] = setTimer(function()
+		counter[source] = 0
+		ptimer[source] = false
+	end, 10000, 1)
+end
+--addCommandHandler("local", localIC, false, false)
+
+function getChatSzin(tavolgas)
+	if tavolgas < 4 then
+		return "#EEEEEE"
+	elseif tavolgas < 8 then
+		return "#DDDDDD"
+	elseif tavolgas < 12 then
+		return "#CCCCCC"
+	elseif tavolgas < 16 then
+		return "#BBBBBB"
+	else
+		return "#AAAAAA"
+	end
+end
+
+local hangulatjel_jelentes = 
+{
+	"Khandid",
+	"Labkhand Zad",
+	"Narahat",
+	"Está rindo",
+	"Está piscando os olhos",
+	"Está surpreso",
+}
+local hangulatjelek = { 
+	":D",
+	":)",
+
+}
+
+function chatMain(message, messageType)	
+	local logged = getElementData(source, "loggedin")
+	
+	if not (isPedDead(source)) and (logged) and not (messageType==2) then -- Player cannot chat while dead or not logged in, unless its OOC
+		local hangulatjelet_talaltam = -1
+		for key, value in ipairs( hangulatjelek ) do
+			message = tostring(message)
+			local nagybetu = message:upper()
+			value = tostring(value)
+			value = value:upper()
+			if nagybetu:find( value, 1, true ) then
+				hangulatjelet_talaltam = key
+				break
+				--return
+			end
+		end
+		if hangulatjelet_talaltam == -1 then
+			local dimension = getElementDimension(source)
+			local interior = getElementInterior(source)
+			-- Local IC
+			if (messageType==0) then
+				--localIC(source, message, 1)
+			elseif (messageType==1) then -- Local /me action
+				meEmote(source, "me", message)
+			end
+		else
+			setPedAnimation(source, "RAPPING", "Laugh_01",2200,false,false,false,false)
+			meEmote(source, "me", tostring(hangulatjel_jelentes[hangulatjelet_talaltam]))
+			cancelEvent()
+		end
+	elseif (messageType==2) and (logged) then -- Radio
+		radio(source, 1, message)
+	end
+end
+addEventHandler("onPlayerChat", getRootElement(), chatMain)
+
+function blockChatMessage()
+	cancelEvent()
+end
+--addEventHandler("onPlayerChat", getRootElement(), blockChatMessage)
+
+function sendLocalText(root, message, r, g, b, distance, exclude)
+	exclude = exclude or {}
+	local x, y, z = getElementPosition(root)
+		
+	local shownto = 0
+	for index, nearbyPlayer in ipairs(getElementsByType("player")) do
+		if isElement(nearbyPlayer) and getDistanceBetweenPoints3D(x, y, z, getElementPosition(nearbyPlayer)) < ( distance or 20 ) then
+			local logged = getElementData(nearbyPlayer, "loggedin")
+			if not exclude[nearbyPlayer] and not isPedDead(nearbyPlayer) and logged and getElementDimension(root) == getElementDimension(nearbyPlayer) then
+				outputChatBox(message, nearbyPlayer, r, g, b,true)
+				shownto = shownto + 1
+			end
+		end
+	end
+end
+addEvent("sendLocalText", true)
+addEventHandler("sendLocalText", getRootElement(), sendLocalText) --
+
+
+function localDo(thePlayer, commandName, ...)	
+	local logged = getElementData(thePlayer, "loggedin")
+	local dimension = getElementDimension(thePlayer)
+	local interior = getElementInterior(thePlayer)
+		
+	if not (isPedDead(thePlayer)) and (logged) then
+		if not (...) then
+			outputChatBox("#7cc576Használat:#ffffff /" .. commandName .. " [Nem látható cselekvés]", thePlayer, 255, 255, 255, true)
+		else
+			local message = table.concat({...}, " ")
+			sendLocalDoAction(thePlayer, message)
+			triggerClientEvent("onMessageIncome",thePlayer,"*"..message,1)
+		end
+	end
+end
+addCommandHandler("do", localDo, false, false)
+
+function sendLocalDoAction(thePlayer, message) -- DO Export
+	--sendLocalText(thePlayer, " * " .. message .. " * ((" .. getPlayerName(thePlayer):gsub("_", " ") .. "))", 255, 51, 102)
+	sendLocalText(thePlayer, "" .. message .. " *  ("..getPlayerName(thePlayer)..")", 255, 51, 102)
+end
+
+-- Me
+function meEmote(source, cmd, ...)
+	local logged = getElementData(source, "loggedin")
+	if not(isPedDead(source) and (logged)) then
+		local message = table.concat({...}, " ")
+		if not (...) then
+			outputChatBox("#7cc576Használat:#ffffff /me [atividade]", source, 255, 255, 255, true)
+		else
+			sendLocalMeAction(source, message)
+
+		end
+	end
+end
+addCommandHandler("me", meEmote, false, true)
+--addCommandHandler("Me", meEmote, false, true)
+--addCommandHandler("me", meEmote, false, true)
+
+function sendLocalMeAction(thePlayer, message)
+	if getPlayerName(thePlayer) then 
+		--sendLocalText(thePlayer, " ***" .. getPlayerName(thePlayer):gsub("_", " ") .. ( message:sub( 1, 1 ) == "'" and "" or " " ) .. message, 194, 162, 218)
+
+		sendLocalText(thePlayer,getPlayerName(thePlayer).. ":  ***" .. ( message:sub( 1, 1 ) == "'" and "" or " " ) .. message, 194, 162, 218)
+
+
+		triggerClientEvent("onMessageIncome",thePlayer,"***"..message,2)		
+	end
+end
+addEvent("sendLocalMeAction",true)
+addEventHandler("sendLocalMeAction",getRootElement(),sendLocalMeAction)
+
+
+
+
+
+function megprobal(source, cmd, ...)
+	local logged = getElementData(source, "loggedin")
+	if not(isPedDead(source) and (logged)) then
+		local message = table.concat({...}, " ")
+		if not (...) then
+			outputChatBox("#7cc576Használat:#ffffff /".. cmd .." [Szöveg]", source, 255, 255, 255, true)
+		else
+			if cmd == "megprobal" then
+				kiegeszites = "megpróbál"
+			elseif cmd == "megpróbál" then
+				kiegeszites = "megpróbál"
+			elseif cmd == "megpróbálja" then
+				kiegeszites = "megpróbálja"
+			elseif cmd == "megprobalja" then
+				kiegeszites = "megpróbálja"
+			end
+			local szam = math.random(1,2)
+			sendLocalMegprobal(source, message,szam)
+		end
+	end
+end
+addCommandHandler("megpróbál", megprobal, false, true)
+addCommandHandler("megprobal", megprobal, false, true)
+addCommandHandler("megpróbálja", megprobal, false, true)
+addCommandHandler("megprobalja", megprobal, false, true)
+
+function sendLocalMegprobal(thePlayer, message,types)
+	if types == 1 then
+		sendLocalText(thePlayer, "#64E31E ***" .. getPlayerName(thePlayer):gsub("_", " ") .. " " .. kiegeszites .. "" ..( message:sub( 1, 1 ) == "'" and "" or " " ) .. message .. " és sikerül neki", 194, 162, 218)
+	elseif types == 2 then
+		sendLocalText(thePlayer, "#E31E1E ***" .. getPlayerName(thePlayer):gsub("_", " ") .. " " .. kiegeszites .. "" .. ( message:sub( 1, 1 ) == "'" and "" or " " ) .. message.. " de, sajnos nem sikerült neki.", 194, 162, 218)
+	end
+end
+
+
+
+function localShout(thePlayer, commandName, ...)
+	
+	local logged = getElementData(thePlayer, "loggedin")
+	local dimension = getElementDimension(thePlayer)
+	local interior = getElementInterior(thePlayer)
+		
+	if not (isPedDead(thePlayer)) and (logged) then
+		if not (...) then
+			outputChatBox("#7cc576Használat: #ffffff/" .. commandName .. " [Üzenet]", thePlayer, 255, 255, 255, true)
+		else
+			local playerName = getPlayerName(thePlayer):gsub("_", " ")
+						
+			local message = table.concat({...}, " ")
+			outputChatBox(playerName .. " Dad Zad: #e7d9b0" .. firstToUpper(message).. "!", thePlayer, 255, 255, 255, true)
+			for index, nearbyPlayer in ipairs(getElementsByType("player")) do
+				if getElementDistance( thePlayer, nearbyPlayer ) < 30 then
+					local nearbyPlayerDimension = getElementDimension(nearbyPlayer)
+					local nearbyPlayerInterior = getElementInterior(nearbyPlayer)
+					
+					if (nearbyPlayerDimension==dimension) and (nearbyPlayerInterior==interior) and (nearbyPlayer~=thePlayer) then
+						local logged = getElementData(nearbyPlayer, "loggedin")
+						if (logged) and not (isPedDead(nearbyPlayer)) then
+							outputChatBox(playerName .. " Dad Zad:#e7d9b0 " .. firstToUpper(message).. "!!", nearbyPlayer, 255, 255, 255, true)
+						--	triggerClientEvent(nearbyPlayer,"playSounds",nearbyPlayer,"error")
+							setPedAnimation(thePlayer,"ON_LOOKERS","shout_01",1000,false,false,false,false)
+						end
+					end
+				end
+			end
+			triggerClientEvent("onMessageIncome",thePlayer, "Dad Zad: "..message,3)
+		end
+	end
+end
+addCommandHandler("s", localShout, false, false)
+
+function localClose(thePlayer, commandName, ...)
+	local logged = getElementData(thePlayer, "loggedin")
+	 
+	if (logged) then
+		if not (...) then
+			outputChatBox("#7cc576Használat:#ffffff /" .. commandName .. " [üzenet]", thePlayer, 255, 255, 255, true)
+		else
+			local name = getPlayerName(thePlayer):gsub("_", " ")
+			local message = table.concat({...}, " ")
+						
+			for index, targetPlayers in ipairs( getElementsByType( "player" ) ) do
+				if getElementDistance( thePlayer, targetPlayers ) < 5 then
+					outputChatBox(name .. " ZemZeme: #e7d9b0" .. firstToUpper(message).. "", targetPlayers, 255, 255, 255,true)
+					triggerClientEvent(targetPlayers,"playSounds",targetPlayers,"ws")
+				end
+			end
+			triggerClientEvent("onMessageIncome",thePlayer, "ZemZeme: "..message,4)
+		end
+	end
+end
+addCommandHandler("c", localClose, false, false)
+
+
+
+
+function hasItem(element, itemID, itemValue)
+	local lekerd = exports['san_items']:hasItemS(element, itemID, itemValue)
+	return lekerd
+end
+
+function tuneRadio(thePlayer, commandName, frequencia)
+	if getElementData(thePlayer, "loggedin") then
+		
+		if not (frequencia) then
+			outputChatBox("#7cc576uso:#ffffff /" .. commandName .. " [frequencia]", thePlayer ,255, 255, 255, true)
+		else
+		
+			local frequencia = tonumber(frequencia)
+			
+			if exports['san_items']:hasItemS(thePlayer, 20) then
+				setElementData(thePlayer, "char:rfrekvencia", frequencia)
+				local sqlMentes = dbExec(con, "UPDATE characters SET rfrekvencia='" .. frequencia .. "' WHERE id='" .. getElementData(thePlayer, "char:id") .. "'")
+				if (sqlMentes) then
+					outputChatBox("#7cc576[Információ]:#ffffff Sikeresen megváltoztattad a rádiód frekvenciáját. #0094ff(" .. frequencia .. ")", thePlayer, 255, 255, 255, true)
+					sendLocalMeAction(thePlayer, "mudou a frequência do seu rádio")
+				else
+					outputChatBox("#dc143c[Hiba]:#ffffff Nem sikerült megváltoztatni (elmenteni) a rádiód frekvenciáját. Hibakód: TUNERADIO1", thePlayer, 255, 255, 255, true)
+				end
+			else
+				outputChatBox("#dc143c[Hiba]:#ffffff Nincs nálad rádió.", thePlayer, 255, 255, 255, true)
+			end
+		end
+	end
+end
+addCommandHandler("setradio", tuneRadio, false, false)
+
+
+function radioMessage(thePlayer, commandName, ...)
+	if getElementData(thePlayer, "loggedin") then
+	
+		if not (...) then
+			outputChatBox("#7cc756Használat:#ffffff /" .. commandName .. " [Üzenet]", thePlayer, 255, 255, 255, true)
+		else
+		
+			local msg = table.concat({...}, " ")
+			
+			if exports['san_items']:hasItemS(thePlayer, 20) then
+				if getElementData(thePlayer, "char:rfrekvencia") or 0 > 0 then
+					
+					for k, v in ipairs(getElementsByType("player")) do
+						if getElementData(v, "char:rfrekvencia") == getElementData(thePlayer, "char:rfrekvencia") and hasItem(v, 35) and getElementData(v, "char:rfrekvencia") > 0 and getElementData(thePlayer, "char:rfrekvencia") > 0 then
+							
+							outputChatBox("#00D0FF" .. getPlayerName(thePlayer):gsub("_"," ") .. " mondja (rádióba): ".. msg, v, 255, 255, 255, true)
+							triggerClientEvent(v, "radioMessage", v)
+							--playsound
+						end
+					end
+					
+					local x, y, z = getElementPosition(thePlayer)
+					
+					for index, nearbyPlayer in ipairs(getElementsByType("player")) do
+						if isElement(nearbyPlayer) and getDistanceBetweenPoints3D(x, y, z, getElementPosition(nearbyPlayer)) < ( distance or 20 ) and getPlayerName(thePlayer) ~= getPlayerName(nearbyPlayer) then
+							local logged = getElementData(nearbyPlayer, "loggedin")
+							if not isPedDead(nearbyPlayer) and logged and getElementDimension(root) == getElementDimension(nearbyPlayer) then
+								outputChatBox(getPlayerName(thePlayer):gsub("_"," ") .. " mondja (rádióba): " .. msg, nearbyPlayer, 255, 255, 255)
+							end
+						end
+					end
+
+				else
+					outputChatBox("#dc143c[Hiba]:#ffffff Először állítsd be a frekvenciát.", thePlayer, 255, 255, 255, true)
+				end
+			else
+				outputChatBox("#dc143c[Hiba]:#ffffff Nincs nálad rádió.", thePlayer, 255, 255, 255, true)
+			end
+		end
+	end
+end
+addCommandHandler("r", radioMessage, false, false)
+
+
+
+----------------------------------------------------------------------------------
+----------------------------------------------------------------------------------
+----------------------------------------------------------------------------------
+
+local showtime = 3000
+local characteraddition = 50
+local maxbubbles = 3
+if maxbubbles == "false" then maxbubbles = false else maxbubbles = 3 end
+local hideown = "true"
+if hideown == "true" then hideown = true else hideown = false end
+
+function sendMessageToClient(message,messagetype)
+	if messagetype == 0 or messagetype == 2 then
+		triggerClientEvent("onMessageIncome",source,message,messagetype)
+	end
+end
+
+function returnSettings()
+	local settings =
+	{
+	showtime,
+	characteraddition,
+	maxbubbles,
+	hideown
+	}
+	triggerClientEvent(source,"onBubbleSettingsReturn",getRootElement(),settings)
+end
+
+--addEventHandler("onPlayerChat",getRootElement(),sendMessageToClient)
+addEvent("onAskForBubbleSettings",true)
+addEventHandler("onAskForBubbleSettings",getRootElement(),returnSettings)
+
+
+
+
+
+
+
+
+--[[function OOC(thePlayer, commandName, ...)
+	
+	local logged = getElementData(thePlayer, "loggedin")
+	local dimension = getElementDimension(thePlayer)
+	local interior = getElementInterior(thePlayer)
+		
+	if (logged==true) and not (isPedDead(thePlayer)) then
+	
+		if not (...) then
+		outputChatBox("#7cc576[IRG]:#ffffff /" .. commandName .. " [mensagem]", thePlayer, 255,0,0, true)
+		else
+			local message = table.concat({...}, " ")
+			local x, y, z = getElementPosition(thePlayer)
+			
+
+		--	if message > 20 then 
+		--		outputChatBox("#7cc576[Errado]:#ffffff limites de caracteres alcançado!", thePlayer, 255,0,0, true)
+				
+		--		return end
+			for index, nearbyPlayer in ipairs(getElementsByType("player")) do
+				--if getElementData(thePlayer,"acc:admin") >= 8 or getElementData(thePlayer, "char:dutyfaction") == 1 or getElementData(thePlayer, "char:dutyfaction") == 2  or getElementData(thePlayer, "char:dutyfaction") == 3 or getElementData(thePlayer, "char:dutyfaction") == 4 or getElementData(thePlayer, "char:dutyfaction") == 5 or getElementData(thePlayer, "char:dutyfaction") == 6 or getElementData(thePlayer, "char:dutyfaction") == 7 or  getElementData(thePlayer, "char:dutyfaction") == 8 or getElementData(thePlayer, "char:dutyfaction") == 9 or getElementData(thePlayer, "char:dutyfaction") == 10 or getElementData(thePlayer, "char:dutyfaction") == 11 or getElementData(thePlayer, "char:dutyfaction") == 12 or getElementData(thePlayer, "char:dutyfaction") == 13 or  getElementData(thePlayer, "char:dutyfaction") == 14 or getElementData(thePlayer, "char:dutyfaction") == 15 then
+					--	triggerClientEvent(nearbyPlayer, "onOOCMessageSend", nearbyPlayer,Adminrangs(thePlayer) .. " " ..getElementData(thePlayer,"anick") ..alevel[getElementData(thePlayer,"adminlevel")] .." #CDCDCD: (( " .. table.concat({...}, " ") .. " ))", 0,Adminrangs(nearbyPlayer))
+					--else
+					triggerClientEvent(nearbyPlayer, "onOOCMessageSend", nearbyPlayer, " "..getPlayerName(thePlayer) .. ": " .. table.concat({...}, " ") .. "", 0,nearbyPlayer)
+					--end	
+				--end
+			end
+		end
+	end
+end
+--addCommandHandler("b", OOC, false, false)
+addCommandHandler("OOC", OOC)]]
+
+
+
+--[[
+chat_range=100
+ 
+addEventHandler("onPlayerJoin",getRootElement(),
+function ()
+bindKey(source,"u","down","chatbox","Local")
+end)
+ 
+addEventHandler("onResourceStart",getResourceRootElement(getThisResource()),
+function ()
+for index, player in pairs(getElementsByType("player")) do
+bindKey(player,"u","down","chatbox","Local")
+  end
+end)
+ 
+function isPlayerInRangeOfPoint(player,x,y,z,range)
+   local px,py,pz=getElementPosition(player)
+   return ((x-px)^2+(y-py)^2+(z-pz)^2)^0.5<=range
+end
+ 
+function onChat(player,_,...)
+  local px,py,pz=getElementPosition(player)
+  local msg = table.concat({...}, " ")
+  local nick=getPlayerName(player)
+
+
+  for _,v in ipairs(getElementsByType("player")) do
+local accountname = getAccountName(getPlayerAccount(player))
+    if player ~= _ then
+
+    if isPlayerInRangeOfPoint(v,px,py,pz,chat_range) then
+      outputChatBox("(Local) "..nick..": "..msg,v,r,g,b,true)
+    end
+   end
+  end
+end
+addCommandHandler("Local",onChat)
+ 
+
+]]--
+
+
+
+function localChat(player, _, ...)
+	if (isPlayerMuted(player)) then
+		outputChatBox("Você Esta Mutado!!", player, 255, 0, 0)
+		return
+	end
+	local message = table.concat({...}, " ")
+	if (not message) then return end
+	message = message:gsub("#%x%x%x%x%x%x", "")
+	if (message == "") then return end
+	local r, g, b = getPlayerNametagColor(player)
+	local hex = getHexFromRGB(r, g, b)
+	local posX, posY, posZ = getElementPosition(player)
+	local recipients = {}
+	for index, player2 in pairs(getElementsByType("player")) do
+		local posX2, posY2, posZ2 = getElementPosition(player2)
+		if (--[[player ~= player2 and ]]getDistanceBetweenPoints3D(posX, posY, posZ, posX2, posY2, posZ2)) <= 30 then
+			table.insert(recipients, player2)
+	end
+end
+	for index, player2 in pairs(recipients) do
+		outputChatBox("#98FB98[Chat Local] #ffffff"..getPlayerName(player)..": #FFFFFF"..message, player2, r or 255, g or 255, b or 255, true)
+end
+end
+--addCommandHandler("localC", localChat)
+
+
+function localChat1(player, _, ...)
+	if (isPlayerMuted(player)) then
+		outputChatBox("Você Esta Mutado!!", player, 255, 0, 0)
+		return
+	end
+	local message = table.concat({...}, " ")
+	if (not message) then return end
+	message = message:gsub("#%x%x%x%x%x%x", "")
+	if (message == "") then return end
+	local r, g, b = getPlayerNametagColor(player)
+	local hex = getHexFromRGB(r, g, b)
+	local posX, posY, posZ = getElementPosition(player)
+	local recipients = {}
+	for index, player2 in pairs(getElementsByType("player")) do
+		local posX2, posY2, posZ2 = getElementPosition(player2)
+		if (--[[player ~= player2 and ]]getDistanceBetweenPoints3D(posX, posY, posZ, posX2, posY2, posZ2)) <= 30 then
+			table.insert(recipients, player2)
+	end
+end
+	for index, player2 in pairs(recipients) do
+		outputChatBox("#98FB98[Chat OOC] #808080"..getPlayerName(player)..": #ffffff "..message, player2, r or 255, g or 255, b or 255, true)
+end
+end
+addCommandHandler("OOC", localChat1)
+
+
+function getHexFromRGB(r, g, b)
+	return ("#%02X%02X%02X"):format(r, g, b)
+end
+
+function bindLocalChat()
+	--bindKey(source, "u", "down", "chatbox", "localC")
+	--bindKey(source, "o", "down", "chatbox", "b")
+	
+end
+addEventHandler("onPlayerJoin", root, bindLocalChat)
+--[[
+function bindLocalChatForAll()
+	for index, player in pairs(getElementsByType("player")) do
+		bindKey(player, "u", "down", "chatbox", "localC")
+	end
+end
+addEventHandler("onResourceStart", resourceRoot, bindLocalChatForAll)
+
+]]
+
+
+
+
+
+
+
+
+
+--[[
+
+function onGroupChat(player,_,...)
+	local group = getElementData(player, "gang")
+	if group then
+			local msg = table.concat({...}, " ")
+			local nick=getPlayerName(player)
+			r,g,b = 255, 255, 255
+			for _,v in ipairs(getElementsByType("player")) do
+				if isObjectInACLGroup ("user."..getAccountName(getPlayerAccount(v)),aclGetGroup("Console")) and getElementData(v ,"gang") ~= group then 
+					outputChatBox(" ", v, 255, 255, 255, true)
+					outputChatBox("#00FF82Stalkeador: #ccccccFacção #FFFFFF("..group..") - #FF00FF"..nick.." : #FFFF00"..msg, v, 255, 255, 255, true)
+					outputChatBox(" ", v, 255, 255, 255, true)
+				end
+			end
+		end
+end
+addCommandHandler("GroupChat",onGroupChat)]]--
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

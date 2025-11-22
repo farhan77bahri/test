@@ -1,0 +1,6 @@
+txd = engineLoadTXD("gara.txd", 6387 )
+engineImportTXD(txd, 6387)
+dff = engineLoadDFF("gara.dff", 6387 )
+engineReplaceModel(dff, 6387)
+col = engineLoadCOL ( "gara.col" )
+engineReplaceCOL ( col, 6387 )

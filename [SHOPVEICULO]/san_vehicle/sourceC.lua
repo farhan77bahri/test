@@ -1,0 +1,611 @@
+﻿
+
+--setElementData(localPlayer, "veh:ov", false)
+
+local types = {
+	["Automobile"] = true,
+	["Bike"] = true,
+	["Plane"] = true,
+	["Helicopter"] = true,
+	["Boat"] = true,
+	["Train"] = true,
+	["Monster Truck"] = true,
+	["Quad"] = true
+}
+
+ 
+
+
+
+local beltVehicles = {
+	["Automobile"] = true,
+	["Plane"] = true,
+	["Helicopter"] = true,
+	["Boat"] = true,
+	["Train"] = true,
+	["Monster Truck"] = true
+}
+
+
+function playSounds(sounds, bool)
+	if not bool then bool = false end
+	if sounds == "ov" then
+		beltSound = playSound("files/".. sounds ..".mp3", bool)
+	else
+	    playSound("files/".. sounds ..".mp3", bool)
+	end
+end
+
+local beltVehicles = {
+	["Automobile"] = true,
+	["Plane"] = true,
+	["Helicopter"] = true,
+	["Boat"] = true,
+	["Train"] = true,
+	["Monster Truck"] = true
+}
+
+
+addEventHandler("onClientVehicleEnter", root, function(player)
+	if player == localPlayer and beltVehicles[getVehicleType(getPedOccupiedVehicle(localPlayer))] then
+		setElementData(localPlayer, "veh:ov", false)
+		--playSounds("ov", true)
+	end
+end)
+
+
+addEventHandler("onClientVehicleExit", root, function(player)
+	if player == localPlayer then
+		if isElement(beltSound) then
+			--stopSound(beltSound)
+		end
+	end
+end)
+
+--[[
+addEventHandler("onClientKey", root, function(key, pressed)
+	if isChatBoxInputActive() or isConsoleActive() then return end
+	if key == "n" and pressed and getPedOccupiedVehicle(localPlayer) and beltVehicles[getVehicleType(getPedOccupiedVehicle(localPlayer))] then
+		if not getElementData(localPlayer, "veh:ov") then
+			setElementData(localPlayer, "veh:ov", true)
+			--stopSound(beltSound)
+			playSound("files/ovbe.mp3", false)
+			exports.san_chat:sendLocalMeMessage(localPlayer, "KamarBand Ra Mibandad.")
+		else
+			setElementData(localPlayer, "veh:ov", false)
+			playSound("files/ovki.mp3", false)
+			--playSounds("ov", true)
+
+			exports.san_chat:sendLocalMeMessage(localPlayer, "KamarBand Ra Baz Mikonad.")
+		end
+	end
+end)]]
+
+
+addEventHandler("onClientElementDestroy", getRootElement(), function ()
+	if getElementType(source) == "vehicle" and types[getVehicleType(source)] and getVehicleType(source) ~= "Bike" then
+		setElementData(localPlayer, "veh:ov", false)
+	end
+end)
+
+
+addEventHandler("onClientPlayerWasted", root, function()
+	if isPedInVehicle(localPlayer) then
+		removePedFromVehicle(localPlayer)
+	end
+end)
+
+
+--
+addEventHandler("onClientPlayerVehicleEnter", localPlayer, function(vehicle, seat)
+	if source == localPlayer then
+		local vehid = vehicle:getData("veh:id")
+		local vehfk = vehicle:getData("veh:faction")
+		local ownername = vehicle:getData("veh:oname")
+		local vehowner = vehicle:getData("veh:owner")
+		local engine = vehicle:getData("veh:motor")
+		
+		if getVehicleType(getPedOccupiedVehicle(localPlayer)) == "BMX" then
+			setVehicleEngineState(vehicle, true)
+		else
+			if not engine then
+				setVehicleEngineState(vehicle, false)
+			else
+				setVehicleEngineState(vehicle, true)
+				--toggleControl("brake_reverse", true)
+			end
+		end
+		if  getElementData(getPedOccupiedVehicle(localPlayer), "veh:job") ~= getElementData(localPlayer, "acc:id") then 
+                         			if vehowner == getElementData(localPlayer, "acc:id") then --0 then --and vehfk <= 0 then
+				--if localPlayer:getData("acc:admin") >= 1 and localPlayer:getData("char:adminduty") == 1 then
+					--outputChatBox("#7cc576[IRGMTA - Admin] #FFFFFFProprietário do veículo: #7CC576"..ownername,255,255,255,true)
+				--end
+				--outputChatBox("#7cc576[IRG-MTA]: #FFFFFFBaraye Roshan Kardan Vasile Naghliye Az #7cc576J#FFFFFF Estefadeh Konid! ",255,255,255,true)
+				exports.san_infobox:addNotification("استفاده کنید 'J' برای روشن کردن ماشین از!","info")
+				outputChatBox("#7cc576[IRG-MTA]: #FFFFFFBa #7cc576'N'#FFFFFF KamarBand Beband! ",255,255,255,true)
+				--exports.san_notifactions:createDebugNotification(1,"Fasten the seat belt by pressing (X) ")
+				--outputChatBox("#FFFFFFA biztonsági öv becsatolásához nyomd meg az #7cc576F5 #FFFFFFbillentyűt! ",255,255,255,true)
+				--outputChatBox("#FFFFFFPressione para exibir o rádio #7cc576R #FFFFFFbillentyűt! ",255,255,255,true)
+			end
+		end
+	end
+end)
+
+
+---
+
+-- Jármű Funkció
+
+
+
+addCommandHandler("park", function()
+	local vehicle = getPedOccupiedVehicle(localPlayer)
+	if vehicle then
+
+		if (getElementData(vehicle, "veh:owner") == getElementData(localPlayer, "acc:id")  or  tonumber(getElementData(localPlayer, "acc:admin") or 0) > 5) then
+			triggerServerEvent("changePark", localPlayer, vehicle)
+			outputChatBox("#7cc576[IRGMTA - Veiculo] #FFFFFFYou have successfully parked your vehicle!",255,255,255,true)
+			setElementData(localPlayer, "veh:parked", 1)
+		else
+			outputChatBox("#7cc576[IRGMTA - Veiculo] #FFFFFF #FFFFFFYou have no right to park your vehicle!", 169,139,101 , true)
+		end		
+		if getElementData(vehicle, "veh:faction") > 0 then
+			if not getElementData(vehicle, "veh:faction") == getElementData(localPlayer, "group_"..getElementData(vehicle, "veh:faction")) then
+				triggerServerEvent("changePark", localPlayer, vehicle)
+			--	outputChatBox("Sikeresen leparkoltad a járművedet!")
+				exports.san_notifactions:createDebugNotification(1,"You parked your vehicle successfully")
+
+				setElementData(localPlayer, "veh:parked", 1)
+			end
+		end		
+	end
+end)
+
+function kocsiindit()
+	local veh = getPedOccupiedVehicle(localPlayer)
+	local state = getVehicleEngineState ( veh )
+	local vehID = getElementModel(veh)
+	local vehName = getVehicleRealName(vehID)
+	local vehicleID = tonumber(getElementData(veh, "veh:id")) or -1
+	local itemstate = exports['san_items']:hasItem(17, vehicleID)
+	local vehFaction = tonumber(getElementData(veh, "veh:faction")) or 0
+	--if itemstate or vehFaction > 0 and isInGroup(localPlayer,vehFaction) or (tonumber(getElementData(localPlayer,"acc:admin") or 0) >= 1 and getElementData(localPlayer, "char:adminduty") == 1) or getElementData(veh, "veh:job") == getElementData(localPlayer, "acc:id") or (tonumber(getElementData(localPlayer,"acc:admin") or 0)) >= 6 or getElementData(localPlayer, "char:name") == getElementData(veh, "dft.Owner") or getElementData(veh, "rent.Owner") == localPlayer then 
+	--if (getElementData(vehicle, "veh:owner") == getElementData(localPlayer, "acc:id")) then
+		if not state then
+			m = true
+
+			if getElementHealth(veh) >= 321 and getElementData(veh, "veh:fuel") > 0 then
+				m = true
+				--exports.san_chat:sendLocalMeMessage(localPlayer,"Dirigindo ".. vehName.." alimentado.")
+			else
+				m = false
+				exports.san_chat:sendLocalMeMessage(localPlayer,"Está tentando dirigir o veiculo ".. vehName.." mas está com motor fundido.")	
+			end
+
+		else
+			m = false
+			--exports.san_chat:sendLocalMeMessage(localPlayer,"Veiculo está sem gasolina ".. vehName .."")
+		end
+		triggerServerEvent("vehicleStart",localPlayer,localPlayer,veh,m)
+
+--[[
+			if not getElementData(localPlayer, "isFuelling") then
+				if not state and not m then return end
+				triggerServerEvent("vehicleStart",localPlayer,localPlayer,veh,m)
+			else
+			--	outputChatBox("#7cc576[IRGMTA - Vehicle] #FFFFFF Tankolás közbem nem tudod beindítani", 0, 0, 0, true)
+			exports.san_notifactions:createDebugNotification(1,"Durante o reabastecimento, você não pode ligar o veiculo")
+			end]]--
+	--else
+	--	outputChatBox("#7cc576[IRGMTA - Vehicle] #FFFFFF Nincs kulcsod ehhez a járműhöz.", 169,139,101, true)
+	--	exports.san_notifactions:createDebugNotification(1,"Você não tem a chave deste veículo")
+
+	--end
+end
+
+
+function processLockUnlock(vehicle)
+	if vehicle then
+		local vehicleID = tonumber(getElementData(vehicle, "veh:id")) or -1
+		local vehFaction = tonumber(getElementData(vehicle, "veh:faction")) or 0
+		local vehOwner = tonumber(getElementData(vehicle, "veh:owner")) or -1
+		local vehJobID = tonumber(getElementData(vehicle, "veh:jobvehID")) or -1
+		local state = exports['san_items']:hasItem(localPlayer, 17, vehicleID)
+		--if state or getElementData(vehicle, "veh:owner") == getElementData(localPlayer, "acc:id") or vehFaction > 0 and isInGroup(localPlayer,vehFaction) or (tonumber(getElementData(localPlayer,"acc:admin") or 0) >= 1 and getElementData(localPlayer, "char:adminduty") == 1) or (tonumber(getElementData(localPlayer, "acc:admin") or 0)) >= 6 then --utolsó sor idg
+		if getElementData(vehicle, "veh:owner") == getElementData(localPlayer, "acc:id") or state or (getElementData(vehicle, "owner") == getElementData(localPlayer, "acc:id"))  or vehFaction > 0 and isInGroup(localPlayer,vehFaction) or (tonumber(getElementData(localPlayer,"acc:admin") or 0) >= 1 and getElementData(localPlayer, "char:adminduty") == 1) or (tonumber(getElementData(localPlayer, "acc:admin") or 0)) >= 6 then --utolsó sor idg
+
+		--if (getElementData(vehicle, "veh:owner") == getElementData(localPlayer, "acc:id")) then
+				local locked = isVehicleLocked(vehicle)
+				local vehID = getElementModel(vehicle)
+				local vehName = getVehicleRealName(vehID)
+					if isPedInVehicle(localPlayer) then
+						playSounds("lockin")
+					else
+						playSounds("lockout")
+					end
+				
+					if locked then
+						triggerServerEvent("vehicleLock", localPlayer,localPlayer, vehicle, false)
+						exports.san_chat:sendLocalMeMessage(localPlayer, "Opened The Door of The ".. vehName .."")
+					else
+						triggerServerEvent("vehicleLock", localPlayer,localPlayer, vehicle, true)
+						exports.san_chat:sendLocalMeMessage(localPlayer, "Locked The Door of The ".. vehName .."")
+					end
+		else
+		--	outputChatBox("#7cc576[IRGMTA - Vehicle] #FFFFFF Nincs kulcsod ehhez a járműhöz.", 169,139,101, true)
+			exports.san_notifactions:createDebugNotification(1,"Shoma Soeich Mashin Ra Nadarid!")
+
+		end
+	end
+end
+--[[
+function keyHandler(button,state)
+	if not (not guiGetInputEnabled() and not isMTAWindowActive() and not isCursorShowing()) then return end
+	--utolsó sor idg
+		
+	if isPedInVehicle(localPlayer) and getPedOccupiedVehicleSeat(localPlayer) == 0 then
+		if not types[getVehicleType(getPedOccupiedVehicle(localPlayer))] then return end
+		
+		local veh = getPedOccupiedVehicle(localPlayer)
+		if button == "j" and state then
+		local vehicleID = tonumber(getElementData(veh, "veh:id")) or -1
+        local vehFaction = tonumber(getElementData(veh, "veh:faction")) or 0
+        local vehOwner = tonumber(getElementData(veh, "veh:owner")) or -1
+	    local vehJobID = tonumber(getElementData(veh, "veh:jobvehID")) or -1
+	    local state = exports['san_items']:hasItem(localPlayer, 17, vehicleID)
+		if getElementData(veh, "veh:owner") == getElementData(localPlayer, "acc:id") or state or (getElementData(veh, "owner") == getElementData(localPlayer, "acc:id"))  or vehFaction > 0 and isInGroup(localPlayer,vehFaction) or (tonumber(getElementData(localPlayer,"acc:admin") or 0) >= 1 and getElementData(localPlayer, "char:adminduty") == 1) or (tonumber(getElementData(localPlayer, "acc:admin") or 0)) >= 6 then
+	     
+		
+				if isPedInVehicle(localPlayer) and getPedOccupiedVehicleSeat(localPlayer) == 0 then
+					
+					local state = getVehicleEngineState ( veh )
+					if not state then
+						playSounds("lightswitch")
+						vehTimer = setTimer(kocsiindit,1000,1)
+						--kocsiindit()
+						playSounds("starter")
+					else
+					
+					
+						kocsiindit()
+					end
+
+				end
+		else
+		exports.san_notifactions:createDebugNotification(1,"Shoma Soeich Mashin Ra Nadarid!") 
+		triggerServerEvent ("onGuiHandbrakeStateChange", getLocalPlayer(), true, veh)
+		
+		--elseif button == "j" then
+		--	if isPedInVehicle(localPlayer) and getPedOccupiedVehicleSeat(localPlayer) == 0 then
+		--		if isTimer(vehTimer) then
+		--			killTimer(vehTimer)
+				--end	
+			--end
+		end
+	end	
+	end
+end
+addEventHandler("onClientKey",getRootElement(),keyHandler)]]
+
+
+
+function keyHandler(button,state)
+	if not (not guiGetInputEnabled() and not isMTAWindowActive() and not isCursorShowing()) then return end
+	if isPedInVehicle(localPlayer) and getPedOccupiedVehicleSeat(localPlayer) == 0 then
+		if not types[getVehicleType(getPedOccupiedVehicle(localPlayer))] then return end
+		local veh = getPedOccupiedVehicle(localPlayer)
+		if button == "j" and state then
+				if isPedInVehicle(localPlayer) and getPedOccupiedVehicleSeat(localPlayer) == 0 then
+					
+					local state = getVehicleEngineState ( veh )
+					if not state then
+						if not isTimer(vehTimer) then
+						
+						
+						if getVehicleType(getPedOccupiedVehicle(localPlayer)) == "Bike" then
+						playSounds("starterMoto", false,veh)
+						vehTimer = setTimer(kocsiindit,500,1)
+						elseif getVehicleType(getPedOccupiedVehicle(localPlayer)) == "Automobile" then
+						playSounds("starterCarro", false, veh)
+						vehTimer = setTimer(kocsiindit,900,1)
+						else
+						playSounds("starter")
+						vehTimer = setTimer(kocsiindit,1000,1)
+						end
+						end
+					else
+						kocsiindit()
+					end
+
+				end
+		--elseif button == "j" then
+		--	if isPedInVehicle(localPlayer) and getPedOccupiedVehicleSeat(localPlayer) == 0 then
+		--		if isTimer(vehTimer) then
+		--			killTimer(vehTimer)
+				--end	
+			--end
+		end
+	end	
+end
+addEventHandler("onClientKey",getRootElement(),keyHandler)
+
+
+
+
+
+function isInGroup(element, groupId)
+	if isElement(element) and getElementType(element) == "player" and getElementData(element, "loggedin") then
+		local groupCount = getElementData(element, "groupCount")
+		if groupCount > 0 then
+			for key = 0, groupCount do
+				if getElementData(element, "group_"..key) == tonumber(groupId) then
+					return true
+				end
+			end
+		else
+			return false
+		end
+	else
+		return false
+	end
+end
+
+
+
+function light()
+	if klikkTimer then return end
+	if isTimer(klikkTimerRun) then return end
+	klikkTimer = true
+	klikkTimerRun = setTimer(function()
+		klikkTimer = false
+	end,1000,1)
+	local vehicle = getPedOccupiedVehicle(localPlayer)
+	if isPedInVehicle(localPlayer) and getVehicleController(vehicle) == localPlayer and getVehicleType(vehicle) ~= "BMX" then
+		local vehicle = getPedOccupiedVehicle ( localPlayer )
+		local vehLampaStat = tonumber(vehicle:getData("veh:light")) or 0
+		if vehLampaStat == 0 then
+			playSounds("lightswitch")
+			triggerServerEvent("setVehLightState",vehicle,vehicle,2, localPlayer)
+			vehicle:setData("veh:light",1)
+		--	setElementData(vehicle,"veh:light")
+			vehicle:setData("veh >> light",true)
+		else
+			triggerServerEvent("setVehLightState",vehicle,vehicle,1, localPlayer)
+			vehicle:setData("veh:light",0)
+			playSounds("lightswitch")
+			vehicle:setData("veh >> light",false)
+		end
+	end
+end
+bindKey("l", "down", light)
+local klikkTimer = false
+
+function setVehicleLockState()
+	if klikkTimer then return end
+	if isTimer(klikkTimerRun) then return end
+	klikkTimer = true
+	klikkTimerRun = setTimer(function()
+		klikkTimer = false
+	end,1000,1)
+	local vehicle = getPedOccupiedVehicle ( localPlayer )
+	if vehicle then
+		processLockUnlock(vehicle)
+	else
+		local int2 = getElementInterior(localPlayer)
+		local dim2 = getElementDimension(localPlayer)
+		local mx,my,mz = getElementPosition(localPlayer)
+			for k,v in ipairs(getElementsByType("vehicle")) do
+				local x,y,z = getElementPosition(v)
+				local int = getElementInterior(v)
+				local dim = getElementDimension(v)
+				local dist = getDistanceBetweenPoints3D(x,y,z,mx,my,mz)
+				if dist <= 3 and int2 == int and dim2 == dim then
+					processLockUnlock(v)
+					return
+				end
+			end
+	end
+end
+--bindKey("k", "down", setVehicleLockState)
+addCommandHandler("lock123",setVehicleLockState)
+
+--[[
+setTimer(function()
+	if not bindKey("k", "down", setVehicleLockState) then
+		bindKey("k", "down", setVehicleLockState)
+	end
+end, 1000, 0)]]--
+
+
+--[[
+
+-- Üzemanyag Fogyasztás
+setTimer(function()
+if isPedInVehicle(localPlayer) then 
+	if tonumber(getPedOccupiedVehicle(localPlayer):getData("veh:fuel") or 0) > 0 then
+
+		if getPedOccupiedVehicle(localPlayer):getData("veh:motor") then
+			local fogyaszt = 0
+			if getElementSpeed(getPedOccupiedVehicle(localPlayer), 1) > 0 then
+				fogyaszt = 1.1
+			else
+				fogyaszt = 0.6
+			end
+			getPedOccupiedVehicle(localPlayer):setData("veh:fuel",getPedOccupiedVehicle(localPlayer):getData("veh:fuel") - fogyaszt)
+		end
+	else
+		getPedOccupiedVehicle(localPlayer):setData("veh:fuel",0)
+		triggerServerEvent("vehicleStart",localPlayer,localPlayer,getPedOccupiedVehicle(localPlayer),false)
+	end
+end
+end,1000*60*2,0)
+-- Üzemanyagtank Check
+setTimer(function()
+	if isPedInVehicle(localPlayer) and getPedOccupiedVehicle(localPlayer) then 
+		if getVehicleEngineState (getPedOccupiedVehicle(localPlayer)) then 
+			if tonumber(getPedOccupiedVehicle(localPlayer):getData("veh:fuel") or 0) > 0 then	else
+				getPedOccupiedVehicle(localPlayer):setData("veh:fuel",0)
+				triggerServerEvent("vehicleStart",localPlayer,localPlayer,getPedOccupiedVehicle(localPlayer),false)
+			end
+		end
+	end
+end,1000,0)]]--
+
+function getElementSpeed(theElement, unit)
+    -- Check arguments for errors
+    assert(isElement(theElement), "Bad argument 1 @ getElementSpeed (element expected, got " .. type(theElement) .. ")")
+    assert(getElementType(theElement) == "player" or getElementType(theElement) == "ped" or getElementType(theElement) == "object" or getElementType(theElement) == "vehicle", "Invalid element type @ getElementSpeed (player/ped/object/vehicle expected, got " .. getElementType(theElement) .. ")")
+    assert((unit == nil or type(unit) == "string" or type(unit) == "number") and (unit == nil or (tonumber(unit) and (tonumber(unit) == 0 or tonumber(unit) == 1 or tonumber(unit) == 2)) or unit == "m/s" or unit == "km/h" or unit == "mph"), "Bad argument 2 @ getElementSpeed (invalid speed unit)")
+    -- Default to m/s if no unit specified and 'ignore' argument type if the string contains a number
+    unit = unit == nil and 0 or ((not tonumber(unit)) and unit or tonumber(unit))
+    -- Setup our multiplier to convert the velocity to the specified unit
+    local mult = (unit == 0 or unit == "m/s") and 50 or ((unit == 1 or unit == "km/h") and 180 or 111.84681456)
+    -- Return the speed by calculating the length of the velocity vector, after converting the velocity to the specified unit
+    return (Vector3(getElementVelocity(theElement)) * mult).length
+end
+
+function getVehicleSpeed()
+	local vehicle = getPedOccupiedVehicle(localPlayer)
+    if isPedInVehicle(localPlayer) then
+		if vehicle then
+			local vx, vy, vz = getElementVelocity(getPedOccupiedVehicle(localPlayer))
+			return math.sqrt(vx^2 + vy^2 + vz^2) * 161		
+		end
+	end
+    return 0
+end
+---
+
+--[[
+local screenSize = {guiGetScreenSize()}
+
+local mainScale = 1 / 0.3 * screenSize[1] / screenSize[2] 
+local maxScaleCurve = {{0, 0}, {3, 3}, {13, 5}}
+
+local rendering = false
+
+bindKey("f10", "down", function()
+	rendering = not rendering
+end)
+
+addEventHandler("onClientRender", root, function()
+	if rendering then
+		for _, car in ipairs(getElementsByType("vehicle")) do
+			if types[getVehicleType(car)] and (getElementData(car, "veh:plate") or getVehiclePlateText(car)) then
+				if isElementOnScreen(car) and car ~= getPedOccupiedVehicle(localPlayer) then
+					local plateText = getVehiclePlateText(car) or getElementData(car, "veh:plate")
+					local localPosition = {getElementPosition(localPlayer)}
+					local carPosition = {getElementPosition(car)}
+					local worldPosition = {getScreenFromWorldPosition(carPosition[1], carPosition[2], carPosition[3] + 1.3)}
+					local distance = getDistanceBetweenPoints3D(localPosition[1], localPosition[2], localPosition[3], carPosition[1], carPosition[2], carPosition[3])
+					local scale = 2 / (mainScale * (distance / 100))
+					local scale = curving(scale) / 3
+					
+					if distance <= 15 then
+						local plateTextX = dxGetTextWidth(plateText, 1.4, "default-bold", true)
+						
+						if worldPosition[1] and worldPosition[2] and scale then
+							dxDrawRectangleBox(worldPosition[1]-plateTextX/2-5, worldPosition[2]-10*scale, plateTextX+10, 20)
+							dxDrawText(plateText, worldPosition[1]-plateTextX/2, worldPosition[2]-10*scale, plateTextX+10, 20, tocolor(0,0,0), 1.4, "default-bold")
+						end
+					end
+				end
+			end
+		end
+	end	
+end)]]--
+
+function dxDrawRectangleBox(left, top, width, height)
+	dxDrawRectangle(left, top, width, height, tocolor(128,128,128,200))
+	dxDrawRectangle(left-2, top, 2, height, tocolor(0,0,0,220))
+	dxDrawRectangle(left+width, top, 2, height, tocolor(0,0,0,220))
+	dxDrawRectangle(left, top-2, width, 2, tocolor(0,0,0,220))
+	dxDrawRectangle(left, top+height, width, 2, tocolor(0,0,0,220))
+end
+
+function math.lerp(from, to, alpha)
+    return from + (to - from) * alpha
+end
+
+function curving(scaleCalc)
+
+	if scaleCalc < maxScaleCurve[1][1] then
+		return maxScaleCurve[1][2]
+	end
+
+	for idx = 2,#maxScaleCurve do
+		if scaleCalc < maxScaleCurve[idx][1] then
+			local x1 = maxScaleCurve[idx - 1][1]
+			local y1 = maxScaleCurve[idx - 1][2]
+			local x2 = maxScaleCurve[idx][1]
+			local y2 = maxScaleCurve[idx][2]
+
+			local alpha = (scaleCalc - x1)/(x2 - x1);
+
+			return math.lerp(y1,y2,alpha)
+		end
+	end
+
+	return maxScaleCurve[#maxScaleCurve][2]
+end
+
+
+
+
+--------------------------------------------------------------------------
+--Sebződés geci---
+--------------------------------------------------------------------------
+--[[
+
+addEventHandler("onClientVehicleCollision", root, function(collider, force, bodyPart, x, y, z, nx, ny, nz)
+    if source == getPedOccupiedVehicle(localPlayer) then
+		local fDamageMultiplier = getVehicleHandling(source).collisionDamageMultiplier
+		local realDamage = (force*fDamageMultiplier)*0.1
+		
+		if realDamage > 15 then
+			realDamage = realDamage/3
+			if getElementData(localPlayer, "char:ov") then
+				setElementHealth(localPlayer, getElementHealth(localPlayer) - realDamage/2)
+			else
+				setElementHealth(localPlayer, getElementHealth(localPlayer) - realDamage)
+			end
+		end
+    end
+end)]]--
+
+
+
+
+--------------------------------------------------------------------------
+
+----Rendszám LOAD----
+--[[
+addEventHandler("onClientResourceStart", resourceRoot, function()
+    local texture = dxCreateTexture("plate/plate.png", "dxt5")
+    local shader = dxCreateShader("plate/texture.fx")
+    dxSetShaderValue(shader, "gTexture", texture)
+    engineApplyShaderToWorldTexture(shader, "plateback3")
+    engineApplyShaderToWorldTexture(shader, "plateback2")
+    engineApplyShaderToWorldTexture(shader, "plateback1")
+end)]]--
+-------------------
+
+allVehicleName = {
+	--pl.
+	--[ID] = "Rendes név",
+	--[400] = "BMW 750", 
+}
+
+function getVehicleRealName(vehicleid)
+	if allVehicleName[vehicleid] then
+		return allVehicleName[vehicleid]
+	else 
+		return getVehicleNameFromModel(vehicleid)
+	end 
+end
+
+
+
+
+
+-- Vehicle Robbanás

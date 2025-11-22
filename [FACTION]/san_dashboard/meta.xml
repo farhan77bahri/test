@@ -1,0 +1,89 @@
+<meta>
+    <script src="exClient.lua" type="client" protected="true"/>
+    <script src="exServer.lua" type="server" cache="false"/>
+    
+    <oop>true</oop>
+    
+    <file src="files/fonts/Roboto.ttf" />
+    
+    <file src="files/images/premium.png" />
+    
+    <file src="files/sounds/alert.mp3" />
+    <file src="files/sounds/fail.mp3" />
+    <file src="files/sounds/info.mp3" />
+    
+
+    
+    <file src="files/images/tabs/administrator.png" />
+    <file src="files/images/tabs/groups.png" />
+    <file src="files/images/tabs/informations.png" />
+    <file src="files/images/tabs/property.png" />
+    <file src="files/images/tabs/settings.png" />
+    
+    <export function="isPlayerInFaction" type="shared" />
+    <export function="getPlayerRankInFaction" type="shared" />
+    <export function="isPlayerLeaderInFaction" type="shared" />
+
+    <export function="getFactionName" type="client" />
+	<export function="seurankROTA" type="client" />
+    <export function="getFactionBalance" type="client" />
+    <export function="getPlayerPayment" type="client" />
+    
+    <export function="giveGroupBalance" type="server" />
+    
+    <!-- Shader -->
+    
+    <file src="files/shaders/shader.fx" />
+    
+    <script src="files/shaders/car/kocsi.lua" type="client" protected="true"/>
+    <file src="files/shaders/car/fx/car_refgene.fx" />
+    <file src="files/shaders/car/fx/car_refgrun.fx" />
+    <file src="files/shaders/car/fx/mta-helper.fx" />
+    <file src="files/shaders/car/images/smallnoise3d.dds" />
+    
+    <script src="files/shaders/water/c_water.lua" type="client" />
+    <file src="files/shaders/water/water.fx" type="client" />
+    <file src="files/shaders/water/mta-helper.fx" type="client" />
+    <file src="files/shaders/water/images/smallnoise3d.dds" type="client" />
+    <file src="files/shaders/water/images/cube_env256.dds" type="client" />
+    
+    
+    
+    <file src="files/shaders/blackwhite/fx/blackwhite.fx" type="client" />
+    <script src="files/shaders/blackwhite/blackwhite.lua" type="client" protected="true"/>
+    
+    <script src="files/shaders/camera/kliens.lua" type="client" protected="true"/>
+    <file src="files/shaders/camera/blurH.fx" type="client" />
+    <file src="files/shaders/camera/blurV.fx" type="client" />
+    <file src="files/shaders/camera/img.dds" type="client" />
+    
+    <script src="files/shaders/sky/sky.lua" type="client" protected="true"/>
+    <file src="files/shaders/sky/models/skybox_model.dff" type="client" />
+    <file src="files/shaders/sky/models/skybox_model.txd" type="client" />
+    <file src="files/shaders/sky/shaders/shader_skydome.fx" type="client" />
+    <file src="files/shaders/sky/shaders/shader_null.fx" type="client" />
+    <file src="files/shaders/sky/textures/skydome.jpg" type="client" />
+    
+    <script src="files/shaders/contrast/c_bloom.lua" type="client" protected="true"/>
+    <file src="files/shaders/contrast/addBlend.fx" type="client" />
+    <file src="files/shaders/contrast/blurH.fx" type="client" />
+    <file src="files/shaders/contrast/blurV.fx" type="client" />
+    <file src="files/shaders/contrast/brightPass.fx" type="client" />
+    <file src="files/shaders/contrast/mta-helper.fx" type="client" />
+	
+	
+	<script src="files/shaders/textures/hd.lua" type="client" protected="true"/>
+    <file src="files/shaders/textures/detail.fx" type="client" />
+    <file src="files/shaders/textures/detail04.png" type="client" />
+    <file src="files/shaders/textures/detail22.png" type="client" />
+    <file src="files/shaders/textures/detail29.png" type="client" />
+    <file src="files/shaders/textures/detail35T.png" type="client" />
+    <file src="files/shaders/textures/detail55.png" type="client" />
+    <file src="files/shaders/textures/detail58.png" type="client" />
+    <file src="files/shaders/textures/detail63.png" type="client" />
+    <file src="files/shaders/textures/detail68.png" type="client" />
+    <file src="files/shaders/textures/dirty.png" type="client" />
+    <file src="files/shaders/textures/mta-helper.fx" type="client" />
+    
+
+</meta>

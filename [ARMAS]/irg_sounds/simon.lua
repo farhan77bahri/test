@@ -1,0 +1,5 @@
+zene = playSound3D("sounds/simon.mp3", -1421.703125, -950.966796875, 201.09375, true)
+setElementDimension(zene, 0)
+setElementInterior(zene, 0)
+setSoundVolume(zene, 5)
+setSoundMaxDistance(zene, 30)

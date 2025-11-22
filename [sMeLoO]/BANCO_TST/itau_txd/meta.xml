@@ -1,0 +1,9 @@
+<meta>
+	<info author="#R4F4 MAPP3R" version="1.3" name="trocador" type="script" />
+
+	<script src="client.lua" type="client" />    
+     <file src="objeto/itau.txd" />
+     <file src="objeto/itau.dff" />
+     <file src="objeto/itau.col" />
+
+</meta>

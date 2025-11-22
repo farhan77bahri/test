@@ -1,0 +1,7 @@
+<meta>
+  <script src="c.lua" type="client" cache="false"/>
+  <script src="s.lua" type="server" cache="false"/>
+
+    <export function="setJobAnimation" type="server" />
+    <export function="setJobAnimation" type="client" />
+</meta>

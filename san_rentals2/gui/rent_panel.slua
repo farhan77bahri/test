@@ -1,0 +1,145 @@
+﻿----------------------------------------->>
+-- GTI: Grand Theft International
+-- Date: 09 May 2014
+-- Resource: GTIrentalUI/rent_panel.lua
+-- Type: Server Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+
+pickupTable = {}	-- Vehicle Rental Information
+
+local PICKUP_ICON = 1277	-- Pickup Icon
+local Z_OFFSET = 1			-- Z-Offset
+
+addEvent("onVehicleRent", true)
+
+-- Locations
+------------->>
+
+function createRentalLocations(resource)
+	if (resource ~= getThisResource() and resource ~= getResourceFromName("bgo_rentalTable")) then return end
+		-- Destroy Old
+	for i,v in ipairs(getElementsByType("pickup", resourceRoot)) do
+		destroyElement(v)
+	end
+	pickupTable = {}
+	
+		-- And Create New
+	local rentTable = exports.bgo_rentalTable:getRentTable()
+	for i,v in ipairs(rentTable) do
+		local pickup = createPickup(v.pos[1], v.pos[2], v.pos[3]+Z_OFFSET, 3, PICKUP_ICON, 0)
+		setElementData(pickup, "name", v.name)
+		local color = table.concat(v.colorText, ",")
+		setElementData(pickup, "color", color)
+		pickupTable[pickup] = v
+	end
+end
+addEventHandler("onResourceStart", root, createRentalLocations)
+
+-- Show Rental Panel
+--------------------->>
+
+function teste(player)
+			exports.bgo_hud:dm("você trabalha de "..getElementData(player, "job")..".", player, 255, 125, 0)
+end
+addCommandHandler("job", teste)
+
+function showRentalPanel(player)
+	if (isPedInVehicle(player)) then return end
+	--if (exports.bgo_policeArrest:isPlayerInPoliceCustody(player)) then return end
+	
+	local p = pickupTable[source]
+		-- Check for Global Restrictions
+	if (p.restrictions) then
+		local passed
+		for i,rest in ipairs(p.restrictions) do
+			if (exports.bgo_employment:getPlayerJob(player) == rest) then
+				passed = true
+				break
+			end
+		end
+		if (not passed) then 
+			exports.bgo_hud:dm("Você não trabalha aqui, pressione F11 e Procure a prefeitura! ( Icone Amarelo ).", player, 255, 125, 0)
+			return 
+		end
+	end
+	
+		-- Vehicles Table
+	local vehs = {}
+	for i,v in ipairs(p.vehicles) do
+		local vT = {}
+		vT[1] = v[1]	-- Vehicle ID
+		vT[2] = true	-- Is Accessible?
+		vT[3] = v[3]	-- Restrictions Table
+		vT[4] = getHourlyRentalCost(v[1])
+		vT[5] = p.cost
+		
+		if (v[3]) then
+			for i,rstn in ipairs(v[3]) do
+				local rstns = split(rstn, ";")
+					-- Job Based Restrictions
+				if (rstns[1] and rstns[2]) then
+				--[[
+					if (exports.bgo_employment:getPlayerJobLevel(player, rstns[1]) < tonumber(rstns[2])) then 
+						vT[2] = false
+						break
+					end]]--
+					
+				--elseif (exports.bgo_employment:getPlayerJob(player) ~= rstn) then
+				elseif (getElementData(player, "job") ~= rstn) then
+					vT[2] = false
+					break
+				end
+			end
+		end
+		table.insert(vehs, vT)
+	end
+		-- Weapons Table
+	local weaps = {}
+	if (p.weapons) then
+		for i,v in ipairs(p.weapons) do
+			local wT = {}
+			wT[1] = {v[1], v[2]}	-- Weapon ID, Ammo
+			wT[2] = true			-- Is Accessible?
+			wT[3] = v[3]			-- Restrictions Table
+				
+			if (v[3]) then
+				for i,rstn in ipairs(v[3]) do
+					local rstns = split(rstn, ";")
+					if (rstns[1] and rstns[2]) then
+							-- Job Based Restrictions
+							--[[
+						if (exports.bgo_employment:getPlayerJobLevel(player, rstns[1]) < tonumber(rstns[2])) then 
+							wT[2] = false
+							break
+						end]]--
+						
+					elseif (getElementData(player, "job") ~= rstn) then
+					--elseif (exports.bgo_employment:getPlayerJobDivision(player) ~= rstn) then
+						wT[2] = false
+						break
+					end
+				end
+			end
+			table.insert(weaps, wT)
+		end
+	end
+	
+	local hasRental = getPlayerRentalVehicle(player)
+	if (hasRental) then hasRental = true end
+	
+	local ownedWeapons = getStoredWeapons(player)
+		
+	triggerClientEvent(player, "GTIrentalUI.displayRentPanel", source, vehs, weaps, hasRental, ownedWeapons)
+end
+addEventHandler("onPickupHit", resourceRoot, showRentalPanel)
+
+-- Return Vehicle
+------------------>>
+
+function returnVehicle()
+	--outputChatBox("* Rental Vehicle Returned", client, 200, 0, 200)
+	returnRentVehicle(client)
+end
+addEvent("GTIrentalUI.returnVehicle", true)
+addEventHandler("GTIrentalUI.returnVehicle", root, returnVehicle)

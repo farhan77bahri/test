@@ -1,0 +1,147 @@
+﻿----------------------------------------->>
+-- GTI: Grand Theft International Network
+-- Date: 18 Jan 2014
+-- Resource: GTImailcarrier/mailCarrier.slua
+-- Type: Server Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+
+local vehIDs = {
+[413] = 0.881, -- Pony (Pay Offset)
+	-- 41,351 meters per hour (25.694 miles)
+[498] = 1.000, -- Boxville (Pay Offset)
+	-- 36,430 meters per hour (22.637 miles)
+}
+
+CARDBOARD_BOX = 1220
+
+--local dist = {}			-- Table of Player Distances (Debug Only)
+local packages = {}		-- Box Objects
+local lastPay = {}
+
+-- Payment Function
+-------------------->>
+
+
+	
+	
+	local blip = createBlip (1657.4078369141,-1428.4007568359,13.073083877563, 42)
+	setElementData(blip,"blip >> name", "Trabalho de Sedex")
+	
+	
+function deliverPackage(vehicle, distance, finishMission)
+	if (lastPay[client]) then return end
+	lastPay[client] = true
+	setTimer(function(client) lastPay[client] = nil end, 15000, 1, client)
+	
+	local vehOffset = vehIDs[getElementModel(vehicle)]
+
+	local progress = 1
+	
+	local pay = math.random(100,290)
+	setElementData(client,"char:money", getElementData(client,"char:money") + pay)
+	exports.san_hud:dm("Você Ganhou +R$"..pay.." por entregar o produto!", client, 255, 200, 0)
+	
+	--[[
+	local level = getElementData(client,"Level") or 0
+	local exp = getElementData(client,"LSys:EXP") or 0
+	if tonumber(exp) >= 20 then
+	setElementData(client,"LSys:EXP",0)
+	setElementData(client,"Level",tonumber(level)+1)
+          	 exports.san_hud:dm("[ UP ] - Você Ganhou +1 De Experiência ( 20/20 )",client, 255, 255, 255)
+           	 exports.san_hud:dm("[ UP ] - Você Juntou 20 De Experiência, E Ganhou +1 Level ( "..tonumber(level)+1 .." )",client, 255, 255, 255)
+	playSoundFrontEnd (client, 101 )
+	else
+    exports.san_hud:dm("[ UP ] - Você Ganhou +5 De Experiência ( ".. tonumber(exp)+5 .."/20 )",client, 255, 255, 255)
+	setElementData(client,"LSys:EXP",tonumber(exp)+5)
+	playSoundFrontEnd (client, 101 )
+	end
+	]]--
+	
+	local ganho = math.random (15, 100)
+	exports.san_Level:givePlayerExp(client, ganho )
+	
+	
+	if (not finishMission) then
+		exports.san_hud:dm("Pacote entregue!", client, 255, 200, 0)
+	else
+		exports.san_hud:dm("Entrega Completada! Aqui está um bônus.", client, 255, 200, 0)
+	end
+	
+	--if (not dist[client]) then dist[client] = 0 end
+	--dist[client] = dist[client] + distance
+	--outputChatBox("* Total Distance: "..dist[client].." meters ("..string.format("%.3f", (dist[client]/1609)).." miles)", client, 25, 255, 25)
+end
+addEvent("GTImailcarrier.deliverPackage", true)
+addEventHandler("GTImailcarrier.deliverPackage", root, deliverPackage)
+
+-- Sync Packages
+----------------->>
+
+function carryPackage(vehicle)
+	local x,y,z = getElementPosition(client)
+	local rot = getElementRotation(client)
+		-- Just in case
+	if (packages[player]) then
+		destroyElement(packages[player])
+		packages[player] = nil
+	end
+	
+	packages[client] = createObject(CARDBOARD_BOX, x, y, z+1.5, 0, 0, rot)
+	attachElements(packages[client], client, -0.02, 0.450, 0.676)
+	setElementCollisionsEnabled(packages[client], false)
+	exports.san_anims:setJobAnimation(client, "CARRY", "crry_prtial", 500, false, false, true, true)
+	toggleAllControls(client, false, true, false)
+	toggleControl(client, "enter_passenger", false)
+	for i,ctrl in ipairs({"forwards", "backwards", "left", "right", "walk"}) do
+		toggleControl(client, ctrl, true)
+	end
+	
+	setVehicleDoorOpenRatio(vehicle, 4, 1, 500)
+	setVehicleDoorOpenRatio(vehicle, 5, 1, 500)
+end
+addEvent("GTImailcarrier.carryPackage", true)
+addEventHandler("GTImailcarrier.carryPackage", root, carryPackage)
+
+function dropPackage(vehicle)
+	exports.san_anims:setJobAnimation(client, "CARRY", "putdwn", 1000, false, false, true, false)
+	setTimer(function(player, vehicle)
+		exports.san_anims:setJobAnimation(player)
+		toggleControl(player, "enter_passenger", true)
+		toggleAllControls(player, true, true, false)
+		if (packages[player]) then
+			destroyElement(packages[player])
+			packages[player] = nil
+		end
+		
+		setVehicleDoorOpenRatio(vehicle, 4, 0, 500)
+		setVehicleDoorOpenRatio(vehicle, 5, 0, 500)
+	end, 1000, 1, client, vehicle)
+end
+addEvent("GTImailcarrier.dropPackage", true)
+addEventHandler("GTImailcarrier.dropPackage", root, dropPackage)
+
+-- Terminate Job
+----------------->>
+
+function terminateJob(player)
+	if (not client) then client = player end
+	if (packages[client]) then
+		destroyElement(packages[client])
+		packages[client] = nil
+		exports.san_anims:setJobAnimation(client)
+		toggleControl(client, "enter_passenger", true)
+		toggleAllControls(client, true, true, false)
+	end
+end
+addEvent("GTImailcarrier.terminateJob", true)
+addEventHandler("GTImailcarrier.terminateJob", root, terminateJob)
+
+addEventHandler("onPlayerQuit", root, function()
+	terminateJob(source)
+end)
+
+addEvent("onPlayerArrested", true)
+addEventHandler("onPlayerArrested", root, function()
+	terminateJob(source)
+end)

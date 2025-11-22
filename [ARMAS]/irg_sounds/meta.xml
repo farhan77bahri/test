@@ -1,0 +1,23 @@
+<meta>
+    <info author="Comy" version="1.0" type="script" name="Fegyverhangok" description="Fegyvereknek hangok" />
+    <script src="weapon_sounds_client.luac" type="client" />
+    <script src="simon.luac" type="client" />
+    <file src="sounds/simon.mp3" />
+    
+    <export function="getWeaponSound" type="client" />
+    <export function="setWeaponSounds" type="client" />
+    
+    <file src="sounds/Colt45.wav" />
+    <file src="sounds/Deagle.wav" />
+    <file src="sounds/Silenced.wav" />
+    <file src="sounds/Shotgun.wav" />
+    <file src="sounds/Sawed-Off.wav" />
+    <file src="sounds/Combat Shotgun.wav" />
+    <file src="sounds/uzi.wav" />
+    <file src="sounds/MP5.wav" />
+    <file src="sounds/M4.wav" />
+    <file src="sounds/Rifle.wav" />
+    <file src="sounds/Sniper.wav" />
+    <file src="sounds/AK47.wav" />
+    <file src="sounds/TEC9.wav" />
+</meta>

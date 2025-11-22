@@ -1,0 +1,77 @@
+﻿if fileExists("Client.lua") then
+	fileDelete("Client.lua")
+end
+
+local medico = createBlip(1182.0184326172, -1323.6982421875, 13.581540107727, 22)
+setElementData(medico ,"blip >> name", "Hospital")
+setBlipVisibleDistance(medico, 100)
+
+
+local shop = createBlip(1480.48046875, -1673.7219238281, 13.696957588196,25)
+setElementData(shop ,"blip >> name", "Park Iran-Gaming")
+setBlipVisibleDistance(shop, 100)
+
+-------------
+
+	local DRVV = createBlip(1547.169, -2286.286, 14.981, 24)
+	setElementData(DRVV ,"blip >> name", "Detran")
+	setBlipVisibleDistance(DRVV, 100)
+
+	local oficina2 = createBlip(1278.4659423828, -1536.6370849609, 14.509029388428, 44)
+	setElementData(oficina2 ,"blip >> name", "Prefeitura")
+	setBlipVisibleDistance(oficina2, 100)
+
+	local oficina = createBlip(394.94372558594, -1828.3643798828, 7.3740587234497, 63)
+	setElementData(oficina ,"blip >> name", "Oficina")
+	setBlipVisibleDistance(oficina, 100)
+
+
+	local Ferramentas = createBlip(1837.2248535156, -1839.1188964844, 13.594550132751, 40)
+	setElementData(Ferramentas ,"blip >> name", "Ferramentas Gerais")
+    setBlipVisibleDistance(Ferramentas, 100)
+
+	local Madeira = createBlip(-1080.0533447266, -990.34143066406, 165.47329711914, 57)
+	setElementData(Madeira ,"blip >> name", "Lenhador")
+    setBlipVisibleDistance(Madeira, 100)
+
+
+	local MotoClube = createBlip(681.484, -474.363, 16.539, 26)
+	setElementData(MotoClube ,"blip >> name", "Moto-Clube")
+    setBlipVisibleDistance(MotoClube, 100)
+
+
+	local blipZIP = createBlip(  1457.6550292969,-1143.5875244141,24.274166107178, 45 )
+	setElementData(blipZIP ,"blip >> name", "Loja de Roupas")
+	setBlipVisibleDistance(blipZIP, 100)
+	
+	local blipmafia = createBlip(  -2567.2150878906, 624.88690185547, 15.845808982849, 0 )
+	setElementData(blipmafia ,"blip >> name", "Mafia Godratmand")
+	setBlipVisibleDistance(blipmafia, 100)
+
+
+	local blipMascaras = createBlip(2244.7780761719,-1679.9641113281,15.478799819946, 7 )
+	setElementData(blipMascaras ,"blip >> name", "Loja de Mascaras")
+	setBlipVisibleDistance(blipMascaras, 100)
+	
+	
+	local GrooveST = createBlip(2487.286, -1669.46, 13.847, 15 )
+    setElementData(GrooveST ,"blip >> name", "Grove Street")
+	setBlipVisibleDistance(GrooveST, 100)
+	
+	
+	local VendaDeDroga = createBlip(-1974.21484375, -2392.8967285156, 30.625, 20)
+    setElementData(VendaDeDroga ,"blip >> name", "Boca de Fumo")
+	setBlipVisibleDistance(VendaDeDroga, 100)
+	
+	
+	local Boate = createBlip(2421.5678710938, -1219.2196044922, 25.563049316406, 21)
+    setElementData(Boate ,"blip >> name", "Club96")
+	setBlipVisibleDistance(Boate, 100)
+	
+	
+
+
+	
+
+
+

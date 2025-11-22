@@ -1,0 +1,21 @@
+<meta>
+    <script src="exClient.lua" type="client" protected="true"/>
+    <script src="exServer.lua" type="server" />
+    
+    <oop>true</oop>
+    
+    <file src="files/fonts/Roboto.ttf" />
+    
+
+    <file src="files/sounds/alert.mp3" />
+    <file src="files/sounds/fail.mp3" />
+    <file src="files/sounds/info.mp3" />
+    
+
+
+    <file src="files/images/tabs/informations.png" />
+    <file src="files/images/tabs/property.png" />
+
+        <file src="parking.png" />
+
+</meta>

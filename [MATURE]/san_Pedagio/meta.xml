@@ -1,0 +1,5 @@
+<meta>
+	<script src="tollsMap.lua" type="server" cache="false"/>
+	
+	<script src="toll_server.lua" type="server" cache="false" />
+</meta>

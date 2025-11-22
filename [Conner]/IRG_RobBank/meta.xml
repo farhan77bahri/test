@@ -1,0 +1,11 @@
+<meta>
+    <script src="atm/atm.lua" type="client" protected="true" />
+    <script src="atm/atmS.lua" type="server" cache="false"/>
+    
+    <file src="atm/sounds/c4_beep1.wav" />
+    <file src="atm/sounds/c4_beep2.wav" />
+    <file src="atm/sounds/c4_beep3.wav" />
+    <file src="atm/sounds/c4_beep4.wav" />
+    <file src="atm/sounds/c4_beep5.wav" />
+    <info autostart="true"></info>
+</meta>

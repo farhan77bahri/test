@@ -1,0 +1,23 @@
+<meta>
+    <script src="sourceS.lua" type="server" cache="false" />
+    <script src="sourceC.lua" type="client" protected="true"/>
+
+    
+    <file src="files/lightswitch.mp3" />
+    <file src="files/starter.mp3" />
+    <file src="files/lockin.mp3" />
+    <file src="files/lockout.mp3" />
+	<file src="files/ov.mp3" />
+	<file src="files/ovbe.mp3" />
+    <file src="files/ovki.mp3" />
+    <file src="files/starterCarro.mp3" />
+    <file src="files/starterMoto.mp3" />
+
+				
+
+        
+
+    
+    <export function="addVehicle" type="server" />
+    <oop>true</oop>
+</meta>

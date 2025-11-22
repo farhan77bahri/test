@@ -1,0 +1,19 @@
+<meta>
+    <info author="JTPenn" version="1.0" name="Rental Vehicles and Weapons System" autostart="true" />
+    
+	<script src="gui/rental_gui.lua" type="client" protected="true"/>
+    <script src="gui/rent_panel.lua" type="client" protected="true"/>
+    <script src="gui/rent_panel.slua" />
+    <script src="gui/rent_item.slua" />
+    
+    <script src="ghostmode.lua" type="client" protected="true"/>
+    <script src="rent_vehicle.slua" />
+    <script src="rent_weapons.slua" />
+    
+    <file src="mods/icons4.txd" />
+    <file src="mods/pickupsave.dff" />
+	
+	<export function="getPlayerRentalVehicle" 	type="server" />
+	<export function="isVehicleRental" 			type="server" />
+	<export function="getRentedWeapons"			type="server" />
+</meta>

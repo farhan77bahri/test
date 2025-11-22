@@ -1,0 +1,21 @@
+<meta> <info author="Vaz3rN" version="1.0" type="script" />
+	<script src="gfx/ui/dxGridlists.lua" type="client" cache ="false" />
+	<script src="gfx/ui/dxEdit.lua" type="client" cache ="false" />
+    <script src="sVazern.lua" type="server" cache ="false" />
+    <script src="cVazern.lua" type="client" cache ="false" />
+    <file src="font.ttf" />	
+    <file src="sfx/hit.mp3" />	
+    <file src="gfx/joinIcon.png" />	
+    <file src="gfx/ui/bg.png" />
+    <file src="gfx/ui/bg1.png" />		
+    <file src="gfx/ui/bg2.png" />	
+    <file src="gfx/ui/bgd.png" />	
+    <file src="gfx/ui/bgt.png" />
+    <file src="gfx/ui/bgr.png" />
+    <file src="gfx/ui/t_button.png" />	
+    <file src="gfx/ui/t_button2.png" />	
+    <file src="gfx/ui/d_button.png" />	
+    <file src="gfx/ui/d_button2.png" />	
+    <file src="gfx/ui/r_button.png" />	
+    <file src="gfx/ui/r_button2.png" />	
+</meta>

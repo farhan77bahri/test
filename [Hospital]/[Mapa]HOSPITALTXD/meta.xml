@@ -1,0 +1,7 @@
+<meta>
+    <info author="Convertida Por: +Posk3D" name="ofininainfinity" version="1.5.6" type="script" />
+    <script src="replace.lua" type="client" cache="false" />
+	<file src="gara.txd" />
+	<file src="gara.col" />
+	<file src="gara.dff" />
+	</meta>

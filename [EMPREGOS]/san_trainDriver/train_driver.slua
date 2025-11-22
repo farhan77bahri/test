@@ -1,0 +1,74 @@
+﻿local NUM_CARRAGE = 5
+local trailers = {}
+local vehIDs = {
+	[538] = 1.000,
+	[537] = 1.000,
+}
+
+
+	local blip = createBlip (1709.1849365234, -1941.1354980469, 13.572430610657, 42)
+	setElementData(blip,"blip >> name", "Trabalho de Maquinista")
+
+local TIME_BTWN_CHAT = 1000	-- How often a person can use the radio
+local radioSpam = {}	-- Table of Last Radio Chat
+
+-- Complete Pilot Mission
+-------------------------->>
+
+
+function completeMission()
+	local vehicle = getPedOccupiedVehicle(client)
+	local vehOffset = vehIDs[getElementModel(vehicle)]
+
+	
+	local pay = math.random(100,250)
+	--givePlayerMoney(client, pay)
+	
+		setElementData(client, "char:money", getElementData(client, "char:money")+pay)
+	exports.san_hud:dm("Você Ganhou +R$"..pay.." por ir na estação", client, 255, 200, 0)
+
+
+	local ganho = math.random (100, 180)
+	exports.san_Level:givePlayerExp(client, ganho )
+end
+addEvent("completeMissionMaquinista", true)
+addEventHandler("completeMissionMaquinista", root, completeMission)
+
+
+function onTrainEnter(player, seat)
+	if (exports.san_employment:getPlayerJob(player, true) ~= "Maquinista") then return end
+	if (seat ~= 0 or trailers[source]) then return end
+	
+	local trailerID
+	if (getElementModel(source) == 538) then
+		trailerID = 570
+	elseif (getElementModel(source) == 537) then
+		trailerID = 590
+	end
+	
+	if (not trailerID) then return end
+	
+	setTrainDirection(source, true)
+	trailers[source] = {}
+	local x,y,z = getElementPosition(source)
+	for i=1,NUM_CARRAGE do
+		local trailer = createVehicle(trailerID, x, y, z)
+		setVehicleHandling(trailer, "mass", 100)
+		if (i == 1) then
+			attachTrailerToVehicle(source, trailer)
+		else
+			attachTrailerToVehicle(trailers[source][i-1], trailer)
+		end
+		trailers[source][i] = trailer
+	end
+end
+addEventHandler("onVehicleEnter", root, onTrainEnter)
+
+addEventHandler("onElementDestroy", root, function()
+	if (not trailers[source]) then return end
+	for i,v in ipairs(trailers[source]) do
+		destroyElement(v)
+	end
+	trailers[source] = nil
+end)
+	

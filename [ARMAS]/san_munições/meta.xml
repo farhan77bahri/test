@@ -1,0 +1,11 @@
+<meta>
+    <script src="codeClient.lua" type="client" protected="true"/>
+    <script src="codeServer.lua" type="server" />
+    
+    <file src="files/Roboto.ttf" />
+
+
+    
+ 
+    <oop>true</oop>
+</meta>

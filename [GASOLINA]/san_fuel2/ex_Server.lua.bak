@@ -1,0 +1,141 @@
+﻿local mysql = exports.san_mysql:getConnection()
+local loadedPoints = 0
+local fuelGun = {}
+
+function playerAnimationToServer (localPlayer, animName, animtoName)
+	setPedAnimation(localPlayer, animName, animtoName, -1, true, false, false, false)
+end
+addEvent("playerAnimationToServer", true)
+addEventHandler("playerAnimationToServer", getRootElement(), playerAnimationToServer)
+
+
+function syncPlayertoFuelGun(player, state)
+	if not state then 
+		fuelGun[player] = createObject(14463,0,0,0)
+		exports.bone_attach:attachElementToBone(fuelGun[player],player,12,0,0,0.06,-180,0,0)
+	else
+		if isElement(fuelGun[player]) then 
+			destroyElement(fuelGun[player])
+		end
+	end
+end
+addEvent("syncPlayertoFuelGun", true)
+addEventHandler("syncPlayertoFuelGun", getRootElement(), syncPlayertoFuelGun)
+
+function syncPlayereffect (player, state )
+	triggerClientEvent(root, "createEffectstoClient", root, player , fuelGun[player], tostring(state) )
+end
+addEvent("syncPlayereffect", true)
+addEventHandler("syncPlayereffect", getRootElement(), syncPlayereffect)
+
+addEventHandler("onPlayerQuit",getRootElement(),function()
+	if isElement(fuelGun[source]) then 
+		destroyElement(fuelGun[source])
+	end
+end)
+
+function createFuelPoint(x,y,z,r,player)
+	x = tonumber(x)
+	y = tonumber(y)
+	z = tonumber(z)
+	r = tonumber(r)
+	local insertQuery = dbQuery(mysql, "INSERT INTO fuels SET position = ?", toJSON({x, y, z, r}))
+	local insertResult, insertNumber, insertID = dbPoll(insertQuery, -1)
+
+	if insertResult then
+		temp = createObject(3465, x, y, z, 0, 0, r)
+
+		if isElement(temp) then
+			setElementData(temp, "dbid", insertID)
+			setElementData(temp, "isRefill", true)
+			
+			for k,v in ipairs(getElementsByType("player")) do
+				if getElementData(v,"acc:admin") >= 1 then
+					outputChatBox("#D64541[Admin]:#7cc576 "..getElementData(player, "char:anick").." #ffffffcriou um ponto de gasolina | ID:#7cc576 "..insertID.."",v,255,255,255,true)
+				end
+			end
+		end
+	end
+end
+
+addCommandHandler("criarposto", function(player)
+	if getElementData(player, "acc:admin") >= 9 then
+		x,y,z = getElementPosition(player)
+		_,_,r = getElementRotation(player)
+		createFuelPoint(x,y,z-1,r,player)
+	end
+end)
+
+addCommandHandler("delposto", function(player)
+	if getElementData(player, "acc:admin") < 9 then return end
+	
+	local id = getNearestFuelPoint(player)
+	if id ~= -1 and getElementData(id, "isRefill") then
+		id = getElementData(id, "dbid")
+	end
+	if id == -1 then
+		outputChatBox("#7cc576[sanMTA]: #ffffffNão há fonte perto de você", player, 0, 0, 0, true)
+		return
+	end
+		
+	local qh = dbQuery(mysql, "DELETE FROM fuels WHERE id = ?", id)
+	local removeResult, _, removeID = dbPoll(qh, -1)
+	
+	if removeResult then
+		for k,v in ipairs(getElementsByType("player")) do
+			if getElementData(v,"acc:admin") >= 1 then
+				outputChatBox("#D64541[Admin]:#7cc576 "..getElementData(player, "char:anick").." #ffffffexcluiu um ponto de gasolina.",v,255,255,255,true)
+			end
+		end
+		
+		for k,v in ipairs(getElementsByType("object")) do
+			if getElementData(v, "isRefill") and getElementData(v, "dbid") == id then
+				destroyElement(v)
+			end
+		end
+	end
+end)
+
+function getNearestFuelPoint(ep)
+	local pe = {getElementPosition(ep)}
+	local dis = 2
+	local dis2 = 0
+	local obj = -1
+
+	local type = "object"
+	for key, value in ipairs(getElementsByType(type)) do
+		local p2 = {getElementPosition(value)}
+		dis2 = getDistanceBetweenPoints3D (pe[1], pe[2], pe[3], p2[1], p2[2], p2[3])
+			
+		if tonumber(dis2) < tonumber(dis)  then
+			dis = dis2
+			obj = value
+		end
+	end
+	return obj
+end
+
+function loadFuelPoints(resource)
+	if resource ~= getThisResource() then return end
+	
+	loadedPoints = 0
+	local loaderQuery = dbPoll(dbQuery(mysql, "SELECT * FROM fuels"), -1)
+
+	if loaderQuery then
+		for key, value in ipairs(loaderQuery) do
+			local id = tonumber(value["id"])
+			local position = fromJSON(value["position"])
+
+			local loadedPoint = createObject(3465, position[1], position[2], position[3], 0, 0, position[4])
+			setElementData(loadedPoint, "dbid", id)
+
+			--setElementData(loadedPoint, "ListrosGalao", 10)
+			setElementData(loadedPoint, "isRefill", true)
+
+			loadedPoints = loadedPoints + 1
+		end
+		outputDebugString(loadedPoints .. " Ponto de reabastecimento carregado")
+	end
+end
+addEventHandler("onResourceStart", resourceRoot, loadFuelPoints)
+

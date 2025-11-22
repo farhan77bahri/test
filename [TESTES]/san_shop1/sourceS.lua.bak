@@ -1,0 +1,147 @@
+﻿local connection = exports["san_mysql"]:getConnection() -- // SQL kapcsolat
+local shopPed = {}
+
+addEventHandler("onResourceStart", root, function(startedRes)
+	if getResourceName(startedRes) == "san_mysql" then
+		connection = exports['san_mysql']:getConnection()
+		restartResource(getThisResource())
+	end
+end)
+
+------------------------------
+
+-- // Shop betöltése
+
+------------------------------
+
+addEventHandler('onResourceStart', resourceRoot, function()
+	loadShop()
+end)
+
+Async:setPriority("high")
+Async:setDebug(true)
+
+function loadShop()
+	Async:setPriority(500, 100)
+	
+	dbQuery(function(loadedItemQuery)
+		local queryElement, queryNumber = dbPoll(loadedItemQuery, 0)
+		if queryNumber > 0 then
+			Async:foreach(queryElement, function(shopTable)
+				local position = fromJSON(shopTable["pos"])
+				shopPed[shopTable["ID"]] = createPed(shopTable["skin"], position[1], position[2], position[3])
+				if isElement(shopPed[shopTable["ID"]]) then 
+					setPedRotation(shopPed[shopTable["ID"]], position[6] or 0)
+					setElementDimension(shopPed[shopTable["ID"]], position[4])
+					setElementInterior(shopPed[shopTable["ID"]], position[5])
+					setElementFrozen(shopPed[shopTable["ID"]], true)
+					setElementData(shopPed[shopTable["ID"]], "shop >> owner", shopTable["owner"])
+					setElementData(shopPed[shopTable["ID"]], "shop >> type", shopTable["type"])	
+					setElementData(shopPed[shopTable["ID"]], "shop >> npc", true)
+					setElementData(shopPed[shopTable["ID"]], "shop >> id", shopTable["ID"])
+					setElementData(shopPed[shopTable["ID"]], "ped >> death", true)
+					setElementData(shopPed[shopTable["ID"]], "name:tags", "PED")
+					setElementData(shopPed[shopTable["ID"]], "Ped:Name",shopTable["name"])
+				end
+			end)
+			
+			local time = ((queryNumber*100)/60/1000)
+
+			outputDebugString("Loaded Shop (".. queryNumber .." DB) ("..math.floor(time).." mp)", 0, 25, 181, 254)
+		end
+	end, connection, "SELECT * FROM shops" ) 
+end
+
+------------------------------
+
+-- // Shop törlése
+
+------------------------------
+
+addCommandHandler("delshop",
+function(playerSource, cmd)
+	if getElementData( playerSource, "acc:admin" ) >= 3 then
+		local x, y, _ = getElementPosition(playerSource)
+		local shopShape = createColCircle ( x, y, 3 )
+		local shopNumber = 0
+		for _,v in ipairs(getElementsWithinColShape ( shopShape, "ped" ) ) do
+				local ShopID = getElementData(v,"shop >> id") or 0
+				shopNumber = shopNumber + 1
+				destroyElement(shopShape)
+				if ShopID >= 1 then 
+					destroyElement(v)
+				end
+				dbPoll ( dbQuery( connection, "DELETE FROM shops WHERE id = '?'", ShopID), 0 )
+				outputChatBox("#7cc576[BV] #ffffffLoja excluída com sucesso. ID: #F7CA18"..ShopID, playerSource, 255, 255, 255, true)
+				return
+		end
+		if(shopNumber == 0) then
+			destroyElement(shopShape)
+			outputChatBox("#D24D57[BV] #ffffffNenhuma loja perto de você.", playerSource, 255, 255, 255, true)
+		end
+	end
+end)
+
+------------------------------
+
+-- // Shop létrehozása
+
+------------------------------
+
+function createShop(element, cmd, skin, type, name)
+	if (getElementData(element, 'acc:admin') >= 7) then 
+		if not (skin) or not type or not name and tonumber(type) < 0 and tonumber(type) < #shopItemList+1 then
+			outputChatBox("#7cc576[use]:#ffffff /".. cmd .." [Skin do NPC] [Tipo] [Nome do Npc]", element,255,255,255,true)
+			outputChatBox("#ffffffTipo: 1: Comida, 2: Bebidas, 3: Produtos Geral, 4: Eletrônicos, 5: Passatempo", element,255,255,255,true)
+			outputChatBox("#ffffffTipo: 6: Hamburguer, 7: Cluck'n'Bell, 8: Pizza, 9: Mineração, 10: Lenhador", element,255,255,255,true)
+			outputChatBox("#ffffffTipo: 11: Ministerio, 12: Drogas, 13; Loja de Pesca, 14: Loja de Armas", element,255,255,255,true)
+			outputChatBox("#ffffffTipo: 15: Tabacaria, 16: Mudas ilegais, 17; Papelaria, 18: Peixe", element,255,255,255,true)
+			outputChatBox("#ffffffTipo: 19: Farmácia, 20: Loja Grove, 21: Loja de Mascaras", element,255,255,255,true)
+		return
+		end
+		local x, y, z = getElementPosition(element)
+		local dim = getElementDimension(element)
+		local int = getElementInterior(element)
+		local rot = getPedRotation(element)
+		
+		local position = toJSON( {x, y, z, dim, int, rot})
+		local insertQuery = dbQuery( connection, "INSERT INTO `shops` SET `type`=?, `pos`=?, `skin`=?, `name`=?", tonumber(type), position, skin, name)
+		local insertQueryData, _, insertID = dbPoll ( insertQuery, -1 )
+		if (insertQueryData) then
+			shopPed[insertID] = createPed(skin,x,y,z)
+			setPedRotation(shopPed[insertID], rot)
+			setElementDimension(shopPed[insertID], dim)
+			setElementInterior(shopPed[insertID], int)
+			setElementFrozen(shopPed[insertID], true)
+			setElementData(shopPed[insertID], "shop >> type", type)	
+			setElementData(shopPed[insertID], "ped >> death", true)
+			setElementData(shopPed[insertID], "shop >> npc", true)
+			setElementData(shopPed[insertID], "shop >> id", insertID)
+			setElementData(shopPed[insertID], "name:tags", "NPC")
+			setElementData(shopPed[insertID], "Ped:Name", name)
+		end
+	end
+end
+addCommandHandler('addshop', createShop)
+addCommandHandler('createshop', createShop)
+
+------------------------------
+
+-- // Item adás
+
+------------------------------
+
+function buyItem(player, item, value, count, amount, duty)
+	money = getElementData(player,"char:money") or 0
+--	if item == 144 then
+--		if getElementData(player, "char:dutyfaction") == 0 then
+--			outputChatBox("#ffffff[Costello] Passa esse dinheiro pra cá! não faz parte do crime!",player,255,0,0,true)
+--		else
+			if exports.san_items:giveItem(player, item, value, count, 0, true) then 
+			outputChatBox("#ffffffVocê conseguiu um #32B3FF".. exports.san_items:getItemName(item).." #ffffffobjeto.",player,255,0,0,true)
+		end
+	end
+--end
+--end
+addEvent("sanMTA->#buyItem", true)
+addEventHandler("sanMTA->#buyItem", getRootElement(), buyItem)

@@ -1,0 +1,7 @@
+<meta>
+    <info author="#Flavio" version="2.0" name="Radar"/>
+	<script src="c.lua" type="client" cache="false"/>	
+	<file src="158.txd"/>
+	<file src="158.dff"/>
+	<file src="158.col"/>
+</meta>

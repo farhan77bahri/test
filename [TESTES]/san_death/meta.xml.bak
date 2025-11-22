@@ -1,0 +1,40 @@
+<meta>
+    <script src="codeClient.lua" type="client" protected="true"/>
+<!--
+    <script src="vehicleDamage/sourceC.lua" type="client" protected="true" />
+-->
+
+    <script src="codeServer.lua" type="server" />
+    <file src="files/BlurShader.fx" />
+    <file src="files/Calibri.ttf" />
+    <file src="files/song.mp3" />
+    <file src="files/sound.mp3" />
+    
+    <script src="blood/codeClient.lua" type="client" protected="true"/>
+    <file src="blood/files/comy_1.png" type="client" />
+    <file src="blood/files/comy_2.png" type="client" />
+    <file src="blood/files/comy_3.png" type="client" />
+    <file src="blood/files/comy_4.png" type="client" />
+    <file src="blood/files/comy_5.png" type="client" />
+    <file src="blood/files/comy_6.png" type="client" />
+    
+    <script src="effects/codeClient.lua" type="client" protected="true"/>
+    
+    <file src="effects/files/heart.mp3" />
+    <file src="effects/files/lsd1.wav" />
+    <file src="effects/files/lsd2.mp3" />
+    <file src="effects/files/lsd3.mp3" />
+    <file src="effects/files/lsd4.mp3" />
+    <file src="effects/files/lsd5.mp3" />
+    
+    <export function="getPlayerInjured" type="server" />
+    <export function="enableAmf" type="client" />
+    <export function="enableAmf" type="client" />
+    <export function="showDrunkEffect" type="client" />
+    <export function="enableLSD" type="client" />
+    <export function="disableLSD" type="client" />
+    <export function="enableMar" type="client" />
+    <export function="disableMar" type="client" />
+    <export function="enablePixelShad" type="client" />
+    <export function="enableEffect" type="client" />
+</meta>

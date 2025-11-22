@@ -1,0 +1,5 @@
+<meta>
+    <info author="JTPenn" version="1.0" name="Mechanic Job" autostart="true" />
+    <script src="mech.lua" type="client" protected="true"/>
+    <script src="mech.slua" cache="false" />
+</meta>

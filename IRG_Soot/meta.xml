@@ -1,0 +1,6 @@
+<meta>
+    <info author=".Dev'Scripts" version="1.5" name="mod assobio" description="mod de assobiar tipo fivem" type="script"/>
+    <script src="devS.lua" type="server" />
+    <script src="devC.lua" type="client" cache="false" />
+    <file src="sfx/assobiar.mp3" />
+</meta>

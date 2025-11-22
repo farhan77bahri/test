@@ -1,0 +1,42 @@
+<meta>  
+<info author='Kalev' description='' version='1.0' type='script' />  
+<script src='client.lua' type='client' cache="false" />  
+<file src='assets/247/loja.txd' type='client' cache="false" />  
+<file src='assets/247/loja.dff' type='client' cache="false" />  
+<file src='assets/247/loja.col' type='client' cache="false" />
+
+<file src='assets/247/ext.txd' type='client' cache="false" />  
+<file src='assets/247/ext.dff' type='client' cache="false" />  
+<file src='assets/247/ext.col' type='client' cache="false" />
+
+<file src='assets/247/post.txd' type='client' cache="false" />  
+<file src='assets/247/post.dff' type='client' cache="false" />  
+<file src='assets/247/post.col' type='client' cache="false" />
+
+<file src='assets/247/counter.txd' type='client' cache="false" />  
+<file src='assets/247/counter.dff' type='client' cache="false" />  
+<file src='assets/247/counter.col' type='client' cache="false" />
+
+<file src='assets/247/fridge.txd' type='client' cache="false" />  
+<file src='assets/247/fridge.dff' type='client' cache="false" />  
+<file src='assets/247/fridge.col' type='client' cache="false" />
+
+<file src='assets/247/door.txd' type='client' cache="false" />  
+<file src='assets/247/door.dff' type='client' cache="false" />  
+<file src='assets/247/door.col' type='client' cache="false" />
+
+    <map src="assets/map/247aaa.map" dimension="0"></map>
+    <settings>
+        <setting name="#maxplayers" value="[ 128 ]"></setting>
+        <setting name="#useLODs" value="[ false ]"></setting>
+        <setting name="#gamespeed" value="[ 1 ]"></setting>
+        <setting name="#minplayers" value="[ 0 ]"></setting>
+        <setting name="#gravity" value="[ 0.0080000004 ]"></setting>
+        <setting name="#waveheight" value="[ 0 ]"></setting>
+        <setting name="#locked_time" value="[ false ]"></setting>
+        <setting name="#weather" value="[ 0 ]"></setting>
+        <setting name="#time" value="12:0"></setting>
+    </settings>
+    <script src="assets/map/mapEditorScriptingExtension_s.lua" type="server"></script>
+    <script src="assets/map/mapEditorScriptingExtension_c.lua" type="client" validate="false"></script>
+</meta>

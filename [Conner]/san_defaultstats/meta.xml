@@ -1,0 +1,5 @@
+<meta>
+	<info author="MTA Team" name="Defaultstats" description="Increases ped stats (driving and weapon skills)" type="script" version="1.1" />
+	<script src="defaultstats.lua" cache="false"/>
+	<oop>true</oop>
+</meta>

@@ -1,0 +1,5 @@
+<meta>
+	<info type="misc" name="placadetran" author="darthvalter" version="1.0" />
+	<script src="Script.lua" type="client" />
+	<file src="cw_motel2cs_t.txd" />
+</meta>

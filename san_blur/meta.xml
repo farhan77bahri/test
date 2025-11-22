@@ -1,0 +1,9 @@
+<meta>
+    <info name="BlurShader" description="Custom Shader" author="Miki" version="1.0.0" type="script" />
+    
+    <script src="BlurShader.lua" type="client" cache="false" />
+    <file src="shaders/BlurShader.fx" type="client" />
+    
+    <export function="createBlur" type="client" />
+    <export function="removeBlur" type="client" />
+</meta>

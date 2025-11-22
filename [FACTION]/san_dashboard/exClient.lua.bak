@@ -1,0 +1,4040 @@
+﻿local odimension = getElementDimension(localPlayer)
+
+local ointerior = getElementInterior(localPlayer)
+
+
+
+local screenSize = {guiGetScreenSize()}
+
+screenSize.x, screenSize.y = screenSize[1], screenSize[2]
+
+
+
+local myScreenSource = dxCreateScreenSource(screenSize.x, screenSize.y)
+
+blurShader, blurTec = dxCreateShader("files/shaders/shader.fx")
+
+
+
+function infoSound(file)
+
+	playSound("files/sounds/"..file..".mp3")
+
+end
+
+
+
+function infoBox(text, type)
+
+	if not text then return end
+
+	if not tonumber(type) then type = 4 end
+
+
+
+	exports["san_infobox"]:addNotification(text, type)
+
+end
+
+
+
+function isCursorHover(startX, startY, sizeX, sizeY)
+
+	if isCursorShowing() then
+
+		local cursorPosition = {getCursorPosition()}
+
+		cursorPosition.x, cursorPosition.y = cursorPosition[1] * screenSize.x, cursorPosition[2] * screenSize.y
+
+
+
+		if cursorPosition.x >= startX and cursorPosition.x <= startX + sizeX and cursorPosition.y >= startY and cursorPosition.y <= startY + sizeY then
+
+			return true
+
+		else
+
+			return false
+
+		end
+
+	else
+
+		return false
+
+	end
+
+end
+
+
+
+local dashboardOpened = false
+
+local dutyskinOpened = false
+
+
+
+local width, height = 800, 450
+
+local startX, startY = (screenSize.x - width) / 2, (screenSize.y - height) / 2
+
+
+
+local bgColor = tocolor(0, 0, 0, 180)
+
+local slotColor = tocolor(40, 40, 40, 200)
+
+local hoverColor = tocolor(124, 197, 118, 180)
+
+local secondColor = tocolor(124, 197, 118, 180)
+
+local cancelColor = tocolor(243, 85, 85, 180)
+
+
+
+local spacer = 2
+
+local spacerBig = 5
+
+
+
+local roboto = dxCreateFont("files/fonts/Roboto.ttf", 8, false, "proof")
+
+local robotoBold = dxCreateFont("files/fonts/Roboto.ttf", 10, true, "proof")
+
+local robotoBig = dxCreateFont("files/fonts/Roboto.ttf", 11, false, "proof")
+
+local robotoGui = guiCreateFont("files/fonts/Roboto.ttf", 9)
+
+
+
+local menuPoints = {{"Moshakhasat", "informations"}, {"Vasile Naghliye", "property"}, {"Groups", "groups"}, {"Admin Ha", "administrator"}, {"Tanzimat", "settings"}}
+
+
+
+local menuPointsWidth = (width - (#menuPoints - 1) * spacerBig) / #menuPoints
+
+
+
+local playerInfos = {}
+
+
+
+local optionsTable = {
+
+	{"distance", 0},
+
+	{"Reflection in the vehicle", 0},
+
+	{"most beautiful water", 0},
+
+	{"contrast", 0},
+
+	{"Detailed textures", 0},
+
+	--{"", 0},
+
+	{"lens blur", 0},
+
+	--{"", 0},
+
+	{"black White", 0},
+
+	
+
+}
+
+--local walks = {118, 119, 120, 121, 122, 123, 124, 125, 126, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137}
+
+--local fights = {4, 5, 6, 7, 15, 16}
+
+local says = {false, "prtial_gngtlka", "prtial_gngtlkb", "prtial_gngtlkc", "prtial_gngtlkd", "prtial_gngtlke", "prtial_gngtlkf", "prtial_gngtlkg", "prtial_gngtlkh", "prtial_hndshk_01", "prtial_hndshk_biz_01"}
+
+
+
+--local selectedWalkStyle = 1
+
+--local selectedFightStyle = 1
+
+--local selectedSayStyle = 1
+
+--setElementData(localPlayer, "sayAnim", says[selectedSayStyle])
+
+
+
+local optionsText = {"Activated"}
+
+optionsText[0] = "Off"
+
+local changeTips = {"Off"}
+
+changeTips[0] = "Turn on"
+
+
+
+--local jobNames = {"Árúszálító", "Kukás", "Buszsofőr", "Buszsofőr", "Csomagszállító", "Favágó"}
+
+--jobNames[0] = "Nincs Munkád"
+
+
+
+local vehicleTuningDatas = {{"T_engine", "Motor"}, {"turbo", "turbo"}, {"gearbox", "gearbox"}, {"ecu", "Ecu"}, {"pneus", "pneus"}, {"brakes", "Tormoz"}}
+
+
+
+local vehicleTunings = {"#999999No", "#acd737Level 1", "#ffcc00Level 2", "#ff6600Level 3", "#ff1a1aV.I.P" , "#ff1a1aV.I.P"}
+
+vehicleTunings[0] = "#999999No"
+
+
+
+local admindutyText = {"#65ba05Yes"}
+
+admindutyText[0] = "#cc0000No"
+
+
+
+local helperLevels = {"Admin temporário", "Assistente de administração"}
+
+
+
+local leaderText = {"#65ba05Yes"}
+
+leaderText[0] = "#cc0000No"
+
+
+
+local onlineText = {"#65ba05Online"}
+
+onlineText[0] = "#cc0000Offline"
+
+
+
+local lockedText = {"#65ba05Baz"}
+
+lockedText[0] = "#cc0000Baste"
+
+
+
+local optionsCreateColor = ""
+
+local optionsCreateText = "" 
+
+local maxdistance = 0
+
+
+
+local factionMenu = {"Ozv Ha", "Mashin Ha", "Modiriyat Rank", "Modiriyat Goroh"}
+
+local factionRowWidth = width / 4 - spacerBig
+
+local groupStartX, groupStartY = startX + factionRowWidth + spacerBig + spacer, startY + spacerBig
+
+
+
+local groupManaging = {}
+
+local groups = {}
+
+
+
+local playerGroups = {}
+
+local playerRanksInGroups = {}
+
+
+
+local groupMembers = {}
+
+local groupVehicles = {}
+
+local meInGroup = {}
+
+local editGuis = {}
+
+
+
+local admins = {}
+
+
+
+local openedTick = getTickCount() - 2000
+
+
+
+function changeState()
+
+	if getTickCount() - openedTick <= 2000 and not dashboardOpened then
+
+		infoBox("Faghat Har 2 Saniye Mitavanid Panel Ra Baz Konid.", "info")
+
+		cancelEvent()
+
+		return
+
+	end
+
+	
+
+	dashboardOpened = not dashboardOpened
+
+
+
+	for key, value in ipairs(editGuis) do
+
+		if isElement(value) then destroyElement(value) end
+
+	end
+
+
+
+	setElementData(localPlayer, "toggle-->All", not dashboardOpened)
+	setElementData(localPlayer,"hud",false)
+
+	showChat(not dashboardOpened)
+
+
+
+	if dashboardOpened then
+
+		currentPage = 1
+
+
+
+		buyCarSlot = false		--ha megnyitva zárta be
+
+		buyInteriorSlot = false	--ha megnyitva zárta be
+
+
+
+		if getElementData(localPlayer, "acc:admin") > 0 then
+
+			isAdmin = "Sim"
+
+		else
+
+			isAdmin = "No"
+
+		end
+
+
+
+		playerInfos = {
+
+			"Esme Shoma: " .. getElementData(localPlayer, "char:name"):gsub("_", " "),
+
+			"Meghdar Pool:  ".. thousandsStepper(getElementData(localPlayer, "char:money")).. "",
+
+			"Hesab Banki: " .. thousandsStepper(getElementData(localPlayer, "char:bankmoney")).. "",
+
+			"Time Play: " .. getElementData(localPlayer, "char:onlineTime"),
+
+			"Meghdar Pool V.I.P: " .. getElementData(localPlayer, "char:pp"),
+
+			--"Data de registro: " .. getElementData(localPlayer, "acc:regdate"),
+
+			"Zaman Akharin Online: " .. getElementData(localPlayer, "acc:lastlogin"),
+
+			"ID Shoma: " .. getElementData(localPlayer, "acc:id"),
+
+			"Skin ID: " .. getElementModel(localPlayer),
+
+     		--"Trabalho: " .. getElementData(localPlayer, "char:job"), --jobNames[getElementData(localPlayer, "char:job")],
+
+			"Admin: " .. isAdmin .. " - Nível: " .. getElementData(localPlayer, "acc:admin"),
+
+			"Admin Nick: " .. getElementData(localPlayer, "char:anick")
+
+		}
+
+
+
+		openedTick = getTickCount()
+
+
+
+		getOnlineAdmins()
+
+		currentAdminRank = 0
+
+		maxAdminRows = 15
+
+		currentAdminRow = 1
+
+		lastAdminRow = 1
+
+
+
+		getMyVehicles()
+
+		maxVehicleRows = 9
+
+		currentVehicleRow = 1
+
+		lastVehicleRow = 1
+
+		selectedVehicle = 1
+
+
+
+		getMyInteriors()
+
+		maxInteriorRows = 17
+
+		currentInteriorRow = 1
+
+		lastInteriorRow = 1
+
+				
+
+		fetchGroups()
+
+		triggerServerEvent("requestGroups", localPlayer)
+
+		fetchGroups()
+
+		selectedGroup = 1	--fk
+
+		selectedMenu = 1	--menü  (players/ranks etc)
+
+		selectedKey = 1		--érték (player/vehicle etc)
+
+		maxRowG = 19
+
+		currentRowG = 1
+
+		latestRowG = 1
+
+		maxKey = 1
+
+	end
+
+end
+
+
+
+addEventHandler("onClientDoubleClick", root, function(button)
+
+	if button == "left" and dashboardOpened and currentPage == 2 then
+
+		local selectedVehicleToGps = false
+
+
+
+		lastVehicleRow = currentVehicleRow + maxVehicleRows - 1
+
+		for key, value in ipairs(myVehicles) do
+
+			if key >= currentVehicleRow and key <= lastVehicleRow then
+
+				key = key - currentVehicleRow + 1
+
+				local forY = startY + 2 * spacerBig + 30 + spacer + (key - 1) * 22
+
+
+
+				if isCursorHover(startX + 2 * spacerBig + spacer, forY, width / 2 - 4 * spacerBig - 2 * spacer, 20) then
+
+					selectedVehicleToGps = key + currentVehicleRow - 1
+
+				end
+
+			end
+
+		end
+
+
+
+		if tonumber(selectedVehicleToGps) then
+
+			gpsVehicle("gps", getElementData(myVehicles[selectedVehicleToGps], "veh:id"))
+
+		end
+
+	end
+
+end)
+
+
+
+local marker
+
+local vehicleBlip
+
+function gpsVehicle(commandName, vehicleId)
+
+	if vehicleId then 
+
+		for index, value in ipairs (getElementsByType("vehicle")) do
+
+			if getElementData(value, "veh:id") == tonumber(vehicleId) then 
+
+				if getElementData(value, "veh:owner") == getElementData(localPlayer, "char:id") then 
+
+					if (getElementDimension(value) == 0) then	
+					
+					if isElement(marker) then
+					destroyElement(marker)
+					destroyElement(vehicleBlip)
+					end
+
+
+					local x, y, z = getElementPosition(value)
+
+					local vehicleBlip = createBlip(x, y, z, 43)
+					
+
+					attachElements(vehicleBlip, value)
+
+					local marker = createMarker(x, y, z, "cylinder", 5, 255, 255, 0, 0 )
+					setElementAlpha(marker,0)
+
+					attachElements(marker, value)
+					triggerServerEvent("updateINTDIM", localPlayer, vehicleId)
+
+					addEventHandler("onClientMarkerHit", getRootElement(), function(p)
+
+						if source == marker then
+
+							destroyElement(marker)
+
+							destroyElement(vehicleBlip)
+
+							infoBox("Vasile Naghliye Khod Ra Peyda Kardi")
+
+						end
+
+					end)
+
+
+
+					infoBox("Mogheiyat Mashin Shoma Dar Naghshe Moshakhas Shode")
+
+					else					
+					outputChatBox("#7cc576[IRG] #ffffffVasile Naghliye Shoma Dar Shahr Nist Be Garaj Berid!",0,0,0,true)
+					infoBox("Vasile Naghliye Shoma Dar Shahr Nist Be Garaj Berid!")
+					
+					--exports["a_infobox"]:addBox("admin", "")
+					--exports.sadeq_hud:showInfobox("info", "Press the [E] key to release the service.")
+					end
+				end
+			end
+		end
+	end
+end
+
+--addCommandHandler("gps", gpsVehicle)
+
+--addCommandHandler("gpskocsim", gpsVehicle)
+
+
+
+							--dutyskinOpened = true
+
+							--skinGroup = groupId
+
+							--oldModel = getElementModel(localPlayer)
+
+							--currentSkin = 1
+
+							--setElementModel(localPlayer, dutySkins[skinGroup][currentSkin])
+
+
+
+local dutySkins = {
+
+  --[id] = {skinid1, skinid2, stb..}
+
+	[1] = {280, 281, 282, 283, 284, 221, 254}, --- Rendőrség
+
+	[2] = {265, 266, 274, 275, 276},	--- OMSZ
+
+	[3] = {150, 169}, --- NAV
+
+	[4] = {285, 155}, --- TEK
+
+	[5] = {50, 57, 58}, --- mechanic
+
+	[6] = {300, 301, 302, 303, 304, 305}, --- NNI
+
+	[17] = {182, 290, 190, 141, 223}, -- Önkori
+
+}
+
+
+
+local skinCollision = createColCuboid(1235.1965332031, -1518.3608398438, 18.753824234009, 16, 7, 9)
+
+
+
+
+
+
+addEventHandler("onClientKey", root, function(button, pressed)
+
+	if pressed and getElementData(localPlayer, "loggedin") then
+
+		if button == "home" then
+
+			changeState()
+
+			cancelEvent()
+
+		end
+
+		if button == "F3" then
+
+			changeState()
+
+			cancelEvent()
+
+		end
+
+
+
+		if dashboardOpened then
+
+			if button == "mouse1" then
+
+				for key, value in ipairs(menuPoints) do
+
+					local forX = startX + (key - 1) * (menuPointsWidth + spacerBig)
+
+
+
+					if isCursorHover(forX, startY - 30 - spacerBig, menuPointsWidth, 30) and key ~= currentPage then
+
+						currentPage = key
+
+						infoSound("info")
+
+
+
+						for key, value in ipairs(editGuis) do
+
+							if isElement(value) then destroyElement(value) end
+
+						end
+
+						
+
+						if currentPage == 3 then
+
+							fetchGroups()
+
+							triggerServerEvent("requestGroups", localPlayer)
+
+						end
+
+					end
+
+				end		
+
+			end
+
+
+
+			if currentPage == 2 then
+
+				if button == "mouse1" then
+
+					local sizeX = ((width / 2 - 4 * spacerBig) - 2 * spacerBig) / 3
+
+					if isCursorHover(startX + 2 * spacerBig, startY + 2 * spacerBig, sizeX, 30 - spacerBig) then
+
+						buyInteriorSlot = false --biztonság kedvéért
+
+						buyCarSlot = true
+
+					elseif isCursorHover(startX + width / 2 + 2 * spacerBig, startY + 2 * spacerBig, sizeX, 30 - spacerBig) then
+
+						buyCarSlot = false --biztonság kedvéért
+
+						buyInteriorSlot = true
+
+					end
+
+
+
+					if buyCarSlot or buyInteriorSlot then
+
+						if isCursorHover(screenSize.x / 2 - 200 + 20, screenSize.y / 2, 160, 30) then
+
+							if getElementData(localPlayer, "char:pp") >= 100 then
+
+								if buyCarSlot then
+
+									setElementData(localPlayer, "char:pp", getElementData(localPlayer, "char:pp") - 100)
+
+									
+
+									setElementData(localPlayer, "char:vehSlot", getElementData(localPlayer, "char:vehSlot") + 1)
+
+									triggerServerEvent("updateVehicleSlots", localPlayer, getElementData(localPlayer, "char:vehSlot"))
+
+
+
+									getMyVehicles()
+
+								elseif buyInteriorSlot then
+
+									setElementData(localPlayer, "char:pp", getElementData(localPlayer, "char:pp") - 100)
+
+									
+
+									setElementData(localPlayer, "char:houseSlot", getElementData(localPlayer, "char:houseSlot") + 1)
+
+									triggerServerEvent("updateInteriorSlots", localPlayer, getElementData(localPlayer, "char:houseSlot"))
+
+
+
+									getMyInteriors()
+
+								end
+
+
+
+								infoBox("Shoma Ba Moafaghiyat Eslat Khod Ra Afzayesh Dadid", 4)
+
+
+
+								buyCarSlot = false
+
+								buyInteriorSlot = false
+
+							else
+
+								infoBox("Shoma Pool VIP Kafi Nadarid", 2)
+
+
+
+								buyCarSlot = false
+
+								buyInteriorSlot = false
+
+							end
+
+						elseif isCursorHover(screenSize.x / 2 + 20, screenSize.y / 2, 160, 30) then
+
+							buyCarSlot = false
+
+							buyInteriorSlot = false
+
+						end
+
+					end
+
+				end
+
+
+
+				if isCursorHover(startX + 2 * spacerBig, startY + 2 * spacerBig + 30, width / 2 - 4 * spacerBig, maxVehicleRows * 22 + spacer) then
+
+					if button == "mouse_wheel_down" then
+
+						if currentVehicleRow < #myVehicles - (maxVehicleRows - 1) then
+
+							currentVehicleRow = currentVehicleRow + 1
+
+						end
+
+					elseif button == "mouse_wheel_up" then
+
+						if currentVehicleRow > 1 then
+
+							currentVehicleRow = currentVehicleRow - 1
+
+						end
+
+					elseif button == "mouse1" then
+
+						lastVehicleRow = currentVehicleRow + maxVehicleRows - 1
+
+						for key, value in ipairs(myVehicles) do
+
+							if key >= currentVehicleRow and key <= lastVehicleRow then
+
+								key = key - currentVehicleRow + 1
+
+								local forY = startY + 2 * spacerBig + 30 + spacer + (key - 1) * 22
+
+
+
+								if isCursorHover(startX + 2 * spacerBig + spacer, forY, width / 2 - 4 * spacerBig - 2 * spacer, 20) then
+
+									selectedVehicle = key + currentVehicleRow - 1
+
+								end
+
+							end
+
+						end
+
+					end
+
+				end
+
+
+
+				if isCursorHover(startX + 2 * spacerBig, startY + 2 * spacerBig + 30, width / 2 - 4 * spacerBig, maxInteriorRows * 22 + spacer) then
+
+					if button == "mouse_wheel_down" then
+
+						if currentInteriorRow < #myInteriors - (maxInteriorRows - 1) then
+
+							currentInteriorRow = currentInteriorRow + 1
+
+						end
+
+					elseif button == "mouse_wheel_up" then
+
+						if currentInteriorRow > 1 then
+
+							currentInteriorRow = currentInteriorRow - 1
+
+						end
+
+					end
+
+				end
+
+			elseif currentPage == 3 then
+
+				if selectedMenu == 1 then
+
+					if button == "mouse_wheel_down" then
+
+						if currentRowG < #groupMembers[groupId] - (maxRowG - 1) then
+
+							currentRowG = currentRowG + 1
+
+						end
+
+					elseif button == "mouse_wheel_up" then
+
+						if currentRowG > 1 then
+
+							currentRowG = currentRowG - 1
+
+						end
+
+					end
+
+				end
+
+
+
+				if button == "mouse1" then
+
+					groupStartX, groupStartY = startX + factionRowWidth + spacerBig + spacer, startY + spacerBig
+
+					
+
+					if #playerGroups > 0 then
+
+						for key = 1, #playerGroups do
+
+							local forY = startY + 2 * spacerBig + (key - 1) * 30
+
+							
+
+							if isCursorHover(startX + 2 * spacerBig, forY, factionRowWidth - 2 * spacerBig, 26) then
+
+								selectedGroup = key
+
+								selectedMenu = 1
+
+								selectedKey = 1
+
+
+
+								for key, value in ipairs(editGuis) do
+
+									if isElement(value) then destroyElement(value) end
+
+								end
+
+							end
+
+						end
+
+					end
+
+					
+
+					for key = 0, maxKey or 1 do
+
+						local forY = groupStartY + 2 + key * 22
+
+						
+
+						if isCursorHover(groupStartX + 2, forY, factionRowWidth - 2 * spacer, 20) then
+
+							selectedMenu = key + 1
+
+							selectedKey = 1
+
+						end
+
+					end
+
+
+
+					if button == "mouse1" then
+
+
+
+					end
+
+
+
+					if button == "mouse1" and meInGroup[groupId]["isLeader"] == 1 then
+
+						if selectedMenu == 1 then
+
+							if isCursorHover(groupStartX + spacer, groupStartY + 22 * 17 + 2 * spacer, factionRowWidth - spacer, 22) and not isElement(editGuis.desc) then
+
+								editGuis.desc = guiCreateEdit(groupStartX + spacer, groupStartY + 22 * 18 + 3 * spacer, ((startX + width - spacer) - groupStartX) - 2 * spacer - spacerBig, 18, groups[groupId]["description"], false)
+
+								guiSetFont(editGuis.desc, robotoGui)
+
+								guiSetAlpha(editGuis.desc, 0)	
+
+							end
+
+
+
+							if isElement(editGuis.desc) then
+
+								if isCursorHover(groupStartX + factionRowWidth + 2 * spacer, groupStartY + 22 * 17 + 2 * spacer, factionRowWidth - spacer, 22) then
+
+									triggerServerEvent("setGroupDescription", localPlayer, guiGetText(editGuis.desc), groupId)
+
+									destroyElement(editGuis.desc)
+
+								end
+
+							end
+
+						end
+
+					end
+
+
+
+					groupStartX = groupStartX + factionRowWidth + spacerBig
+
+
+
+					if selectedMenu == 1 then
+
+						for key = 0, 14 do
+
+							local forY = groupStartY + 2 + key * 22
+
+
+
+							if isCursorHover(groupStartX + 2, forY, factionRowWidth - 4, 20) and groupMembers[groupId][key + 1 - maxRowG + latestRowG] then
+
+								selectedKey = key + 1 - maxRowG + latestRowG
+
+							end
+
+						end
+
+					elseif selectedMenu == 2 then
+
+						for key = 0, 14 do
+
+							local forY = groupStartY + 2 + key * 22
+
+
+
+							if isCursorHover(groupStartX + 2, forY, factionRowWidth - 4, 20) and groupVehicles[groupId][key + 1 - maxRowG + latestRowG] then
+
+								selectedKey = key + 1 - maxRowG + latestRowG
+
+							end
+
+						end
+
+					elseif selectedMenu == 3 then
+
+						for key = 0, 19 do
+
+							local forY = groupStartY + 2 + key * 22
+
+
+
+							if isCursorHover(groupStartX + 2, forY, factionRowWidth - 4, 20) then
+
+								selectedKey = key + 1
+
+							end
+
+						end					
+
+					end
+
+
+
+					groupStartX = groupStartX + factionRowWidth + spacerBig
+
+
+
+					if meInGroup[groupId]["isLeader"] == 1 and selectedMenu == 1 then
+
+						if isCursorHover(groupStartX, groupStartY + 22 * 4 + spacer + spacerBig, factionRowWidth, 22) then
+
+							local thisMembers = groupMembers[groupId]
+
+							local member = thisMembers[selectedKey]
+
+
+							triggerServerEvent("modifyRankForPlayer", localPlayer, member["id"], member["rank"], groupId, "up", member["online"], playerGroups)
+							--setElementData(localPlayer,"char:rank",1)
+
+							infoBox("Shoma Rank Player Ra Ertegha Dadi "..member["characterName"].."")		
+
+						elseif isCursorHover(groupStartX, groupStartY + 22 * 5 + spacer + 2 * spacerBig, factionRowWidth, 22) then
+
+							local thisMembers = groupMembers[groupId]
+
+							local member = thisMembers[selectedKey]
+
+						
+
+							triggerServerEvent("modifyRankForPlayer", localPlayer, member["id"], member["rank"], groupId, "down", member["online"], playerGroups)
+
+							infoBox("Shoma Rank Player Ra Paein Avardi "..member["characterName"].."")
+
+						elseif isCursorHover(groupStartX, groupStartY + 22 * 6 + spacer + 3 * spacerBig, factionRowWidth, 22) then
+
+							local member = groupMembers[groupId][selectedKey]
+
+
+
+							if member["isLeader"] == 1 then
+
+								infoBox("Shoma Nmitavanid Leader Ra Kick Konid", 2)
+
+								return
+
+							end
+
+							
+
+							triggerServerEvent("deletePlayerFromGroup", localPlayer, member["id"], groupId, member["online"], playerGroups)
+
+							infoBox("Player Kick Shod "..member["characterName"].."")
+
+							
+
+							table.remove(meInGroup, groupId)
+
+						elseif isCursorHover(groupStartX, groupStartY + 22 * 7 + spacer + 4 * spacerBig, factionRowWidth, 22) then
+
+							editGuis.addMember = guiCreateEdit(groupStartX, groupStartY + 22 * 8 + spacer + 5 * spacerBig, factionRowWidth, 22, "", false)
+
+							guiSetFont(editGuis.addMember, robotoGui)
+
+							guiSetAlpha(editGuis.addMember, 0)								
+
+						end
+
+
+
+						if isCursorHover(groupStartX, groupStartY + 22 * 9 + spacer + 6 * spacerBig, factionRowWidth, 22) and isElement(editGuis.addMember) then
+
+
+					local invitingText = guiGetText(editGuis.addMember)
+
+					if string.len(invitingText) < 1 then
+
+						infoBox("Você No pode deixar o campo vazio!", 2)
+					else
+						local found = false
+						local multipleFounds = false
+						local invitingText = string.lower(string.gsub(invitingText, " ", "_"))
+
+						for k, v in ipairs(getElementsByType("player")) do
+							if getElementData(v, "loggedin") then
+								local id = getElementData(v, "playerid")
+								local name = string.lower(getPlayerName(v):gsub(" ", "_"))
+
+								if id == tonumber(invitingText) or string.find(name, invitingText) then
+									if found then
+										found = false
+										multipleFounds = true
+										break
+									else
+										found = v
+									end
+								end
+							end
+						end
+
+						if multipleFounds then
+							
+							infoBox("Natayej Bishtar!!", 2)
+						elseif isElement(found) then
+							local name = getPlayerName(found)
+							--target, targetName = exports.san_core:findPlayer(localPlayer, target)
+                            --if exports.san_dashboard:isPlayerInFaction(found, 1) then infoBox("" .. name:gsub("_", " ") .. " Ozve Faction Digar Ast!", 2) return end
+							--infoBox("" .. name:gsub("_", " ") .. " Ozve Faction Digari Ast!", 2)
+							--if getElementData(found,
+							
+							triggerServerEvent("invitePlayer", localPlayer, getElementData(found, "acc:id"), groupId, found, playerGroups)
+							infoBox("Ozvit Ba Movafaghit Anjam Shod . (Agar Player Mored Nazar Dar Faction Ozv Nashod Dar Faction Digari Hozor Dard Va Pas Az Kick Shodn Player Mored Nazar Dobare Player Ra Be Darkhast Dobare Khod Invite Dahid ! )", 5)
+						else
+							infoBox("Natijei Yaft Nashod!!", 2)
+						end
+					end
+
+
+--[[
+							local found = false
+
+							local multipleFound = false
+
+
+							for _, value in ipairs(getElementsByType("player")) do
+
+								if getElementData(value, "loggedin") then
+
+								local id = getElementData(value, "playerid")
+								--local name = string.lower(getPlayerName(value):gsub(" ", "_"))
+							
+
+
+										if string.find(id, name) then
+										if not found then
+											found = value
+										else
+											infoBox("Mais resultados", 2)
+											found = false
+											multipleFound = true
+											break
+										end
+									end
+								end
+							end
+						
+	
+
+						
+						
+
+							if found and not multipleFound and isElement(found) then
+								local thisMembers = groupMembers[groupId]
+								local already = false
+								for _, value in ipairs(thisMembers) do
+									if getElementData(found, "char:name") == value["characterName"]:gsub("_", " ") then
+										already = true
+									end
+								end
+								if already then
+									infoBox(getElementData(found, "char:name").." já é um membro do grupo", 2)
+								else
+									infoBox("Você adicionou com sucesso  "..getElementData(found, "char:name").."")
+									triggerServerEvent("invitePlayer", localPlayer, getElementData(found, "char:id"), groupId, found, playerGroups)
+								end
+
+							elseif not found and not multipleFound then
+
+								infoBox("Nenhum resultado encontrado", 2)
+
+							end
+							
+							]]---------------------------
+
+						elseif isCursorHover(groupStartX, groupStartY + 22 * 10 + spacer + 7 * spacerBig, factionRowWidth, 22) and isElement(editGuis.addMember) then
+
+							destroyElement(editGuis.addMember)
+
+						end
+
+					elseif meInGroup[groupId]["isLeader"] == 1 and selectedMenu == 3 then
+
+						if isCursorHover(groupStartX, groupStartY + 22 * 2 + spacer + spacerBig, factionRowWidth, 22) and not isElement(editGuis.rangName) then
+
+							editGuis.rangName = guiCreateEdit(groupStartX, groupStartY + 22 * 3 + spacer + spacerBig, factionRowWidth, 22, "Name", false)
+
+							guiSetFont(editGuis.rangName, robotoGui)
+
+							guiSetAlpha(editGuis.rangName, 0)
+
+
+
+							editGuis.rangPay = guiCreateEdit(groupStartX, groupStartY + 22 * 4 + spacer + spacerBig, factionRowWidth, 22, "0", false)
+
+							guiSetFont(editGuis.rangPay, robotoGui)
+
+							guiSetAlpha(editGuis.rangPay, 0)
+
+						end
+
+
+
+						if isCursorHover(groupStartX, groupStartY + 22 * 5 + spacer + spacerBig, factionRowWidth, 22) then
+
+							if groups[groupId]["type"] == (5 or 6) then
+
+								guiSetText(editGuis.rangPay, 0)
+
+							end
+
+
+
+							if tostring(guiGetText(editGuis.rangName)) and tonumber(guiGetText(editGuis.rangPay)) then
+
+								if guiGetText(editGuis.rangName) ~= "" and guiGetText(editGuis.rangName) ~= " " then
+
+									if tonumber(guiGetText(editGuis.rangPay)) >= 0 or tonumber(guiGetText(editGuis.rangPay)) <= 1000 then
+
+										groups[groupId]["rank_" .. selectedKey] = guiGetText(editGuis.rangName)
+
+										--groups[groupId]["rank_" .. selectedKey .. "_pay"] = math.floor(guiGetText(editGuis.rangPay))
+
+										
+
+										infoBox("Shoma Tanzimat Ra Taghir Dadi")
+
+										
+
+										triggerServerEvent("renameRank", localPlayer, selectedKey, guiGetText(editGuis.rangName), groupId)
+
+										--triggerServerEvent("setRankPayment", localPlayer, selectedKey, math.floor(tonumber(guiGetText(editGuis.rangPay))), groupId)
+
+										fetchGroups()
+
+										
+
+										destroyElement(editGuis.rangName)
+
+										destroyElement(editGuis.rangPay)
+
+									end
+
+								end
+
+							end
+
+						elseif isCursorHover(groupStartX, groupStartY + 22 * 6 + spacer + spacerBig, factionRowWidth, 22) then
+
+							destroyElement(editGuis.rangName)
+
+							--destroyElement(editGuis.rangPay)
+
+						end
+
+					elseif meInGroup[groupId]["isLeader"] == 1 and selectedMenu == 4 then
+
+						groupStartX = groupStartX - factionRowWidth - spacerBig
+
+
+
+						if isCursorHover(groupStartX, groupStartY + 22 + 2 * spacer, factionRowWidth, 20) and not isElement(editGuis.addMoney) then
+
+							if isElement(editGuis.takeMoney) then destroyElement(editGuis.takeMoney) end
+
+
+
+							editGuis.addMoney = guiCreateEdit(groupStartX, groupStartY + 2 * 22 + 2 * spacer, 2 * factionRowWidth, 20, "depositar", false)
+
+							guiSetFont(editGuis.addMoney, robotoGui)
+
+							guiSetAlpha(editGuis.addMoney, 0)
+
+						elseif isCursorHover(groupStartX + factionRowWidth, groupStartY + 22 + 2 * spacer, factionRowWidth, 20) and not isElement(editGuis.takeMoney) then
+
+							if isElement(editGuis.addMoney) then destroyElement(editGuis.addMoney) end
+
+
+
+							editGuis.takeMoney = guiCreateEdit(groupStartX, groupStartY + 2 * 22 + 2 * spacer, 2 * factionRowWidth, 20, "Retirar", false)
+
+							guiSetFont(editGuis.takeMoney, robotoGui)
+
+							guiSetAlpha(editGuis.takeMoney, 0)
+
+						end
+
+
+
+						if isCursorHover(groupStartX, groupStartY + 3 * 22 + 2 * spacer, 2 * factionRowWidth, 20) then
+
+							if isElement(editGuis.addMoney) then
+
+								local money = guiGetText(editGuis.addMoney)
+
+								if not tonumber(money) then
+
+									infoBox("Na Motabar (Adad)", 2)
+
+									return
+
+								end
+
+								
+
+								if tonumber(money) < 1 then
+
+									infoBox("Shoma Bayad Hadeaghal 1 Pardakht Konid", 2)
+
+									return
+
+								end
+
+								
+
+								local money = tonumber(money)
+
+								local current = groups[groupId]["balance"]
+
+								local after = current + money
+
+								
+
+								if getElementData(localPlayer, "char:money") >= money then
+
+									triggerServerEvent("setGroupBalance", localPlayer, groupId, after)
+
+									groups[groupId]["balance"] = after
+
+									fetchGroups()
+
+									
+
+									setElementData(localPlayer, "char:money", getElementData(localPlayer, "char:money") - money)
+
+									
+
+									infoBox("Shoma Ba Moafaghiyat Be Hesabe Goroh  " .. money .. " Variz Kardid")
+
+									
+
+									destroyElement(editGuis.addMoney)
+
+								else
+
+									infoBox("Pool Kafi Nadari", 2)
+
+								end
+
+							elseif isElement(editGuis.takeMoney) then
+
+								local money = guiGetText(editGuis.takeMoney)
+
+								if not tonumber(money) then
+
+									infoBox("Meghdar Na Motabar (Adad)", 2)
+
+									return
+
+								end
+
+								
+
+								if tonumber(money) < 1 then
+
+									infoBox("Shoma Bayad Hadeaghal 1 Pardakht Konid", 2)
+
+									return
+
+								end
+
+								
+
+								local money = tonumber(money)
+
+								local current = groups[groupId]["balance"]
+
+								local after = current - money
+
+								
+
+								if groups[groupId]["balance"] >= money then
+
+									triggerServerEvent("setGroupBalance", localPlayer, groupId, after)
+
+									groups[groupId]["balance"] = after
+
+									fetchGroups()
+
+									
+
+									setElementData(localPlayer, "char:money", getElementData(localPlayer, "char:money") + money)
+
+									
+
+									infoBox("Você pagou com sucesso a conta do jogador " .. money .. "")
+
+									
+
+									destroyElement(editGuis.takeMoney)
+
+								else
+
+									infoBox("No há dinheiro suficiente na conta", 2)
+
+								end
+
+							end					
+
+						elseif isCursorHover(groupStartX, groupStartY + 4 * 22 + 2 * spacer, 2 * factionRowWidth, 20) then
+
+							if isElement(editGuis.addMoney) then destroyElement(editGuis.addMoney) end
+
+							if isElement(editGuis.takeMoney) then destroyElement(editGuis.takeMoney) end
+
+						end
+
+					end
+
+				end
+
+			elseif currentPage == 4 then
+
+				if button == "mouse1" then
+
+					local adminRowHeight = ((height - 3 * spacerBig) / 8) - spacerBig
+
+					for key = 0, 7 do
+
+						local forY = startY + 2 * spacerBig + key * (adminRowHeight + spacerBig)
+
+
+
+						if isCursorHover(startX + 2 * spacerBig, forY, 300 - 2 * spacerBig, adminRowHeight) then
+
+							currentAdminRank = key
+
+						end
+
+					end
+
+				end
+
+			elseif currentPage == 5 then
+
+				if button == "mouse1" then
+
+					for key = 1, 7 do
+
+						local value = optionsTable[key]
+
+						local optionsRowHeight = ((height - 13 * spacerBig) / #optionsTable) - spacerBig
+
+						local forY = startY + 2 * spacerBig + key * (optionsRowHeight + spacerBig)
+
+						
+
+						if isCursorHover(startX + 2 * spacerBig + 200, forY, 190, optionsRowHeight) then
+
+							if value[1] == "distance" then
+
+								if maxdistance >= 0 and  maxdistance < 3900 then 
+
+									maxdistance = maxdistance + 150
+
+									setFarClipDistance(maxdistance)
+
+								elseif maxdistance == 3900 then 
+
+									maxdistance = maxdistance + 100
+
+									setFarClipDistance(maxdistance)
+
+								elseif maxdistance == 0 then 
+
+									resetFarClipDistance()
+
+								elseif maxdistance >= 4000 then 
+
+									maxdistance = 0 
+
+								end
+
+							elseif value[1] == "Reflection in the vehicle" or value[1] == "most beautiful water" or value[1] == "contrast" or value[1] == "Detailed textures"  or value[1] == "lens blur" or value[1] == "black White" then								
+
+								if value[2] ~= 0 then
+
+									value[2] = 0
+
+								else
+
+									value[2] = 1
+
+								end
+
+							end
+
+							
+
+							updateSettings()
+
+						end
+
+					end
+
+					
+
+					--[[for key = 10, 12 do
+
+						local value = optionsTable[key]
+
+						local optionsRowHeight = ((height - 3 * spacerBig) / #optionsTable) - spacerBig
+
+						local rightSx = startX + 390 + 4 * spacerBig
+
+						local forY = startY + 2 * spacerBig + (key - 9) * (optionsRowHeight + spacerBig)]]
+
+
+
+						--[[if isCursorHover(rightSx + spacerBig + 200 + spacerBig, forY + spacerBig, 385 - 200 - 3 * spacerBig, optionsRowHeight - 2 * spacerBig) then
+
+							if value[1] == "Andar estilo" then
+
+								if selectedWalkStyle == #walks then
+
+									selectedWalkStyle = 1
+
+								else
+
+									selectedWalkStyle = selectedWalkStyle + 1
+
+								end
+
+								
+
+								value[2] = selectedWalkStyle
+
+								setPedWalkingStyle(localPlayer, walks[selectedWalkStyle])
+
+								triggerServerEvent("setPedNextWalkingStyle", localPlayer, walks[selectedWalkStyle])
+
+							elseif value[1] == "Estilo de luta" then
+
+								if selectedFightStyle == #fights then
+
+									selectedFightStyle = 1
+
+								else
+
+									selectedFightStyle = selectedFightStyle + 1
+
+								end
+
+								
+
+								value[2] = selectedFightStyle
+
+								triggerServerEvent("setPedNextFightStyle", localPlayer, fights[selectedFightStyle])
+
+							elseif value[1] == "Estilo de fala" then
+
+								if selectedSayStyle == #says then
+
+									selectedSayStyle = 1
+
+								else
+
+									selectedSayStyle = selectedSayStyle + 1
+
+								end
+
+								
+
+								value[2] = selectedSayStyle
+
+								setElementData(localPlayer, "sayStyle", selectedSayStyle)
+
+								setElementData(localPlayer, "sayAnim", says[selectedSayStyle])
+
+							end
+
+							
+
+							updateSettings()
+
+						end]]
+
+					--end
+
+				end
+
+			end
+
+		end
+
+	end
+
+end
+)
+
+
+
+
+
+
+addEventHandler("onClientElementDataChange", root, function(dataName, oldValue)
+
+	if source and getElementType(source) == "player" then
+
+		if source == localPlayer then
+
+			if dataName == "char:vehSlot" then
+
+				getMyVehicles()
+
+			elseif dataName == "char:houseSlot" then
+
+				getMyInteriors()
+
+			end
+
+		end
+
+		
+
+		if source then
+
+			if dataName == "adminduty" or dataName == "char:adminduty" or dataName == "acc:admin" or dataName == "char:anick" or dataName == "acc:aseged" then
+
+				getOnlineAdmins()
+
+			end
+
+		end
+
+	end
+
+end)
+
+
+
+function fetchGroups()
+
+	local groupCount = getElementData(localPlayer, "groupCount")
+
+	if tonumber(groupCount) and groupCount >= 1 then
+
+		playerGroups = {}
+
+		for i = 0, groupCount - 1 do
+
+			local groupID = getElementData(localPlayer, "group_" .. i)
+
+			if groupID then
+
+				for k, v in pairs(groups) do
+
+					if groupID == v["groupID"] then
+
+						table.insert(playerGroups, groupID)
+
+					end
+
+				end
+
+			end
+
+		end
+
+	end
+
+
+
+	if #playerGroups >= 1 and #playerGroups == groupCount then
+
+		triggerServerEvent("requestGroupData", localPlayer, playerGroups)
+
+	else
+
+		playerGroups = {}
+
+	end
+
+
+
+	local groupsKeyed = {}
+
+
+
+	for k, v in pairs(playerGroups) do
+
+		groupsKeyed[v] = true
+
+		groupVehicles[v] = {}
+
+	end
+
+	
+
+	for k, v in ipairs(getElementsByType("vehicle")) do
+
+		local group = getElementData(v, "veh:faction")
+
+
+
+		if groupVehicles[group] then
+
+			table.insert(groupVehicles[group], v)
+
+		end
+
+	end
+
+end
+
+
+
+local rankCount = {}
+
+
+
+addEvent("sendGroupMembers", true )
+
+addEventHandler("sendGroupMembers", root, function (members, playerID, groupID)
+
+	local me = getElementData(localPlayer, "char:id")
+
+
+
+	for k, v in pairs(members) do
+
+		for k2, v2 in pairs(v) do
+
+			if v2["id"] == me then
+
+				meInGroup[k] = v2
+
+			end
+
+		end
+
+	end
+
+
+
+	local onlinePlayers = {}
+
+
+
+	for k, v in pairs(getElementsByType("player")) do
+
+		local id = getElementData(v, "char:id")
+
+		onlinePlayers[id] = v
+
+	end
+
+
+
+	for k, v in pairs(members) do
+
+		rankCount[k] = {}
+
+
+
+		for k2, v2 in pairs(v) do
+
+			local id = v2["id"]
+
+
+
+			if onlinePlayers[id] then
+
+				members[k][k2]["online"] = onlinePlayers[id]
+
+			else
+
+				members[k][k2]["online"] = false
+
+			end
+
+
+
+			local rank = v2["rank"]			
+
+			local current = rankCount[k][rank] or 0
+
+
+
+			rankCount[k][rank] = current + 1
+
+
+
+			if k == groupID and id == playerID then
+
+				selectedKey = k2
+
+			end
+
+		end
+
+	end
+
+
+
+	groupMembers = members
+
+end)
+
+
+
+addEvent("sendGroups", true)
+
+addEventHandler("sendGroups", root, function (datas)
+
+	groups = datas
+
+
+
+	if currentPage == 3 then
+
+		fetchGroups()
+
+	end
+
+end)
+
+
+
+addEvent("renameGroupRank", true)
+
+addEventHandler("renameGroupRank", root, function (name, rankName, groupId)
+
+	if not groups[groupId][name] then return end
+
+		
+
+	groups[groupId][name] = rankName or ""
+
+
+
+	if currentPage == 3 then
+
+		fetchGroups()
+
+	end
+
+end)
+
+	
+
+addEvent("setDescription", true)
+
+addEventHandler("setDescription", root, function (description, groupId)
+
+	groups[groupId]["description"] = description or ""
+
+
+
+	if currentPage == 3 then
+
+		fetchGroups()
+
+	end
+
+end)
+
+
+
+
+
+
+------------------------------------
+----------------------------------------
+------------------------------------------
+-----------------------------
+--------------
+--------------------------
+-----------------------------------
+---------------------
+----------------------------------
+------------------------------------------------------------
+-----------------
+--------------------------------------
+--------------
+--------------------------
+------------------------------------------------------------------------
+
+
+function isPlayerInFaction(groupID)
+
+	fetchGroups()
+
+	triggerServerEvent("requestGroups", localPlayer)
+
+	
+
+	if getElementData(localPlayer, "loggedin") then
+
+		if meInGroup[groupID] then
+
+			return true
+
+		else
+
+			return false
+
+		end
+
+	else
+
+		return false
+
+	end
+
+end
+
+
+function getPlayerRankInFaction(groupID)
+
+	if isPlayerInFaction(groupID) then
+
+
+		return meInGroup[groupID]["rank"]
+
+	else
+
+		return false
+
+	end
+
+end
+
+
+
+function isPlayerLeaderInFaction(groupID)
+
+	if isPlayerInFaction(groupID) then
+
+		if meInGroup[groupID]["isLeader"] == 1 then
+
+			return true
+
+		else
+
+			return false
+
+		end
+
+	else
+
+		return false
+
+	end	
+
+end
+
+
+
+function getFactionName(groupID)
+
+	if groups[groupID] then
+
+		return groups[groupID]["name"]
+
+	else
+
+		return ""
+
+	end
+
+end
+
+
+
+function getFactionBalance(groupID)
+
+	if groups[groupID] then
+
+		return groups[groupID]["balance"]
+
+	else
+
+		return 0
+
+	end
+
+end
+
+
+
+function getPlayerPayment()
+if not getElementData(localPlayer,"char:dutyfaction") then return end
+
+	triggerServerEvent("getPlayerPayment", localPlayer, localPlayer)
+
+end
+setTimer(getPlayerPayment, 6000, 0)
+getPlayerPayment()
+
+
+function thousandsStepper(amount)
+
+	local formatted = amount
+
+	
+
+	while true do  
+
+		formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1 %2')
+
+		if k == 0 then
+
+			break
+
+		end
+
+	end
+
+
+
+	return formatted
+
+end
+
+
+
+function getMyVehicles()
+
+	myVehicles = {}
+
+
+
+	for key, value in ipairs(getElementsByType("vehicle")) do
+
+		if getElementData(value, "veh:owner") == getElementData(localPlayer, "acc:id") then
+
+			table.insert(myVehicles, value)
+
+		end
+
+	end
+
+
+
+	vehicleInfos = {"kharide Eslat", "Vasile Naghliye", "Slot: " .. #myVehicles .. "/" .. getElementData(localPlayer, "char:vehSlot")}
+
+end
+
+
+
+function getMyInteriors()
+
+	myInteriors = {}
+
+
+
+	for key, value in ipairs(getElementsByType("marker")) do
+
+		if getElementData(value, "typePick") and getElementData(value, "typePick") == "outside" then
+
+			if getElementData(value, "owner") == getElementData(localPlayer, "char:id") then
+
+				table.insert(myInteriors, value)
+
+			end
+
+		end
+
+	end
+
+
+
+	interiorInfos = {"Kharide Eslat", "Vizhegi", "Slot: " .. #myInteriors .. "/" .. getElementData(localPlayer, "char:houseSlot")}
+
+end
+
+
+
+function getOnlineAdmins()
+
+	onlineAdmins = {}
+
+
+
+	for key = 1, 7 do
+
+		onlineAdmins[key] = {}
+
+	end
+
+	onlineAdmins[0] = {}
+
+
+
+	for key, value in ipairs(getElementsByType("player")) do
+
+		if getElementData(value, "loggedin") then
+
+			if getElementData(value, "acc:admin") > 0 and getElementData(value, "acc:admin") < 8 then
+
+				table.insert(onlineAdmins[getElementData(value, "acc:admin")], {getElementData(value, "char:anick") or "Admin", "Khadamate Edar: " .. admindutyText[getElementData(value, "char:adminduty") or 0], getElementData(value, "playerid")})
+
+			end
+
+
+
+--			if getElementData(value, "acc:aseged") > 0 then
+
+--				table.insert(onlineAdmins[0], {getElementData(value, "char:name"):gsub("_", " "), "#00ced1" .. helperLevels[getElementData(value, "acc:aseged")], getElementData(value, "playerid")})
+
+--			end
+
+		end
+
+	end
+
+end
+
+
+
+function onlineByName(name)
+
+	for _, player in ipairs(getElementsByType("player")) do
+
+		if getElementData(player, "loggedin") then
+
+			if getElementData(player, "char:name"):gsub("_", " ") == tostring(name) then
+
+				return 1
+
+			end
+
+		else
+
+			return 0
+
+		end
+
+	end
+
+
+
+	return 0
+
+end
+
+
+
+addEventHandler("onClientRender", root, function()
+
+	if dashboardOpened then
+
+
+			if isChatVisible() then showChat(false) 
+				
+				
+			end
+			if not getElementData(localPlayer, "hud") then
+				setElementData(localPlayer, "hud",true)
+			end
+	   				--	if dashboardOpened then
+							
+						--else
+						--	setElementData(localPlayer, "hud",false)
+						--end
+
+			if getElementData(localPlayer, "toggle-->All") then
+			 setElementData(localPlayer, "toggle-->All", false)
+		 
+		 
+			end
+
+
+
+		if blurShader then
+
+			dxUpdateScreenSource(myScreenSource)
+
+
+
+			dxSetShaderValue(blurShader, "ScreenSource", myScreenSource)
+
+			dxSetShaderValue(blurShader, "BlurStrength", 5)
+
+			dxSetShaderValue(blurShader, "UVSize", screenSize.x, screenSize.y)
+
+
+
+			dxDrawImage(-5, -5, screenSize.x + 10, screenSize.y + 10, blurShader)
+
+		end
+
+
+
+		dxDrawRectangle(startX, startY, width, height, bgColor)
+
+
+
+		for key, value in ipairs(menuPoints) do
+
+			local forX = startX + (key - 1) * (menuPointsWidth + spacerBig)
+
+
+
+			dxDrawRectangle(forX, startY - 30 - spacerBig, menuPointsWidth, 30, bgColor)
+
+			dxDrawText(value[1], forX, startY - 30 - spacerBig, forX + menuPointsWidth, startY - spacerBig, tocolor(255, 255, 255), 1, robotoBig, "center", "center")
+
+			
+
+			if isCursorHover(forX, startY - 30 - spacerBig, menuPointsWidth, 30) then
+
+				dxDrawText(value[1], forX, startY - 30 - spacerBig, forX + menuPointsWidth, startY - spacerBig, hoverColor, 1, robotoBig, "center", "center")
+
+			end
+
+
+
+			if key == currentPage then
+
+				dxDrawRectangle(forX, startY - 30 - spacerBig, menuPointsWidth, 30, hoverColor)
+
+				dxDrawText(value[1], forX, startY - 30 - spacerBig, forX + menuPointsWidth, startY - spacerBig, tocolor(0, 0, 0), 1, robotoBig, "center", "center")
+
+			end
+
+
+
+			dxDrawImage(forX + 2.5, startY - 30 - spacerBig + 2.5, 25, 25, "files/images/tabs/"..value[2]..".png")
+
+		end
+
+
+
+		if currentPage == 1 then
+
+			dxDrawText("Moshakhasat", startX, startY + 4 * spacerBig, startX + width / 2, startY + 4 * spacerBig, tocolor(255, 255, 255), 1, robotoBig, "center", "center")
+
+		
+
+			dxDrawRectangle(startX + 2 * spacerBig, startY + 8 * spacerBig, 132, 260, slotColor)
+
+			if isCursorHover(startX + 2 * spacerBig, startY + 8 * spacerBig, 132, 260) then
+
+				dxDrawRectangle(startX + 2 * spacerBig, startY + 8 * spacerBig, 132, 260, hoverColor)
+
+			end
+
+			--dxDrawImage(startX + 2 * spacerBig + 2, startY + 8 * spacerBig + 2, 128, 256, "files/images/skins/"..getElementData(localPlayer, "char:skin")..".jpg")
+
+		
+
+			dxDrawRectangle(startX + 2 * spacerBig + 132 + spacerBig - spacer, startY + 8 * spacerBig, 254, #playerInfos * 22 + spacer, bgColor)
+
+			for key, value in ipairs(playerInfos) do
+
+				local forY = startY + 8 * spacerBig + (key - 1) * 22 + spacer
+
+
+
+				dxDrawRectangle(startX + 2 * spacerBig + 132 + spacerBig, forY, 250, 20, slotColor)
+
+				dxDrawText(value, startX + 2 * spacerBig + 132 + 2 * spacerBig, forY, startX + 2 * spacerBig + 132 + 2 * spacerBig + 250, forY + 20, tocolor(255, 255, 255), 1, roboto, "left", "center")
+
+			
+
+				if isCursorHover(startX + 2 * spacerBig + 132 + spacerBig, forY, 250, 20) then
+
+					dxDrawRectangle(startX + 2 * spacerBig + 132 + spacerBig, forY, 250, 20, hoverColor)
+
+					dxDrawText(value, startX + 2 * spacerBig + 132 + 2 * spacerBig, forY, startX + 2 * spacerBig + 132 + 2 * spacerBig + 250, forY + 20, tocolor(0, 0, 0), 1, roboto, "left", "center")				
+
+				end
+
+			end
+
+
+
+			dxDrawText("Khosh Omadi " .. getElementData(localPlayer, "char:name"):gsub("_", " ") .. " In Panele Omomi Shoma Ast #7cc576\n\n\nIRAN-GAMING Roleplay #ffffff #7cc576" .. getElementData(localPlayer, "char:name"):gsub("_", " "),
+
+				startX + width / 2, startY, startX + width, startY + height / 3 * 2 + 25, tocolor(255, 255, 255), 1, roboto, "center", "center", false, false, false, true)
+
+		elseif currentPage == 2 then
+
+			--- Vehicles
+
+			local sizeX = ((width / 2 - 4 * spacerBig) - 2 * spacerBig) / 3
+
+			for key = 0, 2 do
+
+				dxDrawRectangle(startX + 2 * spacerBig + key * (sizeX + spacerBig), startY + 2 * spacerBig, sizeX, 30 - spacerBig, bgColor)
+
+				dxDrawText(vehicleInfos[key + 1], startX + 2 * spacerBig + key * (sizeX + spacerBig), startY + 2 * spacerBig, startX + 2 * spacerBig + key * (sizeX + spacerBig) + sizeX, startY + 2 * spacerBig + 30 - spacerBig, tocolor(255, 255, 255), 1, roboto, "center", "center")
+
+				if isCursorHover(startX + 2 * spacerBig + key * (sizeX + spacerBig), startY + 2 * spacerBig, sizeX, 30 - spacerBig) then
+
+					dxDrawRectangle(startX + 2 * spacerBig + key * (sizeX + spacerBig), startY + 2 * spacerBig, sizeX, 30 - spacerBig, hoverColor)
+
+					dxDrawText(vehicleInfos[key + 1], startX + 2 * spacerBig + key * (sizeX + spacerBig), startY + 2 * spacerBig, startX + 2 * spacerBig + key * (sizeX + spacerBig) + sizeX, startY + 2 * spacerBig + 30 - spacerBig, tocolor(0, 0, 0), 1, roboto, "center", "center")
+
+				end
+
+			end
+
+
+
+			dxDrawRectangle(startX + 2 * spacerBig, startY + 2 * spacerBig + 30, width / 2 - 4 * spacerBig, maxVehicleRows * 22 + spacer, bgColor)
+
+			
+
+			if #myVehicles > 0 then
+
+				for key = 0, maxVehicleRows - 1 do
+
+					local forY = startY + 2 * spacerBig + 30 + spacer + key * 22
+
+
+
+					dxDrawRectangle(startX + 2 * spacerBig + spacer, forY, width / 2 - 4 * spacerBig - 2 * spacer, 20, slotColor)
+
+					if isCursorHover(startX + 2 * spacerBig + spacer, forY, width / 2 - 4 * spacerBig - 2 * spacer, 20) or key == selectedVehicle - currentVehicleRow then
+
+						dxDrawRectangle(startX + 2 * spacerBig + spacer, forY, width / 2 - 4 * spacerBig - 2 * spacer, 20, hoverColor)
+
+					end
+
+				end
+
+
+
+				lastVehicleRow = currentVehicleRow + maxVehicleRows - 1
+
+				for key, value in ipairs(myVehicles) do
+
+					if key >= currentVehicleRow and key <= lastVehicleRow then
+
+						key = key - currentVehicleRow + 1
+
+						local forY = startY + 2 * spacerBig + 30 + spacer + (key - 1) * 22
+
+
+
+						dxDrawText(exports.san_carshop:getVehicleRealName(getElementModel(value)).." (ID: "..getElementData(value, "veh:id")..")", startX + 3 * spacerBig + spacer, forY, startX + 3 * spacerBig + spacer + width / 2 - 4 * spacerBig - 2 * spacer, forY + 20, tocolor(255, 255, 255), 1, roboto, "left", "center")
+
+						dxDrawText("Vaziyat: "..math.floor(getElementHealth(value) / 10 + 0.5).."%", startX + 2 * spacerBig + spacer, forY, startX + 2 * spacerBig + spacer + width / 2 - 5 * spacerBig - 2 * spacer, forY + 20, tocolor(255, 255, 255), 1, roboto, "right", "center")				
+
+					
+
+						if isCursorHover(startX + 2 * spacerBig + spacer, forY, width / 2 - 4 * spacerBig - 2 * spacer, 20) or key == selectedVehicle - currentVehicleRow + 1 then
+
+							dxDrawText(exports.san_carshop:getVehicleRealName(getElementModel(value)).." (ID: "..getElementData(value, "veh:id")..")", startX + 3 * spacerBig + spacer, forY, startX + 3 * spacerBig + spacer + width / 2 - 4 * spacerBig - 2 * spacer, forY + 20, tocolor(0, 0, 0), 1, roboto, "left", "center")
+
+							dxDrawText("Vaziyat: "..math.floor(getElementHealth(value) / 10 + 0.5).."%", startX + 2 * spacerBig + spacer, forY, startX + 2 * spacerBig + spacer + width / 2 - 5 * spacerBig - 2 * spacer, forY + 20, tocolor(0, 0, 0), 1, roboto, "right", "center")					
+
+						end
+
+					end
+
+				end
+
+
+
+				dxDrawRectangle(startX + 2 * spacerBig, startY + 2 * spacerBig + 30 + maxVehicleRows * 22 + spacer + spacerBig, width / 2 - 4 * spacerBig, (#vehicleTuningDatas + 2) * 22 + spacer, bgColor)
+
+			
+
+				for key, value in ipairs(vehicleTuningDatas) do
+
+					local forY = startY + 2 * spacerBig + 30 + maxVehicleRows * 22 + spacer + spacerBig + spacer + (key + 1) * 22
+
+
+
+					dxDrawRectangle(startX + 2 * spacerBig + spacer, forY, width / 2 - 4 * spacerBig - 2 * spacer, 20, slotColor)
+
+					dxDrawText("#ffffff"..value[2]..": "..vehicleTunings[getElementData(myVehicles[selectedVehicle], "veh:performance_"..value[1]) or 0].." tuning", startX + 3 * spacerBig + spacer, forY, startX + 3 * spacerBig + spacer + width / 2 - 4 * spacerBig - 2 * spacer, forY + 20, tocolor(255, 255, 255), 1, roboto, "left", "center", false, false, false, true)
+
+				end
+
+
+
+				for key = 0, 1 do
+
+					local forY = startY + 2 * spacerBig + 30 + maxVehicleRows * 22 + spacer + spacerBig + spacer + key * 22
+
+
+
+					if key == 0 then
+
+						if getElementData(myVehicles[selectedVehicle], "tuning.lsdDoor") then
+
+							textT = "porta LSD: #1b96fetem"
+
+						else
+
+							textT = "porta LSD: #999999No"
+
+						end
+
+					else
+
+						if getElementData(myVehicles[selectedVehicle], "veh:paintjob") or 0 >= 1 then
+
+							textT = "Paintjob: #1b96fevan (" .. getElementData(myVehicles[selectedVehicle], "veh:paintjob") .. ")"
+
+						else
+
+							textT = "Paintjob: #999999No"
+
+						end
+
+					end
+
+
+
+					dxDrawRectangle(startX + 2 * spacerBig + spacer, forY, width / 2 - 4 * spacerBig - 2 * spacer, 20, slotColor)
+
+					dxDrawText(textT, startX + 3 * spacerBig + spacer, forY, startX + 3 * spacerBig + spacer + width / 2 - 4 * spacerBig - 2 * spacer, forY + 20, tocolor(255, 255, 255), 1, roboto, "left", "center", false, false, false, true)
+
+				end
+
+			else
+
+				dxDrawText("Vaslile Naghliye Mojod Nist", startX + 2 * spacerBig + spacerBig, startY + 2 * spacerBig + 30, startX + 2 * spacerBig + spacerBig + width / 2 - 4 * spacerBig, startY + 2 * spacerBig + 30 + maxVehicleRows * 22 + spacer, cancelColor, 1, robotoBig, "center", "center")
+
+			end
+
+
+
+			--- Interiors
+
+			for key = 0, 2 do
+
+				dxDrawRectangle(startX + width / 2 + 2 * spacerBig + key * (sizeX + spacerBig), startY + 2 * spacerBig, sizeX, 30 - spacerBig, bgColor)
+
+				dxDrawText(interiorInfos[key + 1], startX + width / 2 + 2 * spacerBig + key * (sizeX + spacerBig), startY + 2 * spacerBig, startX + width / 2 + 2 * spacerBig + key * (sizeX + spacerBig) + sizeX, startY + 2 * spacerBig + 30 - spacerBig, tocolor(255, 255, 255), 1, roboto, "center", "center")
+
+				if isCursorHover(startX + width / 2 + 2 * spacerBig + key * (sizeX + spacerBig), startY + 2 * spacerBig, sizeX, 30 - spacerBig) then
+
+					dxDrawRectangle(startX + width / 2 +2 * spacerBig + key * (sizeX + spacerBig), startY + 2 * spacerBig, sizeX, 30 - spacerBig, hoverColor)
+
+					dxDrawText(interiorInfos[key + 1], startX + width / 2 + 2 * spacerBig + key * (sizeX + spacerBig), startY + 2 * spacerBig, startX + width / 2 + 2 * spacerBig + key * (sizeX + spacerBig) + sizeX, startY + 2 * spacerBig + 30 - spacerBig, tocolor(0, 0, 0), 1, roboto, "center", "center")
+
+				end
+
+			end
+
+
+
+			dxDrawRectangle(startX + width / 2 + 2 * spacerBig, startY + 2 * spacerBig + 30, width / 2 - 4 * spacerBig, maxInteriorRows * 22 + spacer, bgColor)
+
+
+
+			if #myInteriors > 0 then
+
+				for key = 0, maxInteriorRows - 1 do
+
+					local forY = startY + 2 * spacerBig + 30 + spacer + key * 22
+
+
+
+					dxDrawRectangle(startX + width / 2 + 2 * spacerBig + spacer, forY, width / 2 - 4 * spacerBig - 2 * spacer, 20, slotColor)
+
+					if isCursorHover(startX + width / 2 + 2 * spacerBig + spacer, forY, width / 2 - 4 * spacerBig - 2 * spacer, 20) then
+
+						dxDrawRectangle(startX + width / 2 + 2 * spacerBig + spacer, forY, width / 2 - 4 * spacerBig - 2 * spacer, 20, hoverColor)
+
+					end
+
+				end
+
+
+
+				lastInteriorRow = currentInteriorRow + maxInteriorRows - 1
+
+				for key, value in ipairs(myInteriors) do
+
+					if key >= currentInteriorRow and key <= lastInteriorRow then
+
+						key = key - currentInteriorRow + 1
+
+						local forY = startY + 2 * spacerBig + 30 + spacer + (key - 1) * 22
+
+
+
+						dxDrawText(getElementData(value, "name") .. " (ID: " .. getElementData(value, "id") .. ")", startX + width / 2 + 3 * spacerBig + spacer, forY, startX + width / 2 + 3 * spacerBig + spacer + width / 2 - 4 * spacerBig - 2 * spacer, forY + 20, tocolor(255, 255, 255), 1, roboto, "left", "center")
+
+						dxDrawText("trancar: "..lockedText[getElementData(value, "locked")], startX + width / 2 + 2 * spacerBig + spacer, forY, startX + width / 2 + 2 * spacerBig + spacer + width / 2 - 5 * spacerBig - 2 * spacer, forY + 20, tocolor(255, 255, 255), 1, roboto, "right", "center", false, false, false, true)				
+
+					
+
+						if isCursorHover(startX + width / 2 + 2 * spacerBig + spacer, forY, startX + width / 2 - 4 * spacerBig - 2 * spacer, 20) then
+
+							dxDrawText(getElementData(value, "name") .. " (ID: " .. getElementData(value, "id") .. ")", startX + width / 2 + 3 * spacerBig + spacer, forY, startX + width / 2 + 3 * spacerBig + spacer - 4 * spacerBig - 2 * spacer, forY + 20, tocolor(0, 0, 0), 1, roboto, "left", "center")
+
+							dxDrawText("trancar: "..lockedText[getElementData(value, "locked")], startX + width / 2 + 2 * spacerBig + spacer, forY, startX + width / 2 + 2 * spacerBig + spacer + width / 2 - 5 * spacerBig - 2 * spacer, forY + 20, tocolor(0, 0, 0), 1, roboto, "right", "center", false, false, false, true)					
+
+						end
+
+					end
+
+				end
+
+			else
+
+				dxDrawText("Você No tem imóveis", startX + width / 2 + 2 * spacerBig + spacerBig, startY + 2 * spacerBig + 30, startX + width / 2 + 2 * spacerBig + spacerBig + width / 2 - 4 * spacerBig, startY + 2 * spacerBig + 30 + maxInteriorRows * 22 + spacer, cancelColor, 1, robotoBig, "center", "center")
+
+			end
+
+
+
+			if buyCarSlot or buyInteriorSlot then
+
+				dxDrawRectangle(screenSize.x / 2 - 200, screenSize.y / 2 + 40, 400, 2, hoverColor)
+
+				dxDrawRectangle(screenSize.x / 2 - 200 + 1, screenSize.y / 2 - 40 + 1, 400 - 2, 80 - 2, bgColor)
+
+
+
+				dxDrawText("Aya Mikhahid Eslat Bekharid?\nGheymat #1b96fe100PP", 0, screenSize.y / 2 - 40, screenSize.x, screenSize.y / 2, tocolor(255, 255, 255), 1, roboto, "center", "center", false, false, true, true)
+
+
+
+				dxDrawRectangle(screenSize.x / 2 - 200 + 20, screenSize.y / 2, 160, 30, slotColor)
+
+				dxDrawText("Ham Aknon Kharidari Konid", screenSize.x / 2 - 200 + 20, screenSize.y / 2, screenSize.x / 2 - 200 + 20 + 160, screenSize.y / 2 + 30, tocolor(255, 255, 255), 1, roboto, "center", "center")
+
+
+
+				if isCursorHover(screenSize.x / 2 - 200 + 20, screenSize.y / 2, 160, 30) then
+
+					dxDrawRectangle(screenSize.x / 2 - 200 + 20, screenSize.y / 2, 160, 30, hoverColor)
+
+					dxDrawText("Ham Aknon Kharidari Konid", screenSize.x / 2 - 200 + 20, screenSize.y / 2, screenSize.x / 2 - 200 + 20 + 160, screenSize.y / 2 + 30, tocolor(0, 0, 0), 1, roboto, "center", "center")
+
+				end
+
+
+
+				dxDrawRectangle(screenSize.x / 2 + 20, screenSize.y / 2, 160, 30, slotColor)
+
+				dxDrawText("Laghv", screenSize.x / 2 + 20, screenSize.y / 2, screenSize.x / 2 + 180, screenSize.y / 2 + 30, tocolor(255, 255, 255), 1, roboto, "center", "center")
+
+
+
+				if isCursorHover(screenSize.x / 2 + 20, screenSize.y / 2, 160, 30) then
+
+					dxDrawRectangle(screenSize.x / 2 + 20, screenSize.y / 2, 160, 30, cancelColor)
+
+					dxDrawText("Laghv", screenSize.x / 2 + 20, screenSize.y / 2, screenSize.x / 2 + 180, screenSize.y / 2 + 30, tocolor(0, 0, 0), 1, roboto, "center", "center")
+
+				end				
+
+			end
+
+		elseif currentPage == 3 then
+
+			if #playerGroups > 0 then
+
+				factionRowWidth = width / 4 - spacerBig
+
+				groupStartX, groupStartY = startX + factionRowWidth + spacerBig + spacer, startY + spacerBig
+
+				
+
+				dxDrawRectangle(startX + spacerBig, startY + spacerBig, factionRowWidth, 14 * 30 + spacerBig + 1, bgColor)
+
+				
+
+				--- groups
+
+				for key = 1, 14 do --abner
+
+					local forY = startY + 2 * spacerBig + (key - 1) * 30
+
+					
+
+					dxDrawRectangle(startX + 2 * spacerBig, forY, factionRowWidth - 2 * spacerBig, 26, slotColor)
+
+					if isCursorHover(startX + 2 * spacerBig, forY, factionRowWidth - 2 * spacerBig, 26) or key == selectedGroup then
+
+						dxDrawRectangle(startX + 2 * spacerBig, forY, factionRowWidth - 2 * spacerBig, 26, hoverColor)
+
+					end
+
+
+
+					local groupId = playerGroups[key]
+
+					if tonumber(groupId) then
+
+						dxDrawText(groups[groupId]["name"], startX, forY, startX + factionRowWidth, forY + 26, tocolor(255, 255, 255), 1, robotoBig, "center", "center")
+
+						
+
+						if isCursorHover(startX + 2 * spacerBig, forY, factionRowWidth - 2 * spacerBig, 26) or key == selectedGroup then
+
+							dxDrawText(groups[groupId]["name"], startX, forY, startX + factionRowWidth, forY + 26, tocolor(0, 0, 0), 1, robotoBig, "center", "center")				
+
+						end
+
+					end
+
+				end
+
+				
+
+				groupId = playerGroups[selectedGroup]
+
+				
+
+				if tonumber(groupId) and meInGroup[groupId] then
+
+					local rank = meInGroup[groupId]["rank"]
+
+					
+
+					--- menus
+
+					if meInGroup[groupId]["isLeader"] == 1 and groups[groupId]["type"] ~= (5 or 6) then
+
+						maxKey = 3
+
+					else
+
+						maxKey = 1
+
+					end
+
+					
+
+					dxDrawRectangle(groupStartX, groupStartY, factionRowWidth, 22 * (maxKey + 1) + spacer, bgColor)
+
+					for key = 0, maxKey do
+
+						local forY = groupStartY + 2 + key * 22
+
+						
+
+						dxDrawRectangle(groupStartX + spacer, forY, factionRowWidth - 2 * spacer, 20, slotColor)
+
+						dxDrawText(factionMenu[key + 1], groupStartX, forY, groupStartX + factionRowWidth, forY + 20, tocolor(255, 255, 255), 1, roboto, "center", "center")
+
+						
+
+						if key + 1 == selectedMenu or isCursorHover(groupStartX + 2, forY, factionRowWidth - 2 * spacer, 20) then
+
+							dxDrawRectangle(groupStartX + spacer, forY, factionRowWidth - 2 * spacer, 20, hoverColor)
+
+							dxDrawText(factionMenu[key + 1], groupStartX, forY, groupStartX + factionRowWidth, forY + 20, tocolor(0, 0, 0), 1, roboto, "center", "center")
+
+						end
+
+					end
+
+
+
+					dxDrawButton("", groupStartX, groupStartY + spacer + (maxKey + 1) * 22, factionRowWidth, 22, secondColor)
+
+				end
+
+				
+
+				if selectedMenu == 1 then
+
+					dxDrawRectangle(groupStartX, groupStartY + 22 * 18 + 2 * spacer, (startX + width - spacer) - groupStartX - spacerBig, 22, bgColor)
+
+					dxDrawRectangle(groupStartX + spacer, groupStartY + 22 * 18 + 3 * spacer, ((startX + width - spacer) - groupStartX) - 2 * spacer - spacerBig, 18, slotColor)
+
+					
+
+					if not isElement(editGuis.desc) then
+
+						dxDrawText("#1b96fePayam Gorohi: #ffffff" .. groups[groupId]["description"], groupStartX + 5, groupStartY + 22 * 18 + 2 * spacer, startX + width - spacer  - spacerBig, groupStartY + 22 * 18 + 2 * spacer + 22, tocolor(255, 255, 255), 1, roboto, "left", "center", false, false, false, true)
+
+					end
+
+
+
+					if meInGroup[groupId]["isLeader"] == 1 then
+
+						dxDrawButton("Edit Kardan", groupStartX + spacer, groupStartY + 22 * 17 + 2 * spacer, factionRowWidth - spacer, 22, secondColor)
+
+					
+
+						if isElement(editGuis.desc) then
+
+							dxDrawEdit(groupStartX + spacer, groupStartY + 22 * 18 + 3 * spacer, ((startX + width - spacer) - groupStartX) - 2 * spacer - spacerBig, 18, editGuis.desc)
+
+
+
+							dxDrawButton("Taghir", groupStartX + factionRowWidth + 2 * spacer, groupStartY + 22 * 17 + 2 * spacer, factionRowWidth - spacer, 22, hoverColor)
+
+							dxDrawButton("Laghv", groupStartX + 2 * (factionRowWidth + spacer) + spacer, groupStartY + 22 * 17 + 2 * spacer, factionRowWidth - spacer, 22, cancelColor)
+
+						end
+
+					end
+
+
+
+					groupStartX = groupStartX + factionRowWidth + spacerBig
+
+
+
+					dxDrawRectangle(groupStartX, groupStartY, factionRowWidth, 22 * 17 + spacer, bgColor)
+
+					
+
+					for key = 0, 13 do
+
+						local forY = groupStartY + spacer + key * 22		
+
+						dxDrawRectangle(groupStartX + spacer, forY, factionRowWidth - 2 * spacer, 20, slotColor)
+
+					end
+
+					
+
+					latestRowG = currentRowG + maxRowG - 1
+
+					if meInGroup[groupId] then
+
+						for key, value in ipairs(groupMembers[groupId]) do
+
+							if key >= currentRowG and key <= latestRowG then
+
+								key = key - currentRowG+1
+
+								local forY = groupStartY + spacer + (key - 1) * 22
+
+								
+
+								dxDrawText(value["characterName"]:gsub("_", " "), groupStartX + 2 * spacer, forY, groupStartX + factionRowWidth, forY + 20, tocolor(255, 255, 255), 1, roboto, "left", "center", false, false, false, true)
+
+								
+
+								dxDrawText(onlineText[onlineByName(value["characterName"]:gsub("_", " "))], groupStartX, forY, groupStartX + factionRowWidth - 2 * spacer, forY + 20, tocolor(255, 255, 255), 1, roboto, "right", "center", false, false, false, true)
+
+								
+
+								if key == selectedKey - currentRowG + 1 or isCursorHover(groupStartX + spacer, forY, factionRowWidth - 2 * spacer, 20) then
+
+									dxDrawRectangle(groupStartX + spacer, forY, factionRowWidth - 2 * spacer, 20, hoverColor)
+
+
+
+									dxDrawText(value["characterName"]:gsub("_", " "), groupStartX + 2 * spacer, forY, groupStartX + factionRowWidth, forY + 20, tocolor(0, 0, 0), 1, roboto, "left", "center", false, false, false, true)
+
+								
+
+									dxDrawText(onlineText[onlineByName(value["characterName"]:gsub("_", " "))], groupStartX, forY, groupStartX + factionRowWidth - 2 * spacer, forY + 20, tocolor(0, 0, 0), 1, roboto, "right", "center", false, false, false, true)								
+
+								end
+
+							end
+
+						end
+
+
+
+						groupStartX = groupStartX + factionRowWidth + spacerBig
+
+
+
+						dxDrawRectangle(groupStartX, groupStartY, factionRowWidth, 22 * 4 + spacer, bgColor)
+
+
+
+						local currentMemberInf = {
+
+							"Rank: " .. groups[groupId]["rank_"..groupMembers[groupId][selectedKey]["rank"]],
+
+							"Pardakht: $" .. groups[groupId]["rank_"..groupMembers[groupId][selectedKey]["rank"].."_pay"],
+
+							"Leader: " .. leaderText[groupMembers[groupId][selectedKey]["isLeader"]],
+
+							getLocalPlayer():getData("acc:lastlogin"),							
+
+						}
+
+
+
+						for key = 0, 3 do
+
+							local forY = groupStartY + spacer + key * 22
+
+							dxDrawRectangle(groupStartX + spacer, forY, factionRowWidth - 2 * spacer, 20, slotColor)
+
+							dxDrawText(currentMemberInf[key + 1], groupStartX, forY, groupStartX + factionRowWidth, forY + 20, tocolor(255, 255, 255), 1, roboto, "center", "center", false, false, false, true)
+
+						
+
+							if isCursorHover(groupStartX + spacer, forY, factionRowWidth - 2 * spacer, 20) then
+
+								dxDrawRectangle(groupStartX + spacer, forY, factionRowWidth - 2 * spacer, 20, hoverColor)
+
+								dxDrawText(currentMemberInf[key + 1], groupStartX, forY, groupStartX + factionRowWidth, forY + 20, tocolor(0, 0, 0), 1, roboto, "center", "center", false, false, false, true)						
+
+							end
+
+						end
+
+
+
+						if meInGroup[groupId]["isLeader"] == 1 then
+
+							dxDrawButton("Ertegha Rank", groupStartX, groupStartY + 22 * 4 + spacer + spacerBig, factionRowWidth, 22, hoverColor)
+
+							dxDrawButton("Tanzile Rank", groupStartX, groupStartY + 22 * 5 + spacer + 2 * spacerBig, factionRowWidth, 22, secondColor)
+
+							dxDrawButton("Kick", groupStartX, groupStartY + 22 * 6 + spacer + 3 * spacerBig, factionRowWidth, 22, cancelColor)		
+
+						
+
+							dxDrawButton("Ozve Jadid", groupStartX, groupStartY + 22 * 7 + spacer + 4 * spacerBig, factionRowWidth, 22, secondColor)
+							--if exports.san_dashboard:isPlayerInFaction(thePlayer) then return end
+							
+
+							if isElement(editGuis.addMember) then
+
+								dxDrawEdit(groupStartX, groupStartY + 22 * 8 + spacer + 5 * spacerBig, factionRowWidth, 22, editGuis.addMember)
+
+
+
+								dxDrawButton("Nejat Dadan", groupStartX, groupStartY + 22 * 9 + spacer + 6 * spacerBig, factionRowWidth, 22, hoverColor)
+
+								dxDrawButton("Laghv", groupStartX, groupStartY + 22 * 10 + spacer + 7 * spacerBig, factionRowWidth, 22, cancelColor)
+
+							end
+
+						end
+
+					end
+
+				elseif selectedMenu == 2 then
+
+					groupStartX = groupStartX + factionRowWidth + spacerBig
+
+					
+
+					dxDrawRectangle(groupStartX, groupStartY, factionRowWidth, 22 * 17 + spacer, bgColor)
+
+					
+
+					if #groupVehicles[groupId] > 0 then
+
+	 					for key = 0, 14 do
+
+							local forY = groupStartY + spacer + key * 22		
+
+							dxDrawRectangle(groupStartX + spacer, forY, factionRowWidth - 2 * spacer, 20, slotColor)
+
+						end
+
+						
+
+						latestRowG = currentRowG + maxRowG - 1
+
+						if meInGroup[groupId] then
+
+							for key, value in ipairs(groupVehicles[groupId]) do
+
+								if key >= currentRowG and key <= latestRowG then
+
+									key = key - currentRowG+1
+
+									local forY = groupStartY + spacer + (key - 1) * 22
+
+									
+
+									dxDrawText(exports["san_carshop"]:getVehicleRealName(getElementModel(value)), groupStartX + 2 * spacer, forY, groupStartX + factionRowWidth, forY + 20, tocolor(255, 255, 255), 1, roboto, "left", "center", false, false, false, true)
+
+																	
+
+									if key == selectedKey - currentRowG + 1 or isCursorHover(groupStartX + spacer, forY, factionRowWidth - 2 * spacer, 20) then
+
+										dxDrawRectangle(groupStartX + spacer, forY, factionRowWidth - 2 * spacer, 20, hoverColor)
+
+
+
+										dxDrawText(exports["san_carshop"]:getVehicleRealName(getElementModel(value)), groupStartX + 2 * spacer, forY, groupStartX + factionRowWidth, forY + 20, tocolor(0, 0, 0), 1, roboto, "left", "center", false, false, false, true)
+
+									end
+
+								end
+
+							end						
+
+						end
+
+					else
+
+						dxDrawText("Bedone Vasile Naghliye", groupStartX, groupStartY, groupStartX + factionRowWidth, groupStartY + 22 * 14 + spacer, tocolor(255, 255, 255), 1, roboto, "center", "center")
+
+					end
+
+
+
+					groupStartX = groupStartX + factionRowWidth + spacerBig	
+
+
+
+					if #groupVehicles[groupId] > 0 then
+
+						local currentVehicleInf = {
+
+							"ID: " .. getElementData(groupVehicles[groupId][selectedKey], "veh:id"),
+
+							"Vida: " .. math.floor(getElementHealth(groupVehicles[groupId][selectedKey]) / 10 + 0.5) .. "%",
+
+							getZoneName(unpack({getElementPosition(groupVehicles[groupId][selectedKey])}))
+
+						}
+
+
+
+						dxDrawRectangle(groupStartX, groupStartY, factionRowWidth, 22 * 3 + spacer, bgColor)
+
+					
+
+						for key = 0, 2 do
+
+							local forY = groupStartY + spacer + key * 22
+
+							dxDrawRectangle(groupStartX + spacer, forY, factionRowWidth - 2 * spacer, 20, slotColor)
+
+							dxDrawText(currentVehicleInf[key + 1], groupStartX, forY, groupStartX + factionRowWidth, forY + 20, tocolor(255, 255, 255), 1, roboto, "center", "center", false, false, false, true)
+
+							
+
+							if isCursorHover(groupStartX + spacer, forY, factionRowWidth - 2 * spacer, 20) then
+
+								dxDrawRectangle(groupStartX + spacer, forY, factionRowWidth - 2 * spacer, 20, hoverColor)
+
+								dxDrawText(currentVehicleInf[key + 1], groupStartX, forY, groupStartX + factionRowWidth, forY + 20, tocolor(0, 0, 0), 1, roboto, "center", "center", false, false, false, true)						
+
+							end
+
+						end
+
+					end
+
+				elseif selectedMenu == 3 then
+
+					groupStartX = groupStartX + factionRowWidth + spacerBig
+
+
+
+					dxDrawRectangle(groupStartX, groupStartY, factionRowWidth, 22 * 20 + spacer, bgColor)
+
+					
+
+					local rank = meInGroup[groupId]["rank"]
+
+
+
+					for key = 0, 19 do
+
+						local forY = groupStartY + spacer + key * 22
+
+
+
+						dxDrawRectangle(groupStartX + spacer, forY, factionRowWidth - 2 * spacer, 20, slotColor)
+
+						dxDrawText(groups[groupId]["rank_" .. key + 1]:gsub("#%x%x%x%x%x%x", ""), groupStartX + spacer, forY, groupStartX + factionRowWidth, forY + 20, tocolor(255, 255, 255), 1, roboto, "center", "center")
+
+					
+
+						if isCursorHover(groupStartX + spacer, forY, factionRowWidth - 2 * spacer, 20) or key == selectedKey - currentRowG then
+
+							dxDrawRectangle(groupStartX + spacer, forY, factionRowWidth - 2 * spacer, 20, hoverColor)
+
+							dxDrawText(groups[groupId]["rank_" .. key + 1]:gsub("#%x%x%x%x%x%x", ""), groupStartX + spacer, forY, groupStartX + factionRowWidth, forY + 20, tocolor(0, 0, 0), 1, roboto, "center", "center")
+
+						end
+
+					end
+
+
+
+					groupStartX = groupStartX + factionRowWidth + spacerBig
+
+
+
+					dxDrawRectangle(groupStartX, groupStartY, factionRowWidth, 22 * 2 + spacer, bgColor)
+
+
+
+					local currentRankInf = {
+
+						groups[groupId]["rank_" .. selectedKey]:gsub("#%x%x%x%x%x%x", ""),
+
+						"Pagamento: $" .. groups[groupId]["rank_" .. selectedKey .. "_pay"]
+
+					}
+
+
+
+					for key = 0, 1 do
+
+						local forY = groupStartY + spacer + key * 22
+
+
+
+						dxDrawRectangle(groupStartX + spacer, forY, factionRowWidth - 2 * spacer, 20, slotColor)
+
+						dxDrawText(currentRankInf[key + 1], groupStartX, forY, groupStartX + factionRowWidth, forY + 20, tocolor(255, 255, 255), 1, roboto, "center", "center")
+
+					end
+
+
+
+					dxDrawButton("Taghir Dadan", groupStartX, groupStartY + 22 * 2 + spacer + spacerBig, factionRowWidth, 22, secondColor)		
+
+				
+
+					if isElement(editGuis.rangName) then
+
+						dxDrawEdit(groupStartX, groupStartY + 22 * 3 + spacer + spacerBig, factionRowWidth, 22, editGuis.rangName)
+
+						dxDrawEdit(groupStartX, groupStartY + 22 * 4 + spacer + spacerBig, factionRowWidth, 22, editGuis.rangPay)
+
+
+
+						dxDrawButton("Taghir", groupStartX, groupStartY + 22 * 5 + spacer + spacerBig, factionRowWidth, 22, hoverColor)
+
+						dxDrawButton("Laghv", groupStartX, groupStartY + 22 * 6 + spacer + spacerBig, factionRowWidth, 22, cancelColor)
+
+					end
+
+				elseif selectedMenu == 4 then
+
+					groupStartX = groupStartX + factionRowWidth + spacerBig
+
+
+
+					dxDrawRectangle(groupStartX, groupStartY, factionRowWidth * 2, 22 + spacer, bgColor)
+
+					dxDrawRectangle(groupStartX + spacer, groupStartY + spacer, factionRowWidth * 2 - 2 * spacer, 22 - spacer, slotColor)
+
+
+
+					local factionMoney = "Saldo: $" .. groups[groupId]["balance"]
+
+					if factionMoney == "Saldo: $0" then
+
+						factionMoney = "No há dinheiro na conta"
+
+					end
+
+					dxDrawText(factionMoney, groupStartX, groupStartY, groupStartX + factionRowWidth * 2, groupStartY + 22 + spacer, tocolor(255, 255, 255), 1, roboto, "center", "center")
+
+					
+
+					dxDrawButton("Variz", groupStartX, groupStartY + 22 + 2 * spacer, factionRowWidth, 20, hoverColor)
+
+					dxDrawButton("Bardasht", groupStartX + factionRowWidth, groupStartY + 22 + 2 * spacer, factionRowWidth, 20, secondColor)
+
+
+
+					if isElement(editGuis.addMoney) then
+
+						dxDrawEdit(groupStartX, groupStartY + 2 * 22 + 2 * spacer, 2 * factionRowWidth, 20, editGuis.addMoney)
+
+					--elseif isElement(editGuis.takeMoney) then
+
+						--dxDrawEdit(groupStartX, groupStartY + 2 * 22 + 2 * spacer, 2 * factionRowWidth, 20, editGuis.takeMoney)
+
+					end
+
+
+
+					if isElement(editGuis.addMoney) then
+
+						dxDrawButton("tarid", groupStartX, groupStartY + 3 * 22 + 2 * spacer, 2 * factionRowWidth, 20, hoverColor)
+
+						dxDrawButton("Laghv", groupStartX, groupStartY + 4 * 22 + 2 * spacer, 2 * factionRowWidth, 20, cancelColor)
+
+					end
+
+
+
+					--dxDrawText("Importante! Se a conta do grupo\numa exceção é do seu próprio interesse\n(por exemplo, afinação etc....)\npode ser punido pelos administradores.\nNós também pedimos que você evite tais questões\npara evitar pagamento desnecessário.", groupStartX, groupStartY + 6 * 22 + 2 * spacer, groupStartX + 2 * factionRowWidth, groupStartY + 6 * 22 + 2 * spacer, tocolor(255, 255, 255), 1, robotoBold, "center")
+
+				end
+
+			else
+
+				factionRowWidth = width / 4 - spacerBig
+
+				groupStartX, groupStartY = startX + factionRowWidth + spacerBig + spacer, startY + spacerBig
+
+
+
+				dxDrawText("Panel Faction\nShoma Ozv Faction Nistid", groupStartX, groupStartY, startX + width, startY + height, tocolor(255, 255, 255), 1, robotoBig, "center", "top")
+
+				
+
+				dxDrawRectangle(startX + spacerBig, startY + spacerBig, factionRowWidth, 14 * 30 + spacerBig + 1, bgColor)
+
+				
+
+				--- groups
+
+				for key = 1, 19 do
+
+					local forY = startY + 2 * spacerBig + (key - 1) * 30
+
+				
+
+					dxDrawRectangle(startX + 2 * spacerBig, forY, factionRowWidth - 2 * spacerBig, 26, slotColor)
+
+						
+
+					if isCursorHover(startX + 2 * spacerBig, forY, factionRowWidth - 2 * spacerBig, 26) or key == selectedGroup then
+
+						dxDrawRectangle(startX + 2 * spacerBig, forY, factionRowWidth - 2 * spacerBig, 26, hoverColor)
+
+					end
+
+				end
+
+			end
+
+		elseif currentPage == 4 then
+
+			dxDrawRectangle(startX + spacerBig, startY + spacerBig, 300, height - 2 * spacerBig, bgColor)
+
+
+
+			dxDrawRectangle(startX + 2 * spacerBig + 300, startY + spacerBig, width - 3 * spacerBig - 300, height - 2 * spacerBig, bgColor)
+
+			if #onlineAdmins[currentAdminRank] > 0 then
+
+				dxDrawRectangle(startX + 2 * spacerBig + 300 + spacer, startY + spacerBig + spacer + maxAdminRows * 22, width - 3 * spacerBig - 300 - 2 * spacer, 5 * 22 - spacerBig + 1, slotColor)
+
+				dxDrawText("Admin Hae Online: " .. #onlineAdmins[currentAdminRank], startX + 2 * spacerBig + 300 + spacer, startY + spacerBig + spacer + maxAdminRows * 22, startX + 2 * spacerBig + 300 + spacer + width - 3 * spacerBig - 300 - 2 * spacer, startY + spacerBig + spacer + maxAdminRows * 22 + 5 * 22 - spacerBig + 1, tocolor(255, 255, 255), 1, robotoBig, "center", "center")
+
+			
+
+				lastAdminRow = currentAdminRow + maxAdminRows - 1
+
+				for key, value in ipairs(onlineAdmins[currentAdminRank]) do
+
+					if key >= currentAdminRow and key <= lastAdminRow then
+
+						key = key - currentAdminRow + 1
+
+						local forY = startY + spacerBig + spacer + (key - 1) * 22
+
+
+
+						dxDrawRectangle(startX + 2 * spacerBig + 300 + spacer, forY, width - 3 * spacerBig - 300 - 2 * spacer, 20, slotColor)
+
+						
+
+						dxDrawText(value[1] .. " ID: " .. value[3], startX + 3 * spacerBig + 300 + spacer, forY, startX + width - 3 * spacerBig, forY + 20, tocolor(255, 255, 255), 1, roboto, "left", "center", false, false, false, true)
+
+						dxDrawText(value[2], startX + 3 * spacerBig + 300, forY, startX + width - 3 * spacerBig - spacer, forY + 20, tocolor(255, 255, 255), 1, roboto, "right", "center", false, false, false, true)					
+
+					
+
+						if isCursorHover(startX + 2 * spacerBig + 300 + spacer, forY, width - 3 * spacerBig - 300 - 2 * spacer, 20) then
+
+							dxDrawRectangle(startX + 2 * spacerBig + 300 + spacer, forY, width - 3 * spacerBig - 300 - 2 * spacer, 20, hoverColor)
+
+						
+
+							dxDrawText(value[1] .. " ID: " .. value[3], startX + 3 * spacerBig + 300 + spacer, forY, startX + width - 3 * spacerBig, forY + 20, tocolor(0, 0, 0), 1, roboto, "left", "center", false, false, false, true)
+
+							dxDrawText(value[2], startX + 3 * spacerBig + 300, forY, startX + width - 3 * spacerBig - spacer, forY + 20, tocolor(0, 0, 0), 1, roboto, "right", "center", false, false, false, true)					
+
+						end
+
+					end
+
+				end
+
+			else
+
+				dxDrawText("Hich Admini Online Nis.", startX + 2 * spacerBig + 300, startY + spacerBig, startX + width - spacerBig, startY + spacerBig + height - 2 * spacerBig, tocolor(243, 85, 85), 1, robotoBig, "center", "center")
+
+			end	
+
+
+
+			local adminRowHeight = ((height - 3 * spacerBig) / 8) - spacerBig
+
+			for key = 0, 7 do
+
+				local forY = startY + 2 * spacerBig + key * (adminRowHeight + spacerBig)
+
+
+
+				local color_true = tocolor(0, 0, 0)
+
+				local color_false = tocolor(255, 255, 255)
+
+
+
+				local color = color_false
+
+
+
+				dxDrawRectangle(startX + 2 * spacerBig, forY, 300 - 2 * spacerBig, adminRowHeight, slotColor)
+
+
+
+				if isCursorHover(startX + 2 * spacerBig, forY, 300 - 2 * spacerBig, adminRowHeight) or key == currentAdminRank then
+
+					color = color_true
+
+					dxDrawRectangle(startX + 2 * spacerBig, forY, 300 - 2 * spacerBig, adminRowHeight, hoverColor)
+
+				end
+
+
+
+				if key == 0 then
+
+					dxDrawText("Staffs!", startX + 2 * spacerBig, forY, startX + 300, forY + adminRowHeight, color, 1, robotoBig, "center", "center")
+
+				--[[elseif key == 1 then
+
+					dxDrawText("Trial_Helper", startX + 2 * spacerBig, forY, startX + 300, forY + adminRowHeight, color, 1, robotoBig, "center", "center")
+
+				elseif key == 2 then
+
+					dxDrawText("Helper", startX + 2 * spacerBig, forY, startX + 300, forY + adminRowHeight, color, 1, robotoBig, "center", "center")
+
+				elseif key == 3 then
+
+					dxDrawText("Trial-Admin", startX + 2 * spacerBig, forY, startX + 300, forY + adminRowHeight, color, 1, robotoBig, "center", "center")
+
+				elseif key == 4 then
+
+					dxDrawText("Admin", startX + 2 * spacerBig, forY, startX + 300, forY + adminRowHeight, color, 1, robotoBig, "center", "center")
+
+				elseif key == 5 then
+
+					dxDrawText("Senior_Admin", startX + 2 * spacerBig, forY, startX + 300, forY + adminRowHeight, color, 1, robotoBig, "center", "center")
+
+
+				elseif key == 6 then
+
+					dxDrawText("Supervisor", startX + 2 * spacerBig, forY, startX + 300, forY + adminRowHeight, color, 1, robotoBig, "center", "center")
+
+				elseif key == 7 then
+
+					dxDrawText("Head_Admin", startX + 2 * spacerBig, forY, startX + 300, forY + adminRowHeight, color, 1, robotoBig, "center", "center")
+
+				--else
+
+					--dxDrawText("Admin " .. key, startX + 2 * spacerBig, forY, startX + 300, forY + adminRowHeight, color, 1, robotoBig, "center", "center")
+
+				end]]
+				end
+
+			end
+
+		elseif currentPage == 5 then
+
+			local optionsRowHeight = ((height - 13 * spacerBig) / #optionsTable) - spacerBig
+
+			
+
+			dxDrawText("Tanzimat Gerafic", startX + spacerBig, startY, startX + spacerBig + 390 + 2 * spacerBig, startY + 2 * spacerBig + optionsRowHeight, tocolor(255, 255, 255), 1, robotoBig, "center", "center")
+
+			dxDrawRectangle(startX + spacerBig, startY - 2 * spacerBig + optionsRowHeight, 390 + 2 * spacerBig, 7 * (optionsRowHeight + spacerBig) + spacerBig, bgColor) ---safe siyah Poshte grafic
+
+			
+
+			for key = 1, 7 do
+
+				local value = optionsTable[key]
+
+				local forY = startY + 2 * spacerBig + key * (optionsRowHeight + spacerBig)
+
+				
+
+				dxDrawRectangle(startX + 2 * spacerBig, forY, 200, optionsRowHeight, slotColor)
+
+				dxDrawText(value[1], startX + spacerBig, forY, startX + spacerBig + 200, forY + optionsRowHeight, tocolor(255, 255, 255), 1, robotoBig, "center", "center")
+
+			
+
+				if isCursorHover(startX + 2 * spacerBig, forY, 200, optionsRowHeight) then
+
+					dxDrawRectangle(startX + 2 * spacerBig, forY, 200, optionsRowHeight, hoverColor)
+
+					dxDrawText(value[1], startX + spacerBig, forY, startX + spacerBig + 200, forY + optionsRowHeight, tocolor(0, 0, 0), 1, robotoBig, "center", "center")			
+
+				end
+
+				
+
+				if value[2] > 0 then
+
+					dxDrawRectangle(startX + 2 * spacerBig + 200 + spacerBig, forY + spacerBig, 190 - spacerBig, optionsRowHeight - 2 * spacerBig, hoverColor)
+
+				else
+
+					dxDrawRectangle(startX + 2 * spacerBig + 200 + spacerBig, forY + spacerBig, 190 - spacerBig, optionsRowHeight - 2 * spacerBig, cancelColor)
+
+				end
+
+				
+
+				if isCursorHover(startX + 2 * spacerBig + 200, forY, 190, optionsRowHeight) then
+
+					if value[2] or 0 == 0 then
+
+						dxDrawRectangle(startX + 2 * spacerBig + 200 + spacerBig, forY + spacerBig, 190 - spacerBig, optionsRowHeight - 2 * spacerBig, hoverColor)
+
+					else
+
+						dxDrawRectangle(startX + 2 * spacerBig + 200 + spacerBig, forY + spacerBig, 190 - spacerBig, optionsRowHeight - 2 * spacerBig, cancelColor)
+
+					end
+
+				
+
+					if value[1] ~= "distance" then
+
+						dxDrawText(changeTips[value[2] or 0], startX + 2 * spacerBig + 200, forY, startX + 2 * spacerBig + 390, forY + optionsRowHeight, tocolor(255, 255, 255), 1, robotoBig, "center", "center", false, false, false, true)
+
+					else
+
+						dxDrawText(maxdistance .. " distancia", startX + 2 * spacerBig + 200, forY, startX + 2 * spacerBig + 390, forY + optionsRowHeight, tocolor(255, 255, 255), 1, robotoBig, "center", "center", false, false, false, true)				
+
+					end
+
+				else
+
+					if value[1] ~= "distance" then
+
+						dxDrawText(optionsText[value[2] or 0], startX + 2 * spacerBig + 200, forY, startX + 2 * spacerBig + 390, forY + optionsRowHeight, tocolor(255, 255, 255), 1, robotoBig, "center", "center", false, false, false, true)				
+
+					else
+
+						local maxdistanceText = ""
+
+						
+
+						if maxdistance <= 0 then 
+
+							maxdistanceText = "Desligar"
+
+						else
+
+							maxdistanceText = maxdistance .. " distancia"
+
+						end
+
+						
+
+						if maxdistance > 4000 then 
+
+							maxdistance = 0
+
+						end
+
+						dxDrawText(maxdistanceText, startX + 2 * spacerBig + 200, forY, startX + 2 * spacerBig + 390, forY + optionsRowHeight, tocolor(255, 255, 255), 1, robotoBig, "center", "center", false, false, false, true)				
+
+					end
+
+				end
+
+			end
+
+			
+
+			local rightSx = startX + 390 + 4 * spacerBig
+
+			
+
+			--dxDrawText("Tanzimat", rightSx, startY, rightSx + 390, startY + 2 * spacerBig + optionsRowHeight, tocolor(255, 255, 255), 1, robotoBig, "center", "center")
+
+			--dxDrawRectangle(rightSx, startY + 2 * spacerBig + optionsRowHeight, 385, 3 * (optionsRowHeight + spacerBig) + spacerBig, bgColor)
+
+	
+
+			--[[for key = 10, 12 do
+
+				local value = optionsTable[key]
+
+				local forY = startY + 2 * spacerBig + (key - 9) * (optionsRowHeight + spacerBig)
+
+				
+
+				dxDrawRectangle(rightSx + spacerBig, forY, 200, optionsRowHeight, slotColor)
+
+				--dxDrawText(value[1], rightSx + spacerBig, forY, rightSx + spacerBig + 200, forY + optionsRowHeight, tocolor(255, 255, 255), 1, robotoBig, "center", "center")
+
+			
+
+				if isCursorHover(rightSx + spacerBig, forY, 200, optionsRowHeight) then
+
+					dxDrawRectangle(rightSx + spacerBig, forY, 200, optionsRowHeight, hoverColor)
+
+				--	dxDrawText(value[1], rightSx + spacerBig, forY, rightSx + spacerBig + 200, forY + optionsRowHeight, tocolor(0, 0, 0), 1, robotoBig, "center", "center")			
+
+				end
+
+				
+
+				dxDrawRectangle(rightSx + spacerBig + 200 + spacerBig, forY + spacerBig, 385 - 200 - 3 * spacerBig, optionsRowHeight - 2 * spacerBig, cancelColor)
+
+				--if value[2] ~= 1 then
+
+					--dxDrawText("Estilo " .. value[2], rightSx + spacerBig + 200 + spacerBig, forY + spacerBig, rightSx + spacerBig + 200 + spacerBig + 385 - 200 - 3 * spacerBig, forY + spacerBig + optionsRowHeight - 2 * spacerBig, tocolor(255, 255, 255), 1, robotoBig, "center", "center")
+
+				--else
+
+					--dxDrawText("Desligar", rightSx + spacerBig + 200 + spacerBig, forY + spacerBig, rightSx + spacerBig + 200 + spacerBig + 385 - 200 - 3 * spacerBig, forY + spacerBig + optionsRowHeight - 2 * spacerBig, tocolor(255, 255, 255), 1, robotoBig, "center", "center")			
+
+				--end
+
+				
+
+				if isCursorHover(rightSx + spacerBig + 200 + spacerBig, forY + spacerBig, 385 - 200 - 3 * spacerBig, optionsRowHeight - 2 * spacerBig) then
+
+					dxDrawRectangle(rightSx + spacerBig + 200 + spacerBig, forY + spacerBig, 385 - 200 - 3 * spacerBig, optionsRowHeight - 2 * spacerBig, hoverColor)
+
+					if value[2] ~= 1 then
+
+						--dxDrawText("Estilo " .. value[2], rightSx + spacerBig + 200 + spacerBig, forY + spacerBig, rightSx + spacerBig + 200 + spacerBig + 385 - 200 - 3 * spacerBig, forY + spacerBig + optionsRowHeight - 2 * spacerBig, tocolor(0, 0, 0), 1, robotoBig, "center", "center")
+
+					else
+
+						--dxDrawText("Desligar", rightSx + spacerBig + 200 + spacerBig, forY + spacerBig, rightSx + spacerBig + 200 + spacerBig + 385 - 200 - 3 * spacerBig, forY + spacerBig + optionsRowHeight - 2 * spacerBig, tocolor(0, 0, 0), 1, robotoBig, "center", "center")			
+
+					end
+
+				end
+
+			end]]
+
+		end
+	
+		--setElementData(localPlayer, "hud",false)
+	end
+
+end)
+
+
+
+function dxDrawButton(text, startX, startY, width, height, color)
+
+	dxDrawRectangle(startX - 1, startY, 1, height, bgColor) --left
+
+	dxDrawRectangle(startX + width, startY, 1, height, bgColor) --right
+
+	dxDrawRectangle(startX - 1, startY - 1, width + 2, 1, bgColor) --top
+
+	dxDrawRectangle(startX - 1, startY + height, width + 2, 1, bgColor) --bottom
+
+
+
+	dxDrawRectangle(startX, startY, width, height, color)
+
+
+
+	dxDrawText(text, startX, startY, startX + width, startY + height, tocolor(255, 255, 255), 1, roboto, "center", "center", false, false, false, true)
+
+end
+
+
+
+function dxDrawEdit(startX, startY, width, height, element)
+
+	dxDrawRectangle(startX - 1, startY, 1, height, bgColor) --left
+
+	dxDrawRectangle(startX + width, startY, 1, height, bgColor) --right
+
+	dxDrawRectangle(startX - 1, startY - 1, width + 2, 1, bgColor) --top
+
+	dxDrawRectangle(startX - 1, startY + height, width + 2, 1, bgColor) --bottom
+
+
+
+	dxDrawRectangle(startX, startY, width, height, slotColor)
+
+
+
+	dxDrawText(guiGetText(element), startX + 4, startY, startX + width, startY + height, tocolor(255, 255, 255), 1, roboto, "left", "center")
+
+end
+
+
+
+--- Shaders
+
+function checkSettings()
+
+	local file = xmlLoadFile ("xml/settings.xml")
+
+	lencsefolt = ""
+
+	egbolt = ""
+
+	hdrertek = ""
+
+	kontrasztertek = ""
+
+	vizertek = ""
+
+	jarmuertek = ""
+
+	--motionblur = ""
+
+	blackwhite = ""
+
+	distance = 0
+
+	--walkx = 0
+
+	--fightx = 1
+
+	sayx = 1
+
+
+
+	if file then
+
+		local data = xmlFindChild(file, "settings", 0)
+
+		if data then
+
+			local attrs = xmlNodeGetAttributes(data)
+
+			
+
+			if attrs then
+
+				lencsefolt = attrs.lencsefolt or ""
+
+				egbolt = attrs.egbolt or ""
+
+				hdrertek = attrs.hdrbe or ""
+
+				kontrasztertek = attrs.kontraszt or ""
+
+				vizertek = attrs.viz or ""
+
+				jarmuertek = attrs.jarmuvek or ""
+
+				--motionblur = attrs.motionblur or ""
+
+				blackwhite = attrs.blackwhite or ""
+
+				distance = attrs.distance or 0
+
+				
+
+				--walkx = attrs.walk or 0
+
+				--fightx = attrs.fight or 1
+
+				sayx = attrs.say or 1
+
+			end
+
+			
+
+			optionsTable[2][2] = valueToBin(jarmuertek)
+
+			optionsTable[3][2], optionsTable[4][2] = valueToBin(vizertek) , valueToBin(kontrasztertek)		
+
+			optionsTable[5][2]  = valueToBin(hdrertek) 		
+
+			optionsTable[6][2] = valueToBin(lencsefolt) --, valueToBin(motionblur)
+
+			optionsTable[7][2] = valueToBin(blackwhite)
+
+			optionsTable[1][2] = tonumber(distance) or 0
+
+			optionsTable[10][2], optionsTable[11][2], optionsTable[12][2] = tonumber(walkx), tonumber(fightx), tonumber(sayx)
+
+			
+
+			if tonumber(distance) > 0 then
+
+				maxdistance = tonumber(distance)
+
+				setFarClipDistance(tonumber(distance))
+
+			else
+
+				resetFarClipDistance()
+
+			end
+
+		
+
+			--selectedWalkStyle = tonumber(walkx)
+
+		--	selectedFightStyle = tonumber(fightx)
+
+			--selectedSayStyle = tonumber(sayx)
+
+			
+
+			--setElementData(localPlayer, "sayStyle", selectedSayStyle)
+
+		--	setElementData(localPlayer, "sayAnim", says[selectedSayStyle])
+
+		--	triggerServerEvent("setPedNextFightStyle", localPlayer, fights[selectedFightStyle])
+
+		--	setPedWalkingStyle(localPlayer, walks[selectedWalkStyle])
+
+		--	triggerServerEvent("setPedNextWalkingStyle", localPlayer, walks[selectedWalkStyle])
+
+		end
+
+	else
+		local rootNode = xmlCreateFile("xml/settings.xml", "external")
+
+		local newCode = xmlCreateChild(rootNode, "settings")
+
+		
+
+		xmlNodeSetAttribute(newCode, "lente local", "false")
+
+		xmlNodeSetAttribute(newCode, "céu", "false")
+
+		xmlNodeSetAttribute(newCode, "hdrbe", "false")
+
+		xmlNodeSetAttribute(newCode, "contraste", "false")
+
+		xmlNodeSetAttribute(newCode, "água", "false")
+
+		xmlNodeSetAttribute(newCode, "Todos os veículos", "false")
+
+		--xmlNodeSetAttribute(newCode, "motionblur", "false")
+
+		xmlNodeSetAttribute(newCode, "distance", "0")
+
+		
+
+		--xmlNodeSetAttribute(newCode, "Andar estilo", "1")
+
+		--xmlNodeSetAttribute(newCode, "Estilo de luta", "1")
+
+		--xmlNodeSetAttribute(newCode, "Estilo de fala", "1")
+
+		
+
+		optionsTable[2][2] = 0
+
+		optionsTable[3][2], optionsTable[4][2] = 0, 0
+
+		optionsTable[5][2], optionsTable[6][2] = 0, 0
+
+		
+
+		optionsTable[1][2] = 0
+
+	--	optionsTable[10][2], optionsTable[11][2], optionsTable[12][2] = 1, 1, 1
+
+
+
+		xmlSaveFile(rootNode)
+
+	end
+
+end
+
+
+
+function valueToBin(value)
+
+	if value == "true" then
+
+		return 1
+
+	else
+
+		return 0
+
+	end
+
+end	
+
+
+--[[
+setTimer(function()
+
+	setControlState("walk", true)
+
+end, 500, 0)]]--
+
+
+
+addEventHandler("onClientResourceStart", resourceRoot, function()
+
+	loadSettings()
+
+end)
+
+
+
+addEventHandler("onClientElementDataChange", root, function(dataName)
+
+	if source == localPlayer and dataName == "loggedin" then
+
+		loadSettings()
+
+	end
+
+end)
+
+
+
+function loadSettings()
+
+	setPlayerHudComponentVisible("all", false)
+
+	setPlayerHudComponentVisible("crosshair", true)
+
+
+
+	checkSettings()
+
+	
+
+	--setPedWalkingStyle(localPlayer, 0) --walks[selectedWalkStyle or 0])
+
+	--triggerServerEvent("setPedNextWalkingStyle", localPlayer, walks[selectedWalkStyle])
+
+	--triggerServerEvent("setPedNextFightStyle", localPlayer, fights[selectedFightStyle or 1])
+
+	--setElementData(localPlayer, "sayStyle", selectedSayStyle or 1)
+
+	--setElementData(localPlayer, "sayAnim", says[selectedSayStyle])
+
+	
+
+	--optionsTable[10][2], optionsTable[11][2], optionsTable[12][2] = selectedWalkStyle, selectedFightStyle, selectedSayStyle
+
+	
+
+	if optionsTable[3][2] > 0 then
+
+		if not WaterShader then
+
+			startWaterRefract()
+
+		end		
+
+	end				
+
+		
+
+	if optionsTable[4][2] > 0 then
+
+		if not kontrasztShader then
+
+			enableContrast(true)
+
+		end		
+
+	end		
+
+		
+
+	if optionsTable[5][2] > 0 then
+
+		if not hdrShader then
+
+			enableDetail()
+
+		end	
+
+	end	
+
+		
+
+	
+
+		
+
+	if optionsTable[6][2] > 0 then
+
+		if not lencsefoltShader then
+
+			controlLencseFolt(true)
+
+		end		
+
+	end			
+
+	
+
+	
+
+	
+
+	if optionsTable[7][2] > 0 then
+
+		if not enabledBlackWhite then
+
+			changeBlackWhiteState(true)
+
+		end
+
+	end
+
+end
+
+
+
+function updateSettings()		
+
+	-- Lencsefolt
+
+	if optionsTable[6][2] > 0 then
+
+		if not lencsefoltShader then
+
+			lencsefoltShader = true
+
+			controlLencseFolt(true)
+
+		end
+
+		xml_lencse = "true"
+
+	else
+
+		if lencsefoltShader then
+
+			controlLencseFolt(false)
+
+			lencsefoltShader = nil
+
+		end
+
+		xml_lencse = "false"
+
+	end
+
+	
+
+	-- Egbolt
+
+	
+	
+
+	-- Kidolgozodttság
+
+	if optionsTable[5][2] > 0 then
+
+		if not hdrShader then
+
+			hdrShader = true
+
+			enableDetail()
+
+		end
+
+		xml_hdr = "true"
+
+	else
+
+		if hdrShader then
+
+			disableDetail()
+
+			hdrShader = nil
+
+		end
+
+		xml_hdr = "false"
+
+	end
+
+	
+
+	-- Kontraszt
+
+	if optionsTable[4][2] > 0 then
+
+		if not kontrasztShader then
+
+			kontrasztShader = true
+
+			enableContrast(true)
+
+		end
+
+		xml_kontraszt = "true"
+
+	else
+
+		if kontrasztShader then
+
+			disableContrast()
+
+			kontrasztShader = nil
+
+		end
+
+		xml_kontraszt = "false"
+
+	end
+
+	
+
+	-- VizShader
+
+	if optionsTable[3][2] > 0 then
+
+		if not WaterShader then
+
+			WaterShader = true
+
+			startWaterRefract()
+
+		end
+
+		xml_watershader = "true"
+
+	else
+
+		if WaterShader then
+
+			executeCommandHandler("waterrefrectstopfunction")
+
+			WaterShader = nil
+
+		end
+
+		xml_watershader = "false"
+
+	end
+
+	
+
+	-- Kocsi
+
+	if optionsTable[2][2] > 0 then
+
+		if not JarmuShader then
+
+			JarmuShader = true
+
+			startCarPaintReflect()
+
+		end
+
+		xml_jarmuertek = "true"
+
+	else
+
+		if JarmuShader then
+
+			stopCarPaintReflect()
+
+			JarmuShader = nil
+
+		end
+
+		xml_jarmuertek = "false"
+
+	end	
+
+	--[[
+
+	-- motionblur
+
+	if optionsTable[8][2] > 0 then
+
+		if not motiobblurShader then
+
+			motiobblurShader = true
+
+			enableRadialBlur()
+
+		end
+
+		xml_motiobblur = "true"
+
+	else
+
+		if motiobblurShader then
+
+			disableRadialBlur()
+
+			motiobblurShader = nil
+
+		end
+
+		xml_motiobblur = "false"
+
+	end]]--
+
+	
+
+	-- black and white
+
+	if optionsTable[7][2] > 0 then
+
+		if not enabledBlackWhite then
+
+			changeBlackWhiteState(true)
+
+		end
+
+		xml_blackwhiteShader = "true"
+
+	else
+
+		if enabledBlackWhite then
+
+			changeBlackWhiteState(false)
+
+		end
+
+		xml_blackwhiteShader = "false"
+
+	end
+
+	
+
+	local rootNode = xmlCreateFile("xml/settings.xml", "external")
+
+	local newNode = xmlCreateChild(rootNode, "settings")
+
+	
+
+	xmlNodeSetAttribute(newNode, "lente local", xml_lencse)
+
+	xmlNodeSetAttribute(newNode, "céu", xml_egbolt)
+
+	xmlNodeSetAttribute(newNode, "hdrbe", xml_hdr)
+
+	xmlNodeSetAttribute(newNode, "contraste", xml_kontraszt)
+
+	xmlNodeSetAttribute(newNode, "água", xml_watershader)
+
+	xmlNodeSetAttribute(newNode, "Todos os veículos", xml_jarmuertek)
+
+	--xmlNodeSetAttribute(newNode, "motionblur", xml_motiobblur)
+
+	xmlNodeSetAttribute(newNode, "blackwhite", xml_blackwhiteShader)
+
+	xmlNodeSetAttribute(newNode, "distance", maxdistance)
+
+	
+
+	--xmlNodeSetAttribute(newNode, "Andar estilo", selectedWalkStyle)
+
+	--xmlNodeSetAttribute(newNode, "Estilo de luta", selectedFightStyle)
+
+	--xmlNodeSetAttribute(newNode, "Estilo de fala", selectedSayStyle)
+
+	
+
+	xmlSaveFile(rootNode)
+
+	xmlUnloadFile(rootNode)
+
+end

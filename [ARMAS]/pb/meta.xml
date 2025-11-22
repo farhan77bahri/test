@@ -1,0 +1,27 @@
+<meta>
+	<info author="Enix-Game Development Team" name="SERVER CHAT" description="" version="1.0.0" type="script" />
+	<script src="pb_client.lua" type="client" />
+	<script src="pb_server.lua" type="server" />
+	<file src="pb_back.png" />
+	<file src="white.png" />
+	<file src="accept.png" />
+	<file src="close.png" />
+
+	<file src="deagle.png" />
+	<file src="m4.png" />
+	<file src="rifle.png" />
+	<file src="create.png" />
+	<file src="join.png" />
+
+	<file src="hotel.jpg" />
+	<file src="keshti.jpg" />
+	<file src="jungle.jpg" />
+	<file src="paintball.jpg" />
+	<file src="shahrak.jpg" />
+	<file src="carter.jpg" />
+
+	<file src="VoiceEffects/dominating.mp3" />
+	<file src="VoiceEffects/godlike.mp3" />
+	<file src="VoiceEffects/headshot.mp3" />
+	<file src="VoiceEffects/holyshiiit.mp3" />
+</meta>

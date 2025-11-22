@@ -1,0 +1,355 @@
+﻿local start = {
+
+	{1101.0242919922,-315.90603637695,72.9921875},
+
+	--[[
+    {1095.742, -326.281, 72.992},
+    {1101.605, -326.281, 72.992},
+    {1106.065, -326.281, 72.992},
+    {1111.661, -326.281, 72.992},
+	
+    {1095.356, -321.523, 72.992},
+    {1101.472, -321.523, 72.992},
+    {1106.025, -321.523, 72.992},
+    {1111.891, -321.523, 72.992},
+	
+    {1095.356, -310.281, 72.992},
+    {1101.472, -310.281, 72.992},
+    {1106.025, -310.281, 72.992},
+    {1111.891, -310.281, 72.992},
+	
+    {1095.356, -306.523, 72.992},
+    {1101.472, -306.523, 72.992},
+    {1106.025, -306.523, 72.992},
+    {1111.891, -306.523, 72.992},
+	
+    {1095.356, -302.281, 72.992},
+    {1101.472, -302.281, 72.992},
+    {1106.025, -302.281, 72.992},
+	{1111.891, -302.281, 72.992},
+	]]--
+
+}
+
+local startH = {
+    {-560.875, 2584.68, 53.358},
+    {-568.989, 2590.324, 52.966},
+}
+
+local startM = {
+    {-1888.33, -1604.689, 21.876},
+    {-1879.212, -1614.518, 22.708},
+}
+
+addEventHandler("onClientKey", root, function(button, press) 
+     if (getElementData(localPlayer, "Object:Jobs") == true) then
+         if (button == "F1" or button == "F2" or button == "space" or button == "x" or button == "lshift" or button == "rshift" or button == "mouse1" or button == "mouse2" or button == "lalt" or button == "ralt" or button == "lctrl" or button == "rctrl") then
+             cancelEvent() 
+		 end
+     end 
+end) 
+
+addEventHandler("onClientKey", root, function(button, press) 
+     if (getElementData(localPlayer, "venderDrogas") == true) then
+         if (button == "F1" or button == "f" or button == "space" or button == "x" or button == "lshift" or button == "rshift" or button == "mouse1" or button == "mouse2" or button == "lalt" or button == "ralt" or button == "lctrl" or button == "rctrl") then
+             cancelEvent() 
+		 end
+     end 
+end) 
+
+addEventHandler("onClientKey", root,  
+function ( key, press ) 
+     if (getElementData(localPlayer, "Object:Jobs") == true) then
+         if (key == "w") then  
+             if (getKeyState("space")) then 
+                 cancelEvent()
+			 end
+        end 
+    end 
+end) 
+
+function texto ()
+     for _,value in pairs(start) do
+   	     if ( getDistanceBetweenPoints3D ( value[1], value[2], value[3], getElementPosition ( localPlayer ) ) ) < 5 then
+   	     local coords = { getScreenFromWorldPosition ( value[1], value[2], value[3] + 1.5 ) }
+   	         if coords[1] and coords[2] then
+	   	         dxDrawText("Pressione [E] Para colher a Maconha", coords[1], coords[2], coords[1], coords[2], tocolor(255, 255, 255, 255) , 1.20, "default-bold", "center", "center", false, false, false,  true, false) 
+	         end
+		 end
+	end 
+end
+addEventHandler("onClientRender",root,texto)
+
+function texto2 ()
+     for _,value2 in pairs(startH) do
+   	     if ( getDistanceBetweenPoints3D ( value2[1], value2[2], value2[3], getElementPosition ( localPlayer ) ) ) < 10 then
+   	     local coords2 = { getScreenFromWorldPosition ( value2[1], value2[2], value2[3] + 1.5 ) }
+   	         if coords2[1] and coords2[2] then
+	   	         dxDrawText("Pressione [E] Para produzir a Cocaina", coords2[1], coords2[2], coords2[1], coords2[2], tocolor(255, 255, 255, 255) , 1.20, "default-bold", "center", "center", false, false, false,  true, false) 
+	         end
+		 end
+	end 
+end
+addEventHandler("onClientRender",root,texto2)
+
+function texto3 ()
+     for _,value3 in pairs(startM) do
+   	     if ( getDistanceBetweenPoints3D ( value3[1], value3[2], value3[3], getElementPosition ( localPlayer ) ) ) < 10 then
+   	     local coords3 = { getScreenFromWorldPosition ( value3[1], value3[2], value3[3] + 1.5 ) }
+   	         if coords3[1] and coords3[2] then
+	   	         dxDrawText("Pressione [E] Para produzir a Heroina", coords3[1], coords3[2], coords3[1], coords3[2], tocolor(255, 255, 255, 255) , 1.20, "default-bold", "center", "center", false, false, false,  true, false) 
+	         end
+		 end
+	end 
+end
+addEventHandler("onClientRender",root,texto3)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local screenW2,screenH2  = guiGetScreenSize()
+local resW2, resH2       = 1920, 1080
+local xS, yS         =  (screenW2/resW2), (screenH2/resH2)
+
+catg = {
+     {MACONHA, droga_valorm, }
+}
+
+local font = "default"
+
+addEventHandler("onClientRender", root, 
+function ()
+	 if (getElementData(localPlayer, "infoContagem") == true) then
+         dxDrawText("Realizando a #7cc576Contagem #FFFFFFdas drogas no caminhão! Aguarde. \n #7cc576(OBS: #FFFFFFIsso pode demorar um pouco#7cc576)", screenW2 * 0.3203, screenH2 * 0.6546, screenW2 * 0.7000, screenH2 * 0.6880, tocolor(255, 255, 255, 255), 2.00, font, "center", "center", false, false, false, true, false)
+    end
+end)
+
+function dxBolsa ()
+        dxDrawRectangle(xS*653, yS*410, xS*567, yS*326, tocolor(230, 230, 230, 255), false)
+        dxDrawRectangle(xS*653, yS*410, xS*89, yS*326, tocolor(0, 143, 23, 213), false)
+	    dxDrawImage (xS*653, yS*430, xS*89, yS*65, 'button1.png')
+	    dxDrawImage (xS*653, yS*495, xS*89, yS*65, 'button2.png')
+     if (numberaba == 0) then
+        dxDrawText("BOLSA DE VALORES\nSELECIONE UMA DAS CATEGORIAS AO LADO\n\n4i20 Roleplay", xS*742, yS*528, xS*1220, yS*588, tocolor(0, 1, 0, 101), 1.20, "default-bold", "center", "center", false, false, false, false, false)
+	 end
+		dxDrawText("BV Roleplay", xS*742, yS*708, xS*1220, yS*730, tocolor(0, 1, 0, 101), 1.10, "default-bold", "center", "center", false, false, false, false, false)
+	 if (numberaba == 1) then
+		dxDrawText("EM BREVE", xS*742, yS*528, xS*1220, yS*588, tocolor(0, 1, 0, 101), 1.20, "default-bold", "center", "center", false, false, false, false, false)
+--[[
+        dxDrawRectangle(xS*742, yS*430, xS*478, yS*26, tocolor(0, 1, 0, 29), true)
+        dxDrawRectangle(xS*972, yS*430, xS*124, yS*26, tocolor(0, 1, 0, 29), true)
+        dxDrawText("CARGA", xS*774, yS*430, xS*966, yS*456, tocolor(0, 1, 0, 101), 1.20, "default-bold", "left", "center", false, false, false, false, false)
+        dxDrawText("BOLSA", xS*1096, yS*430, xS*1220, yS*456, tocolor(0, 1, 0, 101), 1.20, "default-bold", "center", "center", false, false, false, false, false)
+        dxDrawText("VALOR", xS*972, yS*430, xS*1096, yS*456, tocolor(0, 1, 0, 101), 1.20, "default-bold", "center", "center", false, false, false, false, false)
+        dxDrawRectangle(xS*742, yS*469, xS*478, yS*26, tocolor(0, 1, 0, 29), true)
+        dxDrawRectangle(xS*742, yS*499, xS*478, yS*26, tocolor(0, 1, 0, 29), true)
+        dxDrawRectangle(xS*742, yS*529, xS*478, yS*26, tocolor(0, 1, 0, 29), true)
+        dxDrawText("BV", xS*652, yS*708, xS*742, yS*730, tocolor(255, 255, 255, 255), 1.20, "default-bold", "center", "center", false, false, false, false, false)	 
+        dxDrawText(topNC1 or "BV", xS*774, yS*469, xS*966, yS*495, tocolor(0, 1, 0, 101), 1.20, "default-bold", "left", "center", false, false, false, false, false)
+        dxDrawText(topVC1 or "BV", xS*972, yS*469, xS*1096, yS*495, tocolor(0, 1, 0, 101), 1.20, "default-bold", "center", "center", false, false, false, false, false)
+        dxDrawText(topBC1 or "BV", xS*1096, yS*469, xS*1220, yS*495, tocolor(9, 255, 9, 254), 1.20, "default-bold", "center", "center", false, false, false, false, false)
+        dxDrawText(topNC2 or "BV", xS*774, yS*499, xS*966, yS*525, tocolor(0, 1, 0, 101), 1.20, "default-bold", "left", "center", false, false, false, false, false)
+        dxDrawText(topVC2 or "BV", xS*972, yS*499, xS*1096, yS*525, tocolor(0, 1, 0, 101), 1.20, "default-bold", "center", "center", false, false, false, false, false)
+        dxDrawText(topBC2 or "BV", xS*1096, yS*499, xS*1220, yS*525, tocolor(254, 9, 9, 254), 1.20, "default-bold", "center", "center", false, false, false, false, false)
+        dxDrawText(topNC3 or "BV", xS*774, yS*529, xS*966, yS*555, tocolor(0, 1, 0, 101), 1.20, "default-bold", "left", "center", false, false, false, false, false)
+        dxDrawText(topVC3 or "BV", xS*972, yS*529, xS*1096, yS*555, tocolor(0, 1, 0, 101), 1.20, "default-bold", "center", "center", false, false, false, false, false)
+        dxDrawText(topBC3 or "BV", xS*1096, yS*529, xS*1220, yS*555, tocolor(0, 1, 0, 101), 1.20, "default-bold", "center", "center", false, false, false, false, false)
+--]]
+     end
+	 if (numberaba == 2) then
+        dxDrawRectangle(xS*742, yS*430, xS*478, yS*26, tocolor(0, 1, 0, 29), true)
+        dxDrawRectangle(xS*972, yS*430, xS*124, yS*26, tocolor(0, 1, 0, 29), true)
+        dxDrawText("CARGA", xS*774, yS*430, xS*966, yS*456, tocolor(0, 1, 0, 101), 1.20, "default-bold", "left", "center", false, false, false, false, false)
+        dxDrawText("BOLSA", xS*1096, yS*430, xS*1220, yS*456, tocolor(0, 1, 0, 101), 1.20, "default-bold", "center", "center", false, false, false, false, false)
+        dxDrawText("VALOR", xS*972, yS*430, xS*1096, yS*456, tocolor(0, 1, 0, 101), 1.20, "default-bold", "center", "center", false, false, false, false, false)
+        dxDrawRectangle(xS*742, yS*469, xS*478, yS*26, tocolor(0, 1, 0, 29), true)
+        dxDrawRectangle(xS*742, yS*499, xS*478, yS*26, tocolor(0, 1, 0, 29), true)
+        dxDrawRectangle(xS*742, yS*529, xS*478, yS*26, tocolor(0, 1, 0, 29), true)
+        dxDrawText("BV", xS*652, yS*708, xS*742, yS*730, tocolor(255, 255, 255, 255), 1.20, "default-bold", "center", "center", false, false, false, false, false)	 
+        dxDrawText(topND1 or "BV", xS*774, yS*469, xS*966, yS*495, tocolor(0, 1, 0, 101), 1.20, "default-bold", "left", "center", false, false, false, false, false)
+        dxDrawText(topVD1 or "BV", xS*972, yS*469, xS*1096, yS*495, tocolor(0, 1, 0, 101), 1.20, "default-bold", "center", "center", false, false, false, false, false)
+        dxDrawText(topBD1 or "BV", xS*1096, yS*469, xS*1220, yS*495, tocolor(9, 255, 9, 254), 1.20, "default-bold", "center", "center", false, false, false, false, false)
+        dxDrawText(topND2 or "BV", xS*774, yS*499, xS*966, yS*525, tocolor(0, 1, 0, 101), 1.20, "default-bold", "left", "center", false, false, false, false, false)
+        dxDrawText(topVD2 or "BV", xS*972, yS*499, xS*1096, yS*525, tocolor(0, 1, 0, 101), 1.20, "default-bold", "center", "center", false, false, false, false, false)
+        dxDrawText(topBD2 or "BV", xS*1096, yS*499, xS*1220, yS*525, tocolor(254, 9, 9, 254), 1.20, "default-bold", "center", "center", false, false, false, false, false)
+        dxDrawText(topND3 or "BV", xS*774, yS*529, xS*966, yS*555, tocolor(0, 1, 0, 101), 1.20, "default-bold", "left", "center", false, false, false, false, false)
+        dxDrawText(topVD3 or "BV", xS*972, yS*529, xS*1096, yS*555, tocolor(0, 1, 0, 101), 1.20, "default-bold", "center", "center", false, false, false, false, false)
+        dxDrawText(topBD3 or "BV", xS*1096, yS*529, xS*1220, yS*555, tocolor(0, 1, 0, 101), 1.20, "default-bold", "center", "center", false, false, false, false, false)
+	 end
+end
+
+function click (button, state)
+     if Bolsa then 
+         if  state == "down"  then 
+         if isCursorOnElement(xS*653, yS*430, xS*89, yS*65) then
+             numberaba = 1
+		 elseif isCursorOnElement(xS*653, yS*495, xS*89, yS*65) then
+             numberaba = 2
+			 end
+         end
+     end
+end
+addEventHandler("onClientClick", getRootElement(), click)
+
+function attPag (drogaN, Valor, BolsaV)
+     if (drogaN) then
+         if (Valor) then
+		     if (BolsaV) then
+			     if (drogaN == "MACONHA") then
+				     if (Valor == 700) then
+     			         topND1 = drogaN
+     				     topVD1 = Valor
+     				     topBD1 = BolsaV
+					 end
+				     if (Valor == 350) then
+     			         topND2 = drogaN
+     				     topVD2 = Valor
+     				     topBD2 = BolsaV
+					 end
+				     if (Valor == 100) then
+     			         topND3 = drogaN
+     				     topVD3 = Valor
+     				     topBD3 = BolsaV
+					 end
+				 end
+			     if (drogaN == "HEROINA") then
+				     if (Valor == 700) then
+     			         topND1 = drogaN
+     				     topVD1 = Valor
+     				     topBD1 = BolsaV
+					 end
+				     if (Valor == 350) then
+     			         topND2 = drogaN
+     				     topVD2 = Valor
+     				     topBD2 = BolsaV
+					 end
+				     if (Valor == 100) then
+     			         topND3 = drogaN
+     				     topVD3 = Valor
+     				     topBD3 = BolsaV
+					 end
+				 end
+			     if (drogaN == "COCAINA") then
+				     if (Valor == 700) then
+     			         topND1 = drogaN
+     				     topVD1 = Valor
+     				     topBD1 = BolsaV
+					 end
+				     if (Valor == 350) then
+     			         topND2 = drogaN
+     				     topVD2 = Valor
+     				     topBD2 = BolsaV
+					 end
+				     if (Valor == 100) then
+     			         topND3 = drogaN
+     				     topVD3 = Valor
+     				     topBD3 = BolsaV
+					 end
+				 end
+			 end
+		 end
+	 end
+end
+addEvent("attPag", true)
+addEventHandler("attPag", root, attPag)
+
+function attPagC (cargaN, Valor, BolsaV)
+     if (cargaN) then
+         if (Valor) then
+		     if (BolsaV) then
+			     if (cargaN == "MAÇA") then
+				     if (Valor == 500) then
+     			         topNC1 = cargaN
+     				     topVC1 = Valor
+     				     topBC1 = BolsaV
+					 end
+				     if (Valor == 350) then
+     			         topNC2 = cargaN
+     				     topVC2 = Valor
+     				     topBC2 = BolsaV
+					 end
+				     if (Valor == 200) then
+     			         topNC3 = cargaN
+     				     topVC3 = Valor
+     				     topBC3 = BolsaV
+					 end
+				 end
+			     if (cargaN == "MADEIRA") then
+				     if (Valor == 500) then
+     			         topNC1 = cargaN
+     				     topVC1 = Valor
+     				     topBC1 = BolsaV
+					 end
+				     if (Valor == 350) then
+     			         topNC2 = cargaN
+     				     topVC2 = Valor
+     				     topBC2 = BolsaV
+					 end
+				     if (Valor == 200) then
+     			         topNC3 = cargaN
+     				     topVC3 = Valor
+     				     topBC3 = BolsaV
+					 end
+				     end
+			     if (cargaN == "LARANJA") then
+				     if (Valor == 500) then
+     			         topNC1 = cargaN
+     				     topVC1 = Valor
+     				     topBC1 = BolsaV
+					 end
+				     if (Valor == 350) then
+     			         topNC2 = cargaN
+     				     topVC2 = Valor
+     				     topBC2 = BolsaV
+					 end
+				     if (Valor == 200) then
+     			         topNC3 = cargaN
+     				     topVC3 = Valor
+     				     topBC3 = BolsaV
+					 end
+				 end
+			 end
+		 end
+	 end
+end
+addEvent("attPagC", true)
+addEventHandler("attPagC", root, attPagC)
+
+Bolsa = false
+
+function startDxB ()
+     if (Bolsa == false) then
+	     if not (numberaba) then
+		     numberaba = 0
+		 end
+	     addEventHandler("onClientRender", root, dxBolsa)
+		 Bolsa = true
+		 else
+	     removeEventHandler("onClientRender", root, dxBolsa)
+		  Bolsa = false
+	 end
+end
+addEvent("startDxB", true)
+addEventHandler("startDxB", root, startDxB)
+
+function isCursorOnElement(achx,achy,width,height)
+if not isCursorShowing () then return end
+    local cx, cy = getCursorPosition()
+    local cx, cy = (cx*screenW2), (cy*screenH2)
+    if (cx >= achx and cx <= achx + width) and (cy >= achy and cy <= achy + height) then
+    return true
+    else
+    return false
+    end
+end

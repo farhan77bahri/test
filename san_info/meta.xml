@@ -1,0 +1,24 @@
+<meta>
+    
+    <script src="codeClient.lua" type="client" />
+    <script src="codeServer.lua" type="server" />
+    
+    <file src="files/fonts/roboto.ttf" />
+    <file src="files/fonts/icons.ttf" />
+    <file src="files/fonts/icons2.ttf" />
+    <file src="files/fonts/icons3.ttf" />
+    <file src="files/i.mp3" />
+    
+    <export function="addNotification" type="client" />
+    <export function="addNotification" type="server" />
+    
+    <script src="notifi/codeClient.lua" type="client" />
+    <script src="notifi/codeServer.lua" type="server" />
+    <file src="notifi/files/myriadproregular.ttf" />
+    <file src="notifi/files/1.png" />
+    <file src="notifi/files/2.png" />
+    <file src="notifi/files/3.png" />
+    <file src="notifi/files/notification.png" />
+    <export function="createDebugNotification" />
+    <export function="createDebugNotification" type="client" />
+</meta>

@@ -1,0 +1,88 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Date: 10 May 2014
+-- Resource: GTIrental/rent_item.slua
+-- Type: Server Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+
+-- Rent Vehicle
+---------------->>
+
+function rentVehicleToPlayer(vehicleID, pickup)
+	local VT = pickupTable[pickup]
+		-- Check for Local Restrictions
+	for i,v in ipairs(VT.vehicles) do
+		if (v[1] == vehicleID and v[3]) then
+			for i,rstn in ipairs(v[3]) do
+				local rstns = split(rstn, ";")
+				-- Job Based Restrictions
+				if (exports.bgo_employment:getPlayerJobLevel(client, rstns[1]) < tonumber(rstns[2])) then 
+					exports.bgo_hud:dm("You must be an L"..rstns[2].." "..rstns[1].." in order to spawn this vehicle.", client, 255, 125, 0)
+					return
+				end
+			end
+		end
+	end
+	
+		-- Get Vehicle Data
+	local coordLoc
+	for i,v in ipairs(VT.vehicles) do
+		if (v[1] == vehicleID) then
+			coordLoc = v[2]
+			break
+		end
+	end
+	
+		-- Get Random Spawn Point
+	local coords = VT.spawn_points[coordLoc]
+	local loc = math.random(#coords)
+	local x,y,z,rot,int,dim = coords[loc][1], coords[loc][2], coords[loc][3], coords[loc][4], (coords[loc][5] or 0), (coords[loc][6] or 0)
+	rentVehicle(client, vehicleID, x, y, z+1, rot, int, dim, VT.color, VT.cost)
+end
+addEvent("GTIrentalUI.rentVehicleToPlayer", true)
+addEventHandler("GTIrentalUI.rentVehicleToPlayer", root, rentVehicleToPlayer)
+
+-- Exchange Weapon
+------------------->>
+
+function exchangeWeapon2(weapon, ammo)
+	weapon = getWeaponIDFromName(weapon)
+	
+	local VT = pickupTable[source]
+		-- Check for Local Restrictions
+	for i,v in ipairs(VT.weapons) do
+		if (v[1] == weapon and v[3]) then
+			for i,rstn in ipairs(v[3]) do
+				local rstns = split(rstn, ";")
+				if (rstns[1] and rstns[2]) then
+					-- Job Based Restrictions
+					if (exports.bgo_employment:getPlayerJobLevel(client, rstns[1]) < tonumber(rstns[2])) then 
+						exports.bgo_hud:dm("You must be an L"..rstns[2].." "..rstns[1].." in order to use this weapon.", client, 255, 125, 0)
+						return
+					end
+				elseif (exports.bgo_employment:getPlayerJobDivision(client) ~= rstn) then
+					-- Division Based Restrictions
+					exports.bgo_hud:dm("Your current division disallows you from using this weapon.", client, 255, 125, 0)
+					return
+				end
+			end
+		end
+	end
+	
+	exchangeWeapon(client, weapon, ammo)
+	triggerClientEvent(client, "GTIrentalUI.updateStoredWeapons", resourceRoot, getStoredWeapons(client))
+end
+addEvent("GTIrentalUI.exchangeWeapon", true)
+addEventHandler("GTIrentalUI.exchangeWeapon", root, exchangeWeapon2)
+
+-- Take Back Weapon
+-------------------->>
+
+function takeBackWeapon2(weapon, ammo)
+	weapon = getWeaponIDFromName(weapon)
+	takeBackWeapon(client, weapon, ammo)
+	triggerClientEvent(client, "GTIrentalUI.updateStoredWeapons", resourceRoot, getStoredWeapons(client))
+end
+addEvent("GTIrentalUI.takeBackWeapon", true)
+addEventHandler("GTIrentalUI.takeBackWeapon", root, takeBackWeapon2)

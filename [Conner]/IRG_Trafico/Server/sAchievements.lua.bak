@@ -1,0 +1,973 @@
+﻿db = dbConnect("sqlite", "database.db") or 0
+
+addEventHandler("onResourceStart", resourceRoot,
+function()
+    dbExec(db, "CREATE TABLE IF NOT EXISTS BOLSA ( ID INT, DROGA_NAME TEXT, VALOR INT, BOLSA INT)") 
+	dbExec(db, "CREATE TABLE IF NOT EXISTS CBOLSA ( ID INT, CARGA_NAME TEXT, VALOR INT, BOLSA INT)") 
+	dbExec(db, "CREATE TABLE IF NOT EXISTS UND ( NDROGA TEXT, UNIDADE INT, MAX INT)") 
+end)
+
+addEventHandler("onResourceStart", resourceRoot,
+function()
+	 if (db) then
+			outputDebugString("* Banco de dados conectado dos tráficos conectado.")
+		 else
+     end
+end)
+
+
+addEventHandler("onResourceStart", resourceRoot,
+function()
+	 if (db) then
+         local mc = dbQuery(db, "SELECT * FROM BOLSA WHERE DROGA_NAME=?", "MACONHA")
+         local resultM = dbPoll(mc, -1)  
+         if #resultM == 0 then    
+             dbFree(dbQuery(db, "INSERT INTO BOLSA ( ID, DROGA_NAME, VALOR, BOLSA ) VALUES ( '1', 'MACONHA', '0', '200')"))
+			 outputDebugString("* Banco de dados grupo da maconha criado com sucesso.")
+         end     
+         local he = dbQuery(db, "SELECT * FROM BOLSA WHERE DROGA_NAME=?", "HEROINA")
+         local resultH = dbPoll(he, -1)  
+         if #resultH == 0 then    
+             dbFree(dbQuery(db, "INSERT INTO BOLSA ( ID, DROGA_NAME, VALOR, BOLSA ) VALUES ( '2', 'HEROINA', '0', '200')"))
+			 outputDebugString("* Banco de dados grupo da heroinaa criado com sucesso.")
+         end  	
+         local co = dbQuery(db, "SELECT * FROM BOLSA WHERE DROGA_NAME=?", "COCAINA")
+         local resultC = dbPoll(co, -1)  
+         if #resultC == 0 then    
+             dbFree(dbQuery(db, "INSERT INTO BOLSA ( ID, CARGA_NAME, VALOR, BOLSA ) VALUES ('3', 'COCAINA', '0', '200')"))
+			 outputDebugString("* Banco de dados grupo da cocaina criado com sucesso.")
+         end  	
+         local cto = dbQuery(db, "SELECT * FROM CBOLSA WHERE CARGA_NAME=?", "MAÇA")
+         local resultCC = dbPoll(cto, -1)  
+         if #resultCC == 0 then    
+             dbFree(dbQuery(db, "INSERT INTO CBOLSA ( ID, CARGA_NAME, VALOR, BOLSA ) VALUES ('1', 'MAÇA', '0', '200')"))
+			 outputDebugString("* Banco de dados grupo da MAÇA criado com sucesso.")
+         end  
+         local cmo = dbQuery(db, "SELECT * FROM CBOLSA WHERE CARGA_NAME=?", "MADEIRA")
+         local resultCM = dbPoll(cmo, -1)  
+         if #resultCM == 0 then    
+             dbFree(dbQuery(db, "INSERT INTO CBOLSA ( ID, CARGA_NAME, VALOR, BOLSA ) VALUES ('2', 'MADEIRA', '0', '200')"))
+			 outputDebugString("* Banco de dados grupo da MADEIRA criado com sucesso.")
+         end  	
+         local cao = dbQuery(db, "SELECT * FROM CBOLSA WHERE CARGA_NAME=?", "LARANJA")
+         local resultCA = dbPoll(cao, -1)  
+         if #resultCA == 0 then    
+             dbFree(dbQuery(db, "INSERT INTO CBOLSA ( ID, CARGA_NAME, VALOR, BOLSA ) VALUES ('3', 'LARANJA', '0', '200')"))
+			 outputDebugString("* Banco de dados grupo da LARANJA criado com sucesso.")
+         end  		 
+     end
+end)
+
+function getSQLConnection()
+	if (db) then
+		return db
+	end
+end
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+local cocaina = createBlip(-556.115, 2592.925, 86.655, 37)
+setElementData(cocaina ,"blip >> name", "Campo Cocaina")
+
+local processcocaina = createBlip(835.049, -2054.897, 22.523, 37)
+setElementData(processcocaina ,"blip >> name", "Process... cocaina")
+
+local heroina = createBlip(-1887.114, -1641.677, 69.655, 37)
+setElementData(heroina ,"blip >> name", "Campo heroina")
+
+local processheroina = createBlip(2455.345, 1921.1, 10.865, 37)
+setElementData(processheroina ,"blip >> name", "Process... Heroina")
+
+
+local maconha = createBlip(1063.986, -330.112, 73.992, 37)
+setElementData(maconha ,"blip >> name", "Campo Maconha")
+
+
+local processmaconha = createBlip(-1496.003, 1198.892, 13.179, 37)
+setElementData(processmaconha ,"blip >> name", "Process... Maconha")
+
+local processmaconha = createBlip(-552.339, -494.831, 53.134, 37)
+setElementData(processmaconha ,"blip >> name", "Mercado de Drogas")
+
+local D1zone = createColCuboid(-559.85413, -506.69934, 23.62296, 4.6536254882813, 13.502563476563, 9.8999980926514)
+local D2zone = createColCuboid(-531.94470, -506.95132, 23.42297, 4.7101440429688, 14.387268066406, 10.300001525879)
+local D3zone = createColCuboid(-522.66760, -507.01102, 22.92304, 4.4502563476563, 14.759368896484, 10.400011444092)
+
+local Value = {}
+local Merca = {}
+local rotHZ = {}
+local rotHS = {}
+local timHR = {}
+local timerContH = {}
+local contagemHV = {}
+local barTimeH = {}
+local barTimeC = {}
+local barTimeM = {}
+local contagemTimer = {}
+
+
+
+
+
+
+
+
+function removeBindKeyMaco (thePlayer)
+     unbindKey(thePlayer, "e", "down", startTheFunctionMaco)
+	 setElementData(thePlayer, "enterZone:Maconha", false)
+end
+
+
+
+function enterDZH (thePlayer)
+if not thePlayer then return end
+     if getElementType(thePlayer) == "player" then 
+    local theVehicle = getPedOccupiedVehicle ( thePlayer )
+	 if theVehicle then
+		if getElementType (theVehicle) == "vehicle" then
+
+			--local driver = getVehicleController ( theVehicle )
+			controller = getVehicleController ( theVehicle ) 
+			if controller == thePlayer then 
+
+
+		 local prTeam = getTeamFromName ( "PR" )
+         local prCount = countPlayersInTeam ( prTeam )
+         --    if prCount >= 6 then
+		--	     exports.san_hud:dm("Este serviço só pode ser executado com 6 Policias Rodoviário.",thePlayer, 255, 255, 255)
+		 --    return
+		-- end
+
+		local count = getPlayerCount()
+		if count <= 0 then
+		triggerClientEvent(thePlayer,"JoinQuitGtaV:sendClientMessage", thePlayer,"#FF0000TRAFICO #FFFFFFCANCELADO DEVIDO A POUCO JOGADOR NA CIDADE MINIMO 150 JOGADORES!", 255, 255, 255, pos, 20 )
+		return
+		end
+
+
+
+	 if not exports['san_items']:hasItemS(theVehicle, 15) then
+	     exports.san_hud:dm("Esta vaga é reservada apenas para Heroina.",thePlayer, 255, 255, 255)
+	     return
+	 end
+	 rotHZ[thePlayer] = getElementRotation(theVehicle)
+	     if (rotHZ[thePlayer]) then
+		     rotHS[thePlayer] = math.floor(rotHZ[thePlayer])
+			-- if (rotHS[thePlayer] == 359 or rotHS[thePlayer] == 358 or rotHS[thePlayer]== 360 or rotHS[thePlayer] == 357 or rotHS[thePlayer] == 351) then
+			 --    exports.san_hud:dm("O veiculo precisa estar estacionado de ré",thePlayer, 255, 255, 255)
+			--	 return
+			-- else
+			         if exports['san_items']:hasItemS(theVehicle, 15) then
+					     setElementData(thePlayer, "venderDrogas", true)
+				         exports.san_hud:dm("Descarregamento iniciando, Aguarda um momento.",thePlayer, 255, 255, 255)
+						 setElementFrozen(theVehicle, true)
+						 contagemHV[thePlayer] = 0
+						 setElementData(theVehicle, "vehFrozen", true)
+						 setElementData(thePlayer, "infoContagem", true)
+						 contagemDH (thePlayer, theVehicle)
+				     else
+					 end
+				 end
+				end
+			 end
+		 end
+	 end
+end
+addEventHandler("onColShapeHit", D1zone, enterDZH)
+
+function exitTruckHero (player, seat, jacked)
+     if (getElementData(player, "venderDrogas") == true) then
+	     cancelEvent()
+		 exports.san_hud:dm("Aguarde a venda acabar para se retirar.",player, 255, 255, 255)
+	 end
+end
+addEventHandler("onVehicleStartExit", getRootElement(), exitTruckHero)
+
+function contagemDH (thePlayer, theTruck)
+if not thePlayer then return end
+     if exports['san_items']:hasItemS(theTruck, 15) then 
+	     triggerEvent('btcMTA->#takePlayerItemToID', thePlayer, theTruck, 15, false)
+		 contagemHV[thePlayer] = contagemHV[thePlayer] + 1
+		 contagemTimer[thePlayer] = setTimer(contagemDH, 1000, 1,thePlayer, theTruck)
+         else
+		 setElementData(thePlayer, "infoContagem", false)
+         setTimer(contagemVehicleH, 2000, 1, thePlayer, theTruck)
+		 barTimeH[thePlayer] = contagemHV[thePlayer] * 1
+		 if barTimeH[thePlayer] > 1 then
+		 setTimer(triggerClientEvent, 2000, 1, thePlayer, "progressService", thePlayer, barTimeH[thePlayer] - 2)
+		 else
+		 setTimer(triggerClientEvent, 2000, 1, thePlayer, "progressService", thePlayer, barTimeH[thePlayer])
+		 end
+		 setTimer( outputDebugString, 2000, 1, "O valor de Carga é de "..contagemHV[thePlayer])
+		 setTimer(finishServiceH, contagemHV[thePlayer] * 1000, 1, thePlayer, theTruck) 
+		 if isTimer(contagemTimer[thePlayer]) then
+		     killTimer(contagemTimer[thePlayer])
+		 end
+	 end
+end
+
+function contagemVehicleH (thePlayer, theTruck)
+if not thePlayer then return end
+     if exports['san_items']:hasItemS(theTruck, 15) then 
+	 exports['san_items']:giveItem(theTruck, 15, 1, contagemHV[thePlayer], 0, false)
+         timerContH[thePlayer] = setTimer(function (thePlayer, theTruck)
+		 setElementFrozen(theTruck, true)
+         triggerEvent('btcMTA->#takePlayerItemToID', thePlayer, theTruck, 15, false)
+		 contagemHV[thePlayer] = contagemHV[thePlayer] + 1
+		 end, contagemHV[thePlayer]*1000, 1, thePlayer)
+	 end
+end
+
+
+function finishServiceH (thePlayer, theTruck)
+if not thePlayer then return end
+if not getElementData(thePlayer, "loggedin") then return end
+ 	 if not exports['san_items']:hasItemS(theTruck, 15) then 
+	     if getElementType (theTruck) == "vehicle" then
+    		 exports.san_hud:dm("Descarregamento finalizado com sucesso.",thePlayer, 255, 255, 255)
+    		 exports.san_hud:dm("Valor descarregado "..contagemHV[thePlayer]..".",thePlayer, 255, 255, 255)
+     		 setElementFrozen(theTruck, false)
+    		 killTimer(timerContH[thePlayer])
+    		 Merca[thePlayer] = "HEROINA"
+    		 buyCarga (thePlayer, theTruck)
+    		 setElementData(thePlayer, "venderDrogas", false)
+			 setElementData(thePlayer, "infoContagem", false)
+		 end
+	 end
+end
+
+local rotMZ = {}
+local rotMS = {}
+local timMR = {}
+local timerContM = {}
+local contagemMV = {}
+
+function enterDZM (thePlayer)
+if not thePlayer then return end
+     if getElementType(thePlayer) == "player" then 
+     local theVehicle = getPedOccupiedVehicle ( thePlayer )
+	     if theVehicle then
+		 if getElementType(theVehicle) == "vehicle" then 
+
+			controller = getVehicleController ( theVehicle ) 
+			if controller == thePlayer then 
+
+			local driver = getVehicleOccupant ( theVehicle ) -- get the player sitting in seat 0
+			if not driver == 0 then 
+				exports.san_hud:dm("Só quem ta no volante pode vender a mercadoria!",thePlayer, 255, 255, 255)
+			return 
+			end
+			
+		 local prTeam = getTeamFromName ( "PR" )
+         local prCount = countPlayersInTeam ( prTeam )
+     --        if prCount >= 6 then
+		--	     exports.san_hud:dm("Este serviço só pode ser executado com 6 Policias Rodoviário.",thePlayer, 255, 255, 255)
+		--     return
+	--	 end
+	local count = getPlayerCount()
+	if count <= 0 then
+	triggerClientEvent(thePlayer,"JoinQuitGtaV:sendClientMessage", thePlayer,"#FF0000TRAFICO #FFFFFFCANCELADO DEVIDO A POUCO JOGADOR NA CIDADE MINIMO 150 JOGADORES!", 255, 255, 255, pos, 20 )
+	return
+	end
+
+
+	     rotMZ[thePlayer] = getElementRotation(theVehicle)
+	     if not exports['san_items']:hasItemS(theVehicle, 144) then
+	         exports.san_hud:dm("Esta vaga é reservada apenas para Maconha.",thePlayer, 255, 255, 255)
+	         return
+	     end
+	     if (rotMZ[thePlayer]) then
+		     rotMS[thePlayer] = math.floor(rotMZ[thePlayer])
+			         if exports['san_items']:hasItemS(theVehicle, 144) then
+					     setElementData(thePlayer, "venderDrogas", true)
+				         exports.san_hud:dm("Descarregamento iniciando, Aguarda um momento.",thePlayer, 255, 255, 255)
+						 setElementFrozen(theVehicle, true)
+						 contagemMV[thePlayer] = 0
+						 setElementData(theVehicle, "vehFrozen", true)
+						 contagemDM (thePlayer, theVehicle)
+						 setElementData(thePlayer, "infoContagem", true)
+				     else
+					 end
+				 end
+				end
+			 end
+		 end
+	 end
+end
+addEventHandler("onColShapeHit", D2zone, enterDZM)
+
+function contagemDM (thePlayer, theTruck)
+if not thePlayer then return end
+     if getElementType(theTruck) == "vehicle" then 
+         if exports['san_items']:hasItemS(theTruck, 144) then 
+     	     triggerEvent('btcMTA->#takePlayerItemToID', thePlayer, theTruck, 144, false)
+    		 contagemMV[thePlayer] = contagemMV[thePlayer] + 1
+    		 contagemTimer[thePlayer] = setTimer(contagemDM, 1000, 1,thePlayer, theTruck)
+             else
+			 setElementData(thePlayer, "infoContagem", false)
+             setTimer(contagemVehicleM, 2000, 1, thePlayer, theTruck)
+			 barTimeM[thePlayer] = contagemMV[thePlayer] * 1
+			 if barTimeM[thePlayer] > 1 then
+			 setTimer(triggerClientEvent, 2000, 1, thePlayer, "progressService", thePlayer, barTimeM[thePlayer]-2)
+			 end
+			 setTimer( outputDebugString, 2000, 1, "O valor de Carga é de "..contagemMV[thePlayer])
+			 setTimer(finishServiceM, contagemMV[thePlayer] * 1000, 1, thePlayer, theTruck)		
+             if isTimer(contagemTimer[thePlayer]) then
+			     killTimer(contagemTimer[thePlayer])
+             end			 
+		 end
+	 end
+end
+
+function contagemVehicleM (thePlayer, theTruck)
+if not thePlayer then return end
+     if getElementType(theTruck) == "vehicle" then 
+         if exports['san_items']:hasItemS(theTruck, 144) then 
+     	     exports['san_items']:giveItem(theTruck, 144, 1, contagemMV[thePlayer], 0, false)
+             timerContM[thePlayer] = setTimer(function (thePlayer, theTruck)
+    		 setElementFrozen(theTruck, true)
+             triggerEvent('btcMTA->#takePlayerItemToID', thePlayer, theTruck, 144, false)
+    		 contagemMV[thePlayer] = contagemMV[thePlayer] + 1
+    		 end, contagemMV[thePlayer]*1000, 1, thePlayer)
+		 end
+	 end
+end
+
+function finishServiceM (thePlayer, theTruck)
+if not thePlayer then return end
+if not getElementData(thePlayer, "loggedin") then return end
+     if getElementType(theTruck) == "vehicle" then 
+ 	     if not exports['san_items']:hasItemS(theTruck, 144) then 
+     		 exports.san_hud:dm("Descarregamento finalizado com sucesso.",thePlayer, 255, 255, 255)
+      		 exports.san_hud:dm("Valor descarregado "..contagemMV[thePlayer]..".",thePlayer, 255, 255, 255)
+     		 setElementFrozen(theTruck, false)
+    		 Merca[thePlayer] = "MACONHA"
+    		 buyCarga (thePlayer, theTruck)
+     		 setElementData(thePlayer, "venderDrogas", false)
+			 setElementData(thePlayer, "infoContagem", false)
+   		 end
+	 end
+end
+
+local rotCZ = {}
+local rotCS = {}
+local timCR = {}
+local timerContC = {}
+local contagemCV = {}
+
+function enterDZC (thePlayer)
+if not thePlayer then return end
+     if getElementType(thePlayer) == "player" then 
+     local theVehicle = getPedOccupiedVehicle ( thePlayer )
+	 if theVehicle then
+	 if getElementType(theVehicle) == "vehicle" then 
+		controller = getVehicleController ( theVehicle ) 
+		if controller == thePlayer then 
+
+		 local prTeam = getTeamFromName ( "PR" )
+         local prCount = countPlayersInTeam ( prTeam )
+    --         if prCount >= 6 then
+	--		     exports.san_hud:dm("Este serviço só pode ser executado com 6 Policias Rodoviário.",thePlayer, 255, 255, 255)
+	--	     return
+	--	 end
+	local count = getPlayerCount()
+	if count <= 0 then
+	triggerClientEvent(thePlayer,"JoinQuitGtaV:sendClientMessage", thePlayer,"#FF0000TRAFICO #FFFFFFCANCELADO DEVIDO A POUCO JOGADOR NA CIDADE MINIMO 150 JOGADORES!", 255, 255, 255, pos, 20 )
+	return
+	end
+
+
+	 if not exports['san_items']:hasItemS(theVehicle, 14) then
+	     exports.san_hud:dm("Esta vaga é reservada apenas para Cocaina.",thePlayer, 255, 255, 255)
+	     return
+	 end
+
+			         if exports['san_items']:hasItemS(theVehicle, 14) then
+				         exports.san_hud:dm("Descarregamento iniciando, Aguarda um momento.",thePlayer, 255, 255, 255)
+						 setElementFrozen(theVehicle, true)
+						 contagemCV[thePlayer] = 0
+						 setElementData(theVehicle, "vehFrozen", true)
+						 contagemDC (thePlayer, theVehicle)
+						 setElementData(thePlayer, "infoContagem", true)
+						 setElementData(thePlayer, "venderDrogas", true)
+				     else
+					end
+				 end
+			 end
+		 end
+	 end
+end
+addEventHandler("onColShapeHit", D3zone, enterDZC)
+
+function contagemDC (thePlayer, theTruck)
+if not thePlayer then return end
+     if getElementType(theTruck) == "vehicle" then 
+         if exports['san_items']:hasItemS(theTruck, 14) then 
+     	     triggerEvent('btcMTA->#takePlayerItemToID', thePlayer, theTruck, 14, false)
+			  contagemCV[thePlayer] = contagemCV[thePlayer] + 1
+			  contagemTimer[thePlayer] = setTimer(contagemDC, 1000, 1, thePlayer, theTruck)
+     		 --contagemDC (thePlayer, theTruck)
+             else
+             barTimeC[thePlayer] = contagemCV[thePlayer] * 1
+			 if barTimeC[thePlayer] > 1 then
+			 setTimer(triggerClientEvent, 2000, 1, thePlayer, "progressService", thePlayer, barTimeC[thePlayer] - 2)
+			 end
+			 setTimer( outputDebugString, 2000, 1, "O valor de Carga é de "..contagemCV[thePlayer])
+			 setTimer(finishServiceC, contagemCV[thePlayer] * 1000, 1, thePlayer, theTruck)
+			 setElementData(thePlayer, "venderDrogas", false)
+             setTimer(contagemVehicleC, 2000, 1, thePlayer, theTruck)	
+             if isTimer(contagemTimer[thePlayer]) then
+			     killTimer(contagemTimer[thePlayer])
+             end			 
+		 end
+	 end
+end
+
+function contagemVehicleC (thePlayer, theTruck)
+if not thePlayer then return end
+     if getElementType(theTruck) == "vehicle" then 
+         if exports['san_items']:hasItemS(theTruck, 14) then 
+         	 exports['san_items']:giveItem(theTruck, 14, 1, contagemCV[thePlayer], 0, false)
+             timerContC[thePlayer] = setTimer(function (thePlayer, theTruck)
+    		 setElementFrozen(theTruck, true)
+             triggerEvent('btcMTA->#takePlayerItemToID', thePlayer, theTruck, 14, false)
+    		 contagemCV[thePlayer] = contagemCV[thePlayer] + 1
+    		 end, contagemCV[thePlayer]*1000, 1, thePlayer)
+		 end
+	 end
+end
+
+function finishServiceC (thePlayer, theTruck) 
+if not thePlayer then return end
+if not getElementData(thePlayer, "loggedin") then return end
+     if getElementType(theTruck) == "vehicle" then 
+     	 if not exports['san_items']:hasItemS(theTruck, 14) then 
+    		 exports.san_hud:dm("Descarregamento finalizado com sucesso.",thePlayer, 255, 255, 255)
+    		 exports.san_hud:dm("Valor descarregado "..contagemCV[thePlayer]..".",thePlayer, 255, 255, 255)
+     		 setElementFrozen(theTruck, false)
+     		 Merca[thePlayer] = "COCAINA"
+    		 buyCarga (thePlayer, theTruck)
+     		 setElementData(thePlayer, "venderDrogas", false)
+			 setElementData(thePlayer, "infoContagem", false)
+		 end
+	 end
+end
+
+function buyCarga (thePlayer, theTruck)
+if not thePlayer then return end
+     if (Merca[thePlayer] == "MACONHA") then
+	 
+         local MHcoc = dbQuery(db, "SELECT * FROM BOLSA WHERE DROGA_NAME=?", "MACONHA")
+         local BresultM = dbPoll(MHcoc, -1)  
+
+         local hoc = dbQuery(db, "SELECT * FROM UND WHERE NDROGA=?", "MACONHA")
+         local resultM = dbPoll(hoc, -1)  
+         if #resultM ~= 0 then
+		 
+			     if (resultM[1]["UNIDADE"] > resultM[1]["MAX"]) then
+				     if (BresultM[1]["VALOR"] > 400) then
+					 else
+					 end
+				 end		 
+		     if (resultM[1]["UNIDADE"] < resultM[1]["MAX"]) then
+		         dbExec(db, "UPDATE UND SET UNIDADE=? WHERE NDROGA=?", resultM[1]["UNIDADE"] + contagemMV[thePlayer], "MACONHA")
+				 outputDebugString("*[BOLSA TRAFICO] Load: Unidade da "..(resultM[1]["NDROGA"]).." é de: "..(resultM[1]["UNIDADE"])..".")
+				 else
+				 dbExec(db, "UPDATE UND SET UNIDADE=? WHERE NDROGA=?", 1, "MACONHA")
+				 outputDebugString("*[BOLSA TRAFICO] Load: Unidade da "..(resultM[1]["NDROGA"]).." foi zerado com sucesso.")
+				 outputDebugString("*[BOLSA TRAFICO] Load: Unidade da "..(resultM[1]["NDROGA"]).." é de: "..(resultM[1]["UNIDADE"])..".")
+			 end
+		     	 Value[thePlayer] = BresultM[1]["VALOR"] * contagemMV[thePlayer]
+				 if not getElementData(thePlayer, "loggedin") then return end
+		    	 setElementData(thePlayer, "char:moneysujo", (getElementData(thePlayer, "char:moneysujo") or 0) + Value[thePlayer])
+		     else
+			 dbFree(dbQuery(db, "INSERT INTO UND ( NDROGA, UNIDADE, MAX ) VALUES ( 'MACONHA', '0', '200')"))
+			 dbExec(db, "UPDATE UND SET UNIDADE WHERE NDROGA=?", resultM[1]["UNIDADE"] + contagemMV[thePlayer], Merca[thePlayer])
+			 Value[thePlayer] = BresultM[1]["VALOR"] * contagemMV[thePlayer]
+			 setElementData(thePlayer, "char:moneysujo", (getElementData(thePlayer, "char:moneysujo") or 0) + Value[thePlayer])
+         end		 
+	 end
+     if (Merca[thePlayer] == "HEROINA") then
+	 
+         local BHcoc = dbQuery(db, "SELECT * FROM BOLSA WHERE DROGA_NAME=?", "HEROINA")
+         local BresultH = dbPoll(BHcoc, -1)  
+
+         local hoc = dbQuery(db, "SELECT * FROM UND WHERE NDROGA=?", "HEROINA")
+         local resultH = dbPoll(hoc, -1)  
+         if #resultH ~= 0 then
+		 
+			     if (resultH[1]["UNIDADE"] > resultH[1]["MAX"]) then
+				     if (BresultH[1]["VALOR"] > 400) then
+					 else
+					 end
+				 end		 
+		     if (resultH[1]["UNIDADE"] < resultH[1]["MAX"]) then
+		         dbExec(db, "UPDATE UND SET UNIDADE=? WHERE NDROGA=?", resultH[1]["UNIDADE"] + contagemHV[thePlayer], Merca[thePlayer])
+				 outputDebugString("*[BOLSA TRAFICO] Load: Unidade da "..(resultH[1]["NDROGA"]).." é de: "..(resultH[1]["UNIDADE"])..".")
+				 else
+				 dbExec(db, "UPDATE UND SET UNIDADE=? WHERE NDROGA=?", 1, "HEROINA")
+				 outputDebugString("*[BOLSA TRAFICO] Load: Unidade da "..(resultH[1]["NDROGA"]).." foi zerado com sucesso.")
+				 outputDebugString("*[BOLSA TRAFICO] Load: Unidade da "..(resultH[1]["NDROGA"]).." é de: "..(resultH[1]["UNIDADE"])..".")
+			 end
+		     	 Value[thePlayer] = BresultH[1]["VALOR"] * contagemHV[thePlayer]
+				 if not getElementData(thePlayer, "loggedin") then return end
+		    	 setElementData(thePlayer, "char:moneysujo", (getElementData(thePlayer, "char:moneysujo") or 0) + Value[thePlayer])
+		     else
+			 dbFree(dbQuery(db, "INSERT INTO UND ( NDROGA, UNIDADE, MAX ) VALUES ( 'HEROINA', '0', '200')"))
+			 dbExec(db, "UPDATE UND SET UNIDADE WHERE NDROGA=?", resultH[1]["UNIDADE"] + contagemHV[thePlayer], Merca[thePlayer])
+			 Value[thePlayer] = BresultH[1]["VALOR"] * contagemHV[thePlayer]
+			 setElementData(thePlayer, "char:moneysujo", (getElementData(thePlayer, "char:moneysujo") or 0) + Value[thePlayer])
+         end		 
+	 end
+     if (Merca[thePlayer] == "COCAINA") then
+	 
+         local Bcoc = dbQuery(db, "SELECT * FROM BOLSA WHERE DROGA_NAME=?", "COCAINA")
+         local BresultC = dbPoll(Bcoc, -1)  
+
+         local coc = dbQuery(db, "SELECT * FROM UND WHERE NDROGA=?", "COCAINA")
+         local resultC = dbPoll(coc, -1)  
+         if #resultC ~= 0 then
+		 
+			     if (resultC[1]["UNIDADE"] > resultC[1]["MAX"]) then
+				     if (BresultC[1]["VALOR"] > 400) then
+					 else
+					 end
+				 end		 
+		     if (resultC[1]["UNIDADE"] < resultC[1]["MAX"]) then
+		         dbExec(db, "UPDATE UND SET UNIDADE=? WHERE NDROGA=?", resultC[1]["UNIDADE"] + contagemCV[thePlayer], Merca[thePlayer])
+				 outputDebugString("*[BOLSA TRAFICO] Load: Unidade da "..(resultC[1]["NDROGA"]).." é de: "..(resultC[1]["UNIDADE"])..".")
+				 else
+				 dbExec(db, "UPDATE UND SET UNIDADE=? WHERE NDROGA=?", 1, "COCAINA")
+				 outputDebugString("*[BOLSA TRAFICO] Load: Unidade da "..(resultC[1]["NDROGA"]).." foi zerado com sucesso.")
+				 outputDebugString("*[BOLSA TRAFICO] Load: Unidade da "..(resultC[1]["NDROGA"]).." é de: "..(resultC[1]["UNIDADE"])..".")
+			 end
+		     	 Value[thePlayer] = BresultC[1]["VALOR"] * contagemCV[thePlayer]
+				 if not getElementData(thePlayer, "loggedin") then return end
+		    	     setElementData(thePlayer, "char:moneysujo", (getElementData(thePlayer, "char:moneysujo") or 0) + Value[thePlayer])
+		     else
+			 dbFree(dbQuery(db, "INSERT INTO UND ( NDROGA, UNIDADE, MAX ) VALUES ( 'COCAINA', '0', '200')"))
+			 dbExec(db, "UPDATE UND SET UNIDADE WHERE NDROGA=?", resultC[1]["UNIDADE"] + contagemCV[thePlayer], Merca[thePlayer])
+			 Value[thePlayer] = BresultC[1]["VALOR"] * contagemCV[thePlayer]
+			 setElementData(thePlayer, "char:moneysujo", (getElementData(thePlayer, "char:moneysujo") or 0) + Value[thePlayer])
+         end		 
+	 end
+end
+
+function attb (thePlayer, command, element)
+     if (element == "bolsa") then
+	     if getElementData(thePlayer, "acc:admin") > 7 then
+		     outputChatBox("#7cc576[BOLSA DE VALORES] Você alterou a bolsa de valores com sucesso.", thePlayer, 255,255,255, true)	
+			 randomList ()
+		 end
+	 end
+end
+addCommandHandler("att", attb)
+
+function randomList ()
+	     NewLis = math.random(1, 10)
+		 NewCLis = math.random(11, 20)
+		 if (NewLis) then
+		     if (NewLis == 1) then
+			     dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 700, "MACONHA")
+				 dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 350, "COCAINA")
+				 dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 100, "HEROINA")
+				 attBolsa ("MACONHA")
+				 attBolsa ("HEROINA")
+				 attBolsa ("COCAINA")
+				 outputChatBox(" ", root, 255,255,255, true)
+	         	 outputChatBox(" ", root, 255,255,255, true)
+	        	 outputChatBox(" ", root, 255,255,255, true)
+			 end
+		     if (NewLis == 2) then
+			     dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 700, "COCAINA")
+				 dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 350, "MACONHA")
+				 dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 100, "HEROINA")
+				 attBolsa ("MACONHA")
+				 attBolsa ("HEROINA")
+				 attBolsa ("COCAINA")
+				 outputChatBox(" ", root, 255,255,255, true)
+	         	 outputChatBox(" ", root, 255,255,255, true)
+	        	 outputChatBox(" ", root, 255,255,255, true)
+			 end
+		     if (NewLis == 3) then
+			     dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 700, "HEROINA")
+				 dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 350, "MACONHA")
+				 dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 100, "COCAINA")
+				 attBolsa ("MACONHA")
+				 attBolsa ("HEROINA")
+				 attBolsa ("COCAINA")
+				 outputChatBox(" ", root, 255,255,255, true)
+	         	 outputChatBox(" ", root, 255,255,255, true)
+	        	 outputChatBox(" ", root, 255,255,255, true)
+			 end
+		     if (NewLis == 4) then
+			     dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 700, "HEROINA")
+				 dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 350, "COCAINA")
+				 dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 100, "MACONHA")
+				 attBolsa ("MACONHA")
+				 attBolsa ("HEROINA")
+				 attBolsa ("COCAINA")
+				 outputChatBox(" ", root, 255,255,255, true)
+	         	 outputChatBox(" ", root, 255,255,255, true)
+	        	 outputChatBox(" ", root, 255,255,255, true)
+			 end
+		     if (NewLis == 5) then
+			     dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 700, "MACONHA")
+				 dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 350, "COCAINA")
+				 dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 100, "HEROINA")
+				 attBolsa ("MACONHA")
+				 attBolsa ("HEROINA")
+				 attBolsa ("COCAINA")
+				 outputChatBox(" ", root, 255,255,255, true)
+	         	 outputChatBox(" ", root, 255,255,255, true)
+	        	 outputChatBox(" ", root, 255,255,255, true)
+			 end
+		     if (NewLis == 6) then
+			     dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 700, "MACONHA")
+				 dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 350, "HEROINA")
+				 dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 100, "COCAINA")
+				 attBolsa ("MACONHA")
+				 attBolsa ("HEROINA")
+				 attBolsa ("COCAINA")
+				 outputChatBox(" ", root, 255,255,255, true)
+	         	 outputChatBox(" ", root, 255,255,255, true)
+	        	 outputChatBox(" ", root, 255,255,255, true)
+			 end
+		     if (NewLis == 7) then
+			     dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 700, "COCAINA")
+				 dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 350, "HEROINA")
+				 dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 100, "MACONHA")
+				 attBolsa ("MACONHA")
+				 attBolsa ("HEROINA")
+				 attBolsa ("COCAINA")
+				 outputChatBox(" ", root, 255,255,255, true)
+	         	 outputChatBox(" ", root, 255,255,255, true)
+	        	 outputChatBox(" ", root, 255,255,255, true)
+			 end
+		     if (NewLis == 8) then
+			     dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 700, "MACONHA")
+				 dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 350, "COCAINA")
+				 dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 100, "HEROINA")
+				 attBolsa ("MACONHA")
+				 attBolsa ("HEROINA")
+				 attBolsa ("COCAINA")
+				 outputChatBox(" ", root, 255,255,255, true)
+	         	 outputChatBox(" ", root, 255,255,255, true)
+	        	 outputChatBox(" ", root, 255,255,255, true)
+			 end
+		     if (NewLis == 9) then
+			     dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 700, "MACONHA")
+				 dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 350, "HEROINA")
+				 dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 100, "COCAINA")
+				 attBolsa ("MACONHA")
+				 attBolsa ("HEROINA")
+				 attBolsa ("COCAINA")
+				 outputChatBox(" ", root, 255,255,255, true)
+	         	 outputChatBox(" ", root, 255,255,255, true)
+	        	 outputChatBox(" ", root, 255,255,255, true)
+			 end
+		     if (NewLis == 10) then
+			     dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 700, "COCAINA")
+				 dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 350, "HEROINA")
+				 dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 100, "MACONHA")
+				 attBolsa ("MACONHA")
+				 attBolsa ("HEROINA")
+				 attBolsa ("COCAINA")
+	        	 outputChatBox(" ", root, 255,255,255, true)
+	         	 outputChatBox(" ", root, 255,255,255, true)
+	        	 outputChatBox(" ", root, 255,255,255, true)
+			 end
+			 if (NewLis == 11) then
+			     dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 200, "TRIGO")
+				 dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 100, "MADEIRA")
+				 dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 50, "LARANJA")
+				 attBolsa ("TRIGO", 1)
+				 attBolsa ("LARANJA", 1)
+				 attBolsa ("MADEIRA", 1)
+				 outputChatBox(" ", root, 255,255,255, true)
+	         	 outputChatBox(" ", root, 255,255,255, true)
+	        	 outputChatBox(" ", root, 255,255,255, true)
+			 end
+		     if (NewLis == 12) then
+			     dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 200, "MADEIRA")
+				 dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 100, "TRIGO")
+				 dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 50, "AREIA")
+				 attBolsa ("TRIGO", 1)
+				 attBolsa ("AREIA", 1)
+				 attBolsa ("MADEIRA", 1)
+				 outputChatBox(" ", root, 255,255,255, true)
+	         	 outputChatBox(" ", root, 255,255,255, true)
+	        	 outputChatBox(" ", root, 255,255,255, true)
+			 end
+		     if (NewLis == 13) then
+			     dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 200, "LARANJA")
+				 dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 100, "TRIGO")
+				 dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 50, "MADEIRA")
+				 attBolsa ("TRIGO", 1)
+				 attBolsa ("LARANJA", 2)
+				 attBolsa ("MADEIRA", 2)
+				 outputChatBox(" ", root, 255,255,255, true)
+	         	 outputChatBox(" ", root, 255,255,255, true)
+	        	 outputChatBox(" ", root, 255,255,255, true)
+			 end
+		     if (NewLis == 14) then
+			     dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 200, "LARANJA")
+				 dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 100, "MADEIRA")
+				 dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 50, "TRIGO")
+				 attBolsa ("TRIGO", 2)
+				 attBolsa ("LARANJA", 2)
+				 attBolsa ("MADEIRA", 2)
+				 outputChatBox(" ", root, 255,255,255, true)
+	         	 outputChatBox(" ", root, 255,255,255, true)
+	        	 outputChatBox(" ", root, 255,255,255, true)
+			 end
+		     if (NewLis == 15) then
+			     dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 200, "TRIGO")
+				 dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 100, "MADEIRA")
+				 dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 50, "LARANJA")
+				 attBolsa ("TRIGO", 2)
+				 attBolsa ("LARANJA", 2)
+				 attBolsa ("MADEIRA", 2)
+				 outputChatBox(" ", root, 255,255,255, true)
+	         	 outputChatBox(" ", root, 255,255,255, true)
+	        	 outputChatBox(" ", root, 255,255,255, true)
+			 end
+		     if (NewLis == 16) then
+			     dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 200, "TRIGO")
+				 dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 100, "LARANJA")
+				 dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 50, "MADEIRA")
+				 attBolsa ("TRIGO", 2)
+				 attBolsa ("LARANJA", 2)
+				 attBolsa ("MADEIRA", 2)
+				 outputChatBox(" ", root, 255,255,255, true)
+	         	 outputChatBox(" ", root, 255,255,255, true)
+	        	 outputChatBox(" ", root, 255,255,255, true)
+			 end
+		     if (NewLis == 17) then
+			     dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 200, "MADEIRA")
+				 dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 100, "LARANJA")
+				 dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 50, "TRIGO")
+				 attBolsa ("TRIGO", 2)
+				 attBolsa ("LARANJA", 2)
+				 attBolsa ("MADEIRA", 2)
+				 outputChatBox(" ", root, 255,255,255, true)
+	         	 outputChatBox(" ", root, 255,255,255, true)
+	        	 outputChatBox(" ", root, 255,255,255, true)
+			 end
+		     if (NewLis == 18) then
+			     dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 200, "TRIGO")
+				 dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 100, "MADEIRA")
+				 dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 50, "LARANJA")
+				 attBolsa ("TRIGO", 2)
+				 attBolsa ("LARANJA", 2)
+				 attBolsa ("MADEIRA", 2)
+				 outputChatBox(" ", root, 255,255,255, true)
+	         	 outputChatBox(" ", root, 255,255,255, true)
+	        	 outputChatBox(" ", root, 255,255,255, true)
+			 end
+		     if (NewLis == 19) then
+			     dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 200, "TRIGO")
+				 dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 100, "LARANJA")
+				 dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 50, "MADEIRA")
+				 attBolsa ("TRIGO", 2)
+				 attBolsa ("LARANJA", 2)
+				 attBolsa ("MADEIRA", 2)
+				 outputChatBox(" ", root, 255,255,255, true)
+	         	 outputChatBox(" ", root, 255,255,255, true)
+	        	 outputChatBox(" ", root, 255,255,255, true)
+			 end
+		     if (NewLis == 20) then
+			     dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 200, "MADEIRA")
+				 dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 100, "LARANJA")
+				 dbExec(db, "UPDATE CBOLSA SET VALOR=? WHERE CARGA_NAME=?", 50, "TRIGO")
+				 attBolsa ("TRIGO", 2)
+				 attBolsa ("LARANJA", 2)
+				 attBolsa ("MADEIRA", 2)
+	        	 outputChatBox(" ", root, 255,255,255, true)
+	         	 outputChatBox(" ", root, 255,255,255, true)
+	        	 outputChatBox(" ", root, 255,255,255, true)
+			 end
+	 end
+end
+
+function attBolsa (carga, typ)
+     if typ == 1 then
+         local BATTcoc = dbQuery(db, "SELECT * FROM BOLSA WHERE DROGA_NAME=?", carga)
+         local BATTresultC = dbPoll(BATTcoc, -1)  
+    	 if #BATTresultC ~= 0 then
+    	     local players = getElementsByType ( "player" ) 
+    	     for theKey,thePlayer in ipairs(players) do
+    	     	 triggerClientEvent(thePlayer, "attPag", thePlayer, BATTresultC[1]["DROGA_NAME"], BATTresultC[1]["VALOR"], BATTresultC[1]["BOLSA"])
+    	     end
+		 end
+	end
+     if typ == 2 then
+         local BATTccc = dbQuery(db, "SELECT * FROM CBOLSA WHERE CARGA_NAME=?", carga)
+         local BATTresultCC = dbPoll(BATTccc, -1)  
+    	 if #BATTresultCC ~= 0 then
+    	     local players = getElementsByType ( "player" ) 
+    	     for theKey,thePlayer in ipairs(players) do
+    	     	 triggerClientEvent(thePlayer, "attPagC", thePlayer, BATTresultCC[1]["CARGA_NAME"], BATTresultCC[1]["VALOR"], BATTresultCC[1]["BOLSA"])
+    	     end
+		 end
+  	 end
+	 if not typ then
+         outputChatBox("#7cc576[BOLSA DE VALORES] #FFFFFFOs valores da bolsa foram alterados.", root, 255,255,255, true)
+	 end
+end
+--[[
+function rebaixar (RID)
+     local newPR = dbQuery(db, "SELECT * FROM BOLSA WHERE ID=?", RID)
+     local NewRB = dbPoll(newPR, -1) 
+	 if #NewRB ~= 0 then
+         dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 100, NewRB[1]["DROGA_NAME"])
+		 outputDebugString("*[BOLSA TRAFICO] Load: "..(NewRB[1]["DROGA_NAME"]).." Foi rebaixado.")
+		-- setTimer(randomDroga, 5000, 1, RID) 
+		 attBolsa (NewRB[1]["DROGA_NAME"], "#FF0000-300")
+	 end 
+end
+
+function randomList (ID)
+    local newP = dbQuery(db, "SELECT * FROM BOLSA WHERE VALOR=?", 100)
+     local NewPos = dbPoll(newP, -1) 
+	 if #NewPos ~= 0 then
+		 if (NewPos[1]["VALOR"] == 100) then
+		     if (NewPos[1]["ID"] == ID) then
+			     setTimer(rebaixar, 5000, 1, ID)
+				 randomListCenter(ID)
+				 outputDebugString("*[BOLSA TRAFICO] Load: "..(NewPos[1]["DROGA_NAME"]).." Foi para list center.")
+			 else
+			     dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 350, NewPos[1]["DROGA_NAME"])
+			     attBolsa (NewPos[1]["DROGA_NAME"], "#00FF00+300")
+			     outputDebugString("*[BOLSA TRAFICO] Load: "..(NewPos[1]["DROGA_NAME"]).." Foi colocada no centro da lista.")
+				 selectTop (ID, NewPos[1]["ID"])
+			     setTimer(rebaixar, 5000, 1, ID)
+			 end
+		 end
+	 end
+end
+
+function randomListCenter (BID)
+     if (BID) then
+	     center = math.random(1, 3)
+		 if (center) then
+			 if center == BID then randomListCenter (BID) return end
+			--else
+             local newC = dbQuery(db, "SELECT * FROM BOLSA WHERE ID=?", center)
+             local NewPosCenter = dbPoll(newC, -1) 
+              	 if #NewPosCenter ~= 0 then
+			         dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 350, NewPosCenter[1]["DROGA_NAME"])
+			         attBolsa (NewPosCenter[1]["DROGA_NAME"], "#00FF00+300")
+			         outputDebugString("*[BOLSA TRAFICO] Load: "..(NewPosCenter[1]["DROGA_NAME"]).." Foi colocada no centro da lista.")	
+                     selectTop (BID, NewPosCenter[1]["ID"])	 
+                -- end				 
+			 end			 
+		 end
+	 end
+end
+ 
+function selectTop (BLOCKID, BLOCKID2)
+     if BLOCKID then
+	     if BLOCKID2 then
+		     top = math.random(1, 3)
+			 if (top) then
+			     if (top == BLOCKID) then selectTop (BLOCKID, BLOCKID2) return else
+				     if (top == BLOCKID2) then selectTop (BLOCKID, BLOCKID2) return else
+                     local newT = dbQuery(db, "SELECT * FROM BOLSA WHERE ID=?", top)
+                     local NewPosTop = dbPoll(newT, -1) 
+  					     if #NewPosTop ~= 0 then
+	     		             dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE DROGA_NAME=?", 700, NewPosTop[1]["DROGA_NAME"])
+		    	             attBolsa (NewPosTop[1]["DROGA_NAME"], "#00FF00+300")
+			                 outputDebugString("*[BOLSA TRAFICO] Load: "..(NewPosTop[1]["DROGA_NAME"]).." Foi colocada no topo da lista.")	
+                             outputChatBox("#7cc576[BOLSA DE VALORES] O valor da #FFFFFF"..(NewPosTop[1]["DROGA_NAME"]).." #7cc576Foi editado para #FFFFFF1000#7cc576 Reais", root, 255,255,255, true)							 
+                         end							 
+					 end
+				 end
+			 end
+		 end
+	 end
+end 
+ 
+function randomDroga (ID) 
+     if ID then
+	     newTop = math.random(1, 3)
+         local newT = dbQuery(db, "SELECT * FROM BOLSA WHERE ID=?", newTop)
+         local New = dbPoll(newT, -1) 
+		     if #New ~= 0 then
+			     if (New[1]["VALOR"] == 700) then randomDroga (ID) return end 
+			         if (New[1]["VALOR"] ~= 100) then
+					     if (New[1]["ID"] ~= ID) then
+	     	                 outputChatBox("#7cc576[BOLSA DE VALORES] O valor da #FFFFFF"..(New[1]["DROGA_NAME"]).." #7cc576Foi editado para #FFFFFF1000#7cc576 Reais", root, 255,255,255, true)
+	         	     		 dbExec(db, "UPDATE BOLSA SET VALOR=? WHERE ID=?", 700, newTop)
+	         	    		 attBolsa (New[1]["DROGA_NAME"], "#00FF00+700")
+				     		 randomList ()
+					     else
+				     randomDroga (ID)
+				 end
+		     end
+         end
+	 end
+end
+--]]
+
+timer = {}
+bolsa = {}
+
+function painel(thePlayer)
+if not thePlayer then return end
+     if not bolsa[thePlayer] then
+	     bolsa[thePlayer] = false
+	 end
+	     if bolsa[thePlayer] == false then
+	         if isTimer(timer[thePlayer]) then
+			     exports.san_infobox:addNotification(thePlayer,"Aguarde 5 segundos para abrir o painel novamente","error")
+	     	 return end
+        	 timer[thePlayer] = setTimer(function() end, 5000, 1)
+             attBolsa("MACONHA", 1)
+         	 attBolsa("HEROINA", 1)
+        	 attBolsa("COCAINA", 1)
+             attBolsa("MAÇA", 2)
+         	 attBolsa("MADEIRA", 2)
+        	 attBolsa("LARANJA", 2)
+         	 triggerClientEvent(thePlayer, "startDxB", thePlayer)
+	     	 bolsa[thePlayer] = true
+			 exports.san_admin:outputAdminMessage(" "..getPlayerName(thePlayer).." ID: #7cc576(" .. getElementData(thePlayer, "playerid")..") Abriu o painel de bolsa de valores.")
+	      else
+	         bolsa[thePlayer] = false
+			 triggerClientEvent(thePlayer, "startDxB", thePlayer)
+	 end
+end
+
+function restart()
+	for index, player in ipairs(getElementsByType("player")) do
+	bindKey(player, "F4", "down", painel)
+	end
+end
+addEventHandler("onResourceStart", getResourceRootElement(getThisResource()), restart)
+
+function entrar()
+	bindKey(source, "F4", "down", painel)
+end
+addEventHandler("onPlayerJoin", getRootElement(), entrar)
+
+function fechar(player)
+	for index, player in ipairs(getElementsByType("player")) do
+	unbindKey(player, "F4", "down", painel)
+	end
+end
+addEventHandler("onResourceStop", getResourceRootElement(getThisResource()), fechar)
+
+addEventHandler("onPlayerQuit", root,
+function ()
+     if isTimer(contagemTimer[source]) then
+		 killTimer(contagemTimer[source])
+     end
+end)
+
+
+
+local originalGetPlayerCount = getPlayerCount
+function getPlayerCount()
+    return originalGetPlayerCount and originalGetPlayerCount() or #getElementsByType("player")
+end

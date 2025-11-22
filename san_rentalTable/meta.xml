@@ -1,0 +1,5 @@
+<meta>
+    <info author="Conner" version="1.0" name="C o n n e r" autostart="true" />
+    <script src="locations.lua" />
+    <export function="getRentTable" type="server" />
+</meta>

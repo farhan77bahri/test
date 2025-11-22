@@ -1,0 +1,16 @@
+<meta>
+    <script src="codeServer.lua" />
+    <script src="codeClient.lua" type="client" protected="true"/>
+    <script src="codeGlobal.lua" type="shared" />
+    <export function="getPlayerAdminLevel" type="shared" />
+    <export function="getPlayerAsLevel" type="shared" />
+    <export function="checkNagyonAdmin" type="shared" />
+    <export function="checkPermission" type="shared" />
+    <export function="checkPermissionIG" type="shared" />
+    <export function="isAdminDuty" type="shared" />
+    <export function="checkAdmin" type="shared" />
+    <export function="checkLogged" type="shared" />
+    <export function="outputAdminMessage" type="shared" />
+    <export function="outputDeveloperMessage" type="shared" />
+    <export function="savePP" type="shared" />
+</meta>

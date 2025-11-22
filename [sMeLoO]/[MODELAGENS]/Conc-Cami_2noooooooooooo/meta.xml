@@ -1,0 +1,9 @@
+<meta>
+	<info author="#R4F4 MAPP3R" version="1.3" name="trocador" type="script" />
+
+	<script src="client.lua" type="client" />    
+     <file src="caminhao.txd" />
+     <file src="caminhao.dff" />
+     <file src="caminhao.col" />
+
+</meta>

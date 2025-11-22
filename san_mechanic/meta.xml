@@ -1,0 +1,16 @@
+<meta>
+  	<file src="icons/door.png"/>	
+	<file src="icons/trunk.png"/>	
+	<file src="icons/engine.png"/>	
+	<file src="icons/backb.png"/>	
+	<file src="icons/frontb.png"/>	
+	<file src="icons/hood.png"/>	
+	<file src="icons/wheel.png"/>	
+	<file src="icons/windscreen.png"/>
+	<file src="repair.mp3"/>
+	
+	<script src="s.lua" type="server" cache="false"/>
+	<script src="c.lua" type="client"/>
+	<script src="prices.lua" type="server" cache="false"/>
+	<script src="prices.lua" type="client"/> 
+</meta>

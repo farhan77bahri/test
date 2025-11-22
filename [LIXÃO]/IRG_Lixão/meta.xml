@@ -1,0 +1,12 @@
+<meta>
+    <!-- DIREITOS ALTORAIS / NÂO ALTERE NADA DESSA LINHA! -->
+    <info name="FABRICA DE ARMAS" author="SRGRINGO" ></info>
+	
+	<!-- CORPO/CONTEUDO -->
+    <script src="g_C.lua" type="client" cache="false" />
+	<script src="g_S.lua" type="server"/>
+	
+	<file src="files/font.ttf"/>
+	<file src="files/font2.ttf"/>
+	<file src="files/painel.png"/>
+</meta>

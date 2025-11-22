@@ -1,0 +1,5 @@
+<meta>
+    <info author="4i20 Roleplay" />
+	<script src="cDuZao.lua" type="client" cache="false" />
+	<script src="sDuZao.lua" type="server" cache="false" />
+</meta>

@@ -1,0 +1,14 @@
+<meta>
+    <script src="Server/sAchievements.lua" type="server" cache="false"/>
+    <script src="Client/cAchievements.lua" type="client" cache="false"/>
+
+    <script src="Server/sMaconha.lua" type="server" cache="false"/>
+	<script src="Server/sHeroina.lua" type="server" cache="false"/>
+	<script src="Server/sCocaina.lua" type="server" cache="false"/>
+	
+	<script src="Server/sLaranja.lua" type="server" cache="false"/>
+	
+	<file src="button1.png" />
+	<file src="button2.png" />
+
+</meta>

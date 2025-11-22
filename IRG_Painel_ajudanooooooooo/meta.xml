@@ -1,0 +1,38 @@
+<meta>
+    <info author="Qukol" name="Help panel" version="1" type="misc"/>
+    <file src="images/window.png"/>
+	<file src="images/icon_user.png"/>
+    <file src="images/icon_home.png"/>
+    <file src="images/icon_home1.png"/>
+    <file src="images/icon_marker.png"/>
+    <file src="images/icon_marker1.png"/>
+    <file src="images/icon_car.png"/>
+	<file src="images/icon_car1.png"/>
+    <file src="images/icon_money.png"/>
+	<file src="images/icon_money1.png"/>
+	<file src="images/icon_report.png"/>
+	<file src="images/icon_maps.png"/>
+	<file src="images/icon_cars.png"/>
+	<file src="images/icon_map_btn.png"/>
+	<file src="images/icon_car_btn.png"/>
+    <file src="images/icon_rep_btn.png"/>
+	<file src="images/icon_question.png"/>
+	<file src="images/icon_help.png"/>
+	<file src="images/icon_mapbtn.png"/>
+	<file src="images/icon_mapbtn_fon.png"/>
+	<file src="images/icon_salonbtn_fon.png"/>
+		<file src="images/icon_carbtn_fon.png"/>
+		<file src="images/icon_map_background.png"/>
+    <file src="images/close.png"/>
+    <file src="images/close_active.png"/>
+    <file src="font/MyriadPro.otf"/>
+	<file src="font/font.otf"/>
+	<file src="font/font1.otf"/>
+	<file src="font/fontregular.ttf"/>
+    <script src="client.lua" type="client"/>
+	<script src="clientmap.lua" type="client"/>
+	<script src="texts.lua" type="client"/>
+	<config src="Carkey.xml" type="client" download="false"/>
+	<config src="Jobs.xml" type="client" download="false"/>
+	</meta>
+

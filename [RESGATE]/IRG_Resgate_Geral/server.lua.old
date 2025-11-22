@@ -1,0 +1,350 @@
+hpMin = 30
+Tempo = {}
+ColMedic = {}
+
+function ChecarVida(attacker)
+	for i, player in pairs (getElementsByType("player")) do
+		if not getElementData(player, "PlayerCaido") then
+			local conta = getAccountName(getPlayerAccount(player))
+				if getElementHealth(player) >= 1 then
+					if getElementHealth(player) <= hpMin then 
+						removePedFromVehicle(player)
+						setElementData(player, "PlayerCaido", true)
+						setElementFrozen(player, true)
+						exports.san_admin:outputAdminMessage("#7cc576" .. getPlayerName(player) .. " (" .. getElementData(player, "playerid") .. ") #ffffffAcabou de ser derrubado")
+						setElementHealth(player, 30)
+						setPedAnimation( player, "CRACK", "crckidle2", -1, false, false, false, true)
+						setTimer(function()
+							if getElementData(player, "PlayerCaido") then	
+								killPlayer(player)
+							end
+						end, 240000, 1)
+					end
+				end
+		else
+			setPedAnimation( player, "CRACK", "crckidle2", -1, false, false, false, true)
+		end
+	end
+end
+setTimer(ChecarVida, 200, 0)
+
+--addEvent("OnDano", true)
+--addEventHandler("OnDano", getRootElement(), ChecarVida)
+
+
+
+function ChecarVidaA()
+	for i, player in pairs (getElementsByType("player")) do
+		if  getElementData(player, "PlayerCaido") then
+		local conta = getAccountName(getPlayerAccount(player))
+			if getElementHealth(player) >= 31 then
+				setElementData(player, "PlayerCaido", false)
+				setPedAnimation(player, false)
+				setElementFrozen(player, false )
+			end
+		end
+	end
+end
+setTimer(ChecarVidaA, 200, 0)
+
+function SetarCaidoComHS(attacker)
+	player = source
+	if not getElementData(player, "PlayerCaido") then
+		removePedFromVehicle(player)
+		setElementHealth(player, 30)
+		setElementData(player, "PlayerCaido", true)
+		--setPedAnimation(player, "SWEET", "Sweet_injuredloop", 1000, false, false, false, true)
+		setPedAnimation( player, "CRACK", "crckidle2", -1, false, false, false, true)
+		exports.san_admin:outputAdminMessage("#7cc576" .. getPlayerName(player) .. " (" .. getElementData(player, "playerid") .. ") #ffffffAcabou de ser derrubado pelo "..getPlayerName(attacker).."")
+		setTimer(function()
+			if getElementData(player, "PlayerCaido") then	
+				killPlayer(player)
+			end
+		end, 240000, 1)
+	end
+end
+addEvent("OnHS", true)
+addEventHandler("OnHS", getRootElement(), SetarCaidoComHS)
+
+function curar_jogador ( thePlayer, commandName, targetPlayer )			
+			if getElementData(thePlayer, "char:dutyfaction") == 4 or getElementData(thePlayer, "char:dutyfaction") == 26 then 
+			if not (targetPlayer) then
+			outputChatBox("#7cc576[sanMTA] Use:#ffffff /" .. commandName .. " [Nome / ID]", thePlayer, 255 ,255, 255, true)
+			return end
+			local targetPlayer, targetPlayerName = exports.san_core:findPlayer(thePlayer, targetPlayer)
+			
+			if (targetPlayer) then
+			
+				local player_a_ser_curado    =   targetPlayer
+				local samux, samuy, samuz = getElementPosition ( thePlayer )
+				local curadox, curadoy, curadoz = getElementPosition ( player_a_ser_curado )
+				local dist = getDistanceBetweenPoints3D ( samux, samuy, samuz, curadox, curadoy, curadoz )
+				if player_a_ser_curado == thePlayer then
+					outputChatBox("#bebebeVocê não pode se curar!",thePlayer,255,255,255,true)
+					return
+				end
+				local health = getElementHealth(player_a_ser_curado)
+
+				if health >= 31 then outputChatBox("#bebebeVocê só pode ajudar pessoas caidas!",thePlayer,255,255,255,true) return end
+
+				if ( dist > 5 )  then
+				outputChatBox("#bebebeChegue mais perto do jogador!", thePlayer, 255, 255, 255, true)
+				elseif ( dist < 4 )then
+				setPedAnimation( thePlayer, "MEDIC", "CPR", 4500, true, false, false, false)
+				setTimer ( function()
+					setElementHealth ( player_a_ser_curado, 100 )
+					setPedAnimation(player_a_ser_curado, false)
+					setElementFrozen( player_a_ser_curado, false )
+					setElementData(player_a_ser_curado,"PlayerCaido",false)
+				end, 4500, 1 )	
+				end		
+			end
+		end
+	end
+--end
+--addCommandHandler ( "curar", curar_jogador )
+
+
+
+
+
+
+function ticketPlayer(thePlayer)
+			if getElementData(thePlayer, "char:dutyfaction") == 4 or getElementData(thePlayer, "char:dutyfaction") == 26 or getElementData(thePlayer, "acc:admin") > 7 then 
+			local posX1, posY1, posZ1 = getElementPosition(thePlayer)
+			for _, player in ipairs(getElementsByType("player")) do
+				local posX2, posY2, posZ2 = getElementPosition(player)
+				local distance = getDistanceBetweenPoints3D(posX1, posY1, posZ1, posX2, posY2, posZ2)
+				if distance <= 1 then
+					if player ~= thePlayer then
+						local health = getElementHealth(player)
+						if health >= 31 then outputChatBox("#bebebeVocê só pode ajudar pessoas caidas!",thePlayer,255,255,255,true) return end
+						setPedAnimation( thePlayer, "MEDIC", "CPR", 4500, true, false, false, false)
+						setTimer ( function()
+							takeChar (player)
+						end, 4500, 1 )
+				return
+				end
+			end
+		end
+	end
+end
+addCommandHandler("curar", ticketPlayer, false, false)
+
+function takeChar (thePlayer)
+	setElementHealth ( thePlayer, 40 )
+	setPedAnimation(thePlayer, false)
+	setElementFrozen( thePlayer, false )
+	setElementData(thePlayer,"PlayerCaido",false)
+end
+
+
+
+function reanimar(thePlayer)
+	if getElementData(thePlayer, "char:dutyfaction") == 4 or getElementData(thePlayer, "char:dutyfaction") == 26 or getElementData(thePlayer, "acc:admin") > 7 then 
+	local posX1, posY1, posZ1 = getElementPosition(thePlayer)
+	for _, player in ipairs(getElementsByType("player")) do
+		local posX2, posY2, posZ2 = getElementPosition(player)
+		local distance = getDistanceBetweenPoints3D(posX1, posY1, posZ1, posX2, posY2, posZ2)
+		if distance <= 2 then
+			if player ~= thePlayer then
+				local health = getElementHealth(player)
+				if health >= 98 then outputChatBox("#bebebeVocê só pode ajudar pessoas tristes!",thePlayer,255,255,255,true) return end
+				setPedAnimation( thePlayer, "POLICE", "CopTraf_Stop", -1, false, false, true, false)
+				setTimer ( function()
+					takeChar2 (player)
+				end, 4500, 1 )
+		return
+		end
+	end
+end
+end
+end
+addCommandHandler("reanimar", reanimar, false, false)
+
+function takeChar2 (thePlayer)
+setElementHealth ( thePlayer, 100 )
+setPedAnimation(thePlayer, false)
+end
+
+
+local myMarker = createMarker (1164.194, -1347.01, 13.736, "cylinder", 0.9, 255, 255, 0, 0 )
+function checkMedicals(hitplayer, dimension)
+	if isElement(hitplayer) and getElementType(hitplayer) == "player" and not isPlayerInVehicle(hitplayer) then
+
+		if getElementData(hitplayer, "char:dutyfaction") == 4 then return end
+
+		local health = getElementHealth(hitplayer)
+		if health >= 50 then return end
+
+		setElementPosition(hitplayer, 1163.499, -1346.938, 14.755)
+		setPedRotation(hitplayer, 271.902)
+		setPedAnimation( hitplayer, "CRACK", "crckidle2", -1, true, false, false)
+	end
+end
+addEventHandler( "onMarkerHit", myMarker, checkMedicals )
+
+
+
+
+local myMarker2 = createMarker (1164.094, -1356.334, 13.737, "cylinder", 0.9, 255, 255, 0, 0 )
+function checkMedicals2(hitplayer, dimension)
+	if isElement(hitplayer) and getElementType(hitplayer) == "player" and not isPlayerInVehicle(hitplayer) then
+
+		if getElementData(hitplayer, "char:dutyfaction") == 4 then return end
+
+		local health = getElementHealth(hitplayer)
+		if health >= 50 then return end
+
+		setElementPosition(hitplayer, 1163.4, -1356.484, 14.755)
+		setPedRotation(hitplayer, 272.652)
+		setPedAnimation( hitplayer, "CRACK", "crckidle2", -1, true, false, false)
+	end
+end
+addEventHandler( "onMarkerHit", myMarker2, checkMedicals2 )
+
+
+local myMarker3 = createMarker (1164.094, -1367.079, 13.737, "cylinder", 0.9, 255, 255, 0, 0 )
+function checkMedicals3(hitplayer, dimension)
+	if isElement(hitplayer) and getElementType(hitplayer) == "player" and not isPlayerInVehicle(hitplayer) then
+
+		if getElementData(hitplayer, "char:dutyfaction") == 4 then return end
+
+		local health = getElementHealth(hitplayer)
+		if health >= 50 then return end
+
+		setElementPosition(hitplayer, 1163.399, -1367.161, 14.755)
+		setPedRotation(hitplayer, 269.992)
+		setPedAnimation( hitplayer, "CRACK", "crckidle2", -1, true, false, false)
+	end
+end
+addEventHandler( "onMarkerHit", myMarker3, checkMedicals3 )
+
+
+local myMarker4 = createMarker (1152.794, -1367.17, 13.815, "cylinder", 0.9, 255, 255, 0, 0 )
+function checkMedicals4(hitplayer, dimension)
+	if isElement(hitplayer) and getElementType(hitplayer) == "player" and not isPlayerInVehicle(hitplayer) then
+
+		if getElementData(hitplayer, "char:dutyfaction") == 4 then return end
+
+		local health = getElementHealth(hitplayer)
+		if health >= 50 then return end
+
+		setElementPosition(hitplayer, 1153.487, -1367.286, 14.755)
+		setPedRotation(hitplayer, 92.34)
+		setPedAnimation( hitplayer, "CRACK", "crckidle2", -1, true, false, false)
+	end
+end
+addEventHandler( "onMarkerHit", myMarker4, checkMedicals4 )
+
+
+local myMarker5 = createMarker (1150.703, -1357.457, 13.83, "cylinder", 0.9, 255, 255, 0, 0 )
+function checkMedicals5(hitplayer, dimension)
+	if isElement(hitplayer) and getElementType(hitplayer) == "player" and not isPlayerInVehicle(hitplayer) then
+
+		if getElementData(hitplayer, "char:dutyfaction") == 4 then return end
+
+		local health = getElementHealth(hitplayer)
+		if health >= 50 then return end
+
+		setElementPosition(hitplayer, 1149.181, -1358.063, 14.755)
+		setPedRotation(hitplayer, 356.844)
+		setPedAnimation( hitplayer, "CRACK", "crckidle2", -1, true, false, false)
+	end
+end
+addEventHandler( "onMarkerHit", myMarker5, checkMedicals5 )
+
+
+local myMarker6 = createMarker (1150.003, -1344.542, 13.834, "cylinder", 0.9, 255, 255, 0, 0 )
+function checkMedicals6(hitplayer, dimension)
+	if isElement(hitplayer) and getElementType(hitplayer) == "player" and not isPlayerInVehicle(hitplayer) then
+
+		if getElementData(hitplayer, "char:dutyfaction") == 4 then return end
+
+		local health = getElementHealth(hitplayer)
+		if health >= 50 then return end
+
+		setElementPosition(hitplayer, 1149.312, -1344.271, 14.755)
+		setPedRotation(hitplayer, 266.826)
+		setPedAnimation( hitplayer, "CRACK", "crckidle2", -1, true, false, false)
+	end
+end
+addEventHandler( "onMarkerHit", myMarker6, checkMedicals6 )
+
+
+local myMarker7 = createMarker (1148.261, -1331.24, 13.846, "cylinder", 0.9, 255, 255, 0, 0 )
+function checkMedicals7(hitplayer, dimension)
+	if isElement(hitplayer) and getElementType(hitplayer) == "player" and not isPlayerInVehicle(hitplayer) then
+
+		if getElementData(hitplayer, "char:dutyfaction") == 4 then return end
+
+		local health = getElementHealth(hitplayer)
+		if health >= 50 then return end
+
+		setElementPosition(hitplayer, 1147.024, -1331.894, 14.755)
+		setPedRotation(hitplayer, 356.55)
+		setPedAnimation( hitplayer, "CRACK", "crckidle2", -1, true, false, false)
+	end
+end
+addEventHandler( "onMarkerHit", myMarker7, checkMedicals7 )
+
+
+local myMarker8 = createMarker (1183.505, -1336.915, 13.47, "cylinder", 0.9, 255, 255, 0, 0 )
+function checkMedicals8(hitplayer, dimension)
+	if isElement(hitplayer) and getElementType(hitplayer) == "player" and not isPlayerInVehicle(hitplayer) then
+
+		if getElementData(hitplayer, "char:dutyfaction") == 4 then return end
+
+		local health = getElementHealth(hitplayer)
+		if health >= 50 then return end
+
+		setElementPosition(hitplayer, 1183.031, -1335.598, 14.043)
+		setPedRotation(hitplayer, 93.75)
+		setPedAnimation( hitplayer, "CRACK", "crckidle2", -1, true, false, false)
+	end
+end
+addEventHandler( "onMarkerHit", myMarker8, checkMedicals8 )
+
+
+
+
+
+
+function ChecarAnimo2(attacker)
+	for i, player in pairs (getElementsByType("player")) do
+		if not getElementData(player, "PlayerAnimo") then
+			if getElementData(player, "PlayerCaido") == true then return end
+				if getElementHealth(player) >= 1 then
+					if getElementHealth(player) <= 50 then 
+						setElementData(player, "PlayerAnimo", true)
+						triggerClientEvent(player,"JoinQuitGtaV:notifications", player,"animo", "Você está desanimado vá para o hospital e tome um remedio!", 15 )
+						toggleControl (player, "sprint", false ) 
+						toggleControl (player, "jump", false )
+
+						setPedWalkingStyle(player,120)
+						setElementHealth(player, 45)
+					end
+				end
+		else
+			setPedWalkingStyle(player,120)
+			toggleControl (player, "sprint", false ) 
+			toggleControl (player, "jump", false )
+		end
+	end
+end
+setTimer(ChecarAnimo2, 200, 0)
+
+function ChecarAnimo()
+	for i, player in pairs (getElementsByType("player")) do
+		if  getElementData(player, "PlayerAnimo") then
+			if getElementHealth(player) >= 51 then
+				setElementData(player, "PlayerAnimo", false)
+				setPedAnimation(player, false)
+				setPedWalkingStyle(player,0)
+				toggleControl (player, "sprint", true ) 
+				toggleControl (player, "jump", true )
+			end
+		end
+	end
+end
+setTimer(ChecarAnimo, 200, 0)

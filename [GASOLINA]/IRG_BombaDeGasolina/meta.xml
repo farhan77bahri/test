@@ -1,0 +1,7 @@
+<meta>
+	<oop>true</oop>
+	<script src="Kliens.lua" type="client" />
+	<file src="models/kut.dff" />
+	<file src="models/kut.txd" />
+	<file src="models/kut.col" />
+</meta>

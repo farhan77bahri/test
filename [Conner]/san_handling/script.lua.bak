@@ -1,0 +1,161 @@
+﻿function loadHandling(v)	
+		if getElementModel(v) == 431 then -- Onibus
+			setVehicleHandling(v, "maxVelocity", 60)
+			setVehicleHandling(v, "engineAcceleration", 15)
+		end	
+		if getElementModel(v) == 492 then -- Parati 
+			setVehicleHandling(v, "maxVelocity", 170)
+		end
+		if getElementModel(v) == 474 then -- Gol
+			setVehicleHandling(v, "maxVelocity", 170)
+		end
+		if getElementModel(v) == 405 then -- Gol G5
+			setVehicleHandling(v, "maxVelocity", 170)
+		end
+		if getElementModel(v) == 585 then -- Audi Q7
+			setVehicleHandling(v, "maxVelocity", 170)
+		end
+		if getElementModel(v) == 401 then -- Fiat Uno
+			setVehicleHandling(v, "maxVelocity", 180)
+		end
+		if getElementModel(v) == 550 then -- Celta
+			setVehicleHandling(v, "maxVelocity", 180)
+		end
+		if getElementModel(v) == 538 then -- Celta
+			setVehicleHandling(v, "maxVelocity", 100000)
+		end
+		if getElementModel(v) == 468 then -- Xt 660
+			setVehicleHandling(v, "maxVelocity", 180)
+		end
+		if getElementModel(v) == 522 then -- Xj6
+			setVehicleHandling(v, "maxVelocity", 180)
+		end
+		if getElementModel(v) == 547 then -- Jetta
+			setVehicleHandling(v, "maxVelocity", 170)
+		end
+		if getElementModel(v) == 566 then -- Corolla
+			setVehicleHandling(v, "maxVelocity", 170)
+		end
+		
+		if getElementModel(v) == 481 then -- BIKE 1
+			setVehicleHandling(v, "maxVelocity", 90)
+		end
+		
+		if getElementModel(v) == 509 then -- BIKE 2
+			setVehicleHandling(v, "maxVelocity", 90)
+		end
+		if getElementModel(v) == 510 then -- BIKE 3
+			setVehicleHandling(v, "maxVelocity", 90)
+		end
+		
+		if getElementModel(v) == 508 then -- Caminhao
+			setVehicleHandling(v, "mass", 1600)
+			setVehicleHandling(v, "turnMass", 3000)
+			setVehicleHandling(v, "dragCoeff", 1.8)
+			setVehicleHandling(v, "centerOfMass", { 0, 1.0, -0.50 } )
+			setVehicleHandling(v, "percentSubmerged", 75)
+			setVehicleHandling(v, "engineType", "petrol")
+			setVehicleHandling(v, "ABS", false)
+			setVehicleHandling(v, "steeringLock", 35)
+			setVehicleHandling(v, "suspensionForceLevel", 1.8)
+			setVehicleHandling(v, "suspensionDamping", 0.5)
+			setVehicleHandling(v, "suspensionHighSpeedDamping", 0.1)
+			setVehicleHandling(v, "suspensionUpperLimit", 0.3)
+			setVehicleHandling(v, "suspensionLowerLimit", -0.05)
+			setVehicleHandling(v, "suspensionFrontRearBias", 0.55)
+			setVehicleHandling(v, "suspensionAntiDiveMultiplier", 0.5)
+			setVehicleHandling(v, "seatOffsetDistance", 0.2)
+			setVehicleHandling(v, "collisionDamageMultiplier", 0.60)
+			setVehicleHandling(v, "monetary", 25000)
+			setVehicleHandling(v, "modelFlags", 0x40000001)
+			setVehicleHandling(v, "handlingFlags", 0x10308803)
+			setVehicleHandling(v, "headLight", 0)
+			setVehicleHandling(v, "tailLight", 1)
+			setVehicleHandling(v, "animGroup", 0)
+		end
+		
+		--[[if getElementData(v,"veh:id") == 191 then -- Caminhao
+			setVehicleHandling(v, "mass", 1600)
+			setVehicleHandling(v, "turnMass", 3000)
+			setVehicleHandling(v, "dragCoeff", 1.8)
+			setVehicleHandling(v, "centerOfMass", { 0, 1.0, -0.50 } )
+			setVehicleHandling(v, "percentSubmerged", 75)
+			setVehicleHandling(v, "engineType", "petrol")
+			setVehicleHandling(v, "ABS", false)
+			setVehicleHandling(v, "engineAcceleration", 20000)
+			setVehicleHandling(v, "steeringLock", 35)
+			setVehicleHandling(v, "suspensionForceLevel", 1.8)
+			setVehicleHandling(v, "suspensionDamping", 0.5)
+			setVehicleHandling(v, "suspensionHighSpeedDamping", 0.1)
+			setVehicleHandling(v, "suspensionUpperLimit", 0.3)
+			setVehicleHandling(v, "suspensionLowerLimit", -0.05)
+			setVehicleHandling(v, "suspensionFrontRearBias", 0.55)
+			setVehicleHandling(v, "suspensionAntiDiveMultiplier", 0.5)
+			setVehicleHandling(v, "seatOffsetDistance", 0.2)
+			setVehicleHandling(v, "collisionDamageMultiplier", 0.60)
+			setVehicleHandling(v, "monetary", 25000)
+			setVehicleHandling(v, "modelFlags", 0x40000001)
+			setVehicleHandling(v, "handlingFlags", 0x10308803)
+			setVehicleHandling(v, "headLight", 0)
+			setVehicleHandling(v, "tailLight", 1)
+			setVehicleHandling(v, "animGroup", 0)
+		end]]
+		
+		if getElementData(v,"veh:id") == 191 then -- Caminhao
+			setVehicleHandling(v, "mass", 2000)
+			setVehicleHandling(v, "turnMass", 3000)
+			setVehicleHandling(v, "dragCoeff", 0.8)
+			setVehicleHandling(v, "centerOfMass", { 0, 0.15, -0.9 } )
+			setVehicleHandling(v, "percentSubmerged", 75)
+			setVehicleHandling(v, "tractionMultiplier", 4.0)
+			setVehicleHandling(v, "tractionLoss", 0.9)
+			setVehicleHandling(v, "tractionBias", 0.297)
+			setVehicleHandling(v, "numberOfGears", 5)
+			setVehicleHandling(v, "maxVelocity", 600)
+			setVehicleHandling(v, "engineAcceleration", 50)
+			setVehicleHandling(v, "engineInertia", 0.001)
+			setVehicleHandling(v, "engineType", "petrol")
+			setVehicleHandling(v, "brakeDeceleration", 15)
+			setVehicleHandling(v, "ABS", false)
+			setVehicleHandling(v, "steeringLock", 35)
+			setVehicleHandling(v, "suspensionForceLevel", 1.8)
+			setVehicleHandling(v, "suspensionDamping", 0.5)
+			setVehicleHandling(v, "suspensionHighSpeedDamping", 0.1)
+			setVehicleHandling(v, "suspensionUpperLimit", 0.3)
+			setVehicleHandling(v, "suspensionLowerLimit", -0.05)
+			setVehicleHandling(v, "suspensionFrontRearBias", 0.55)
+			setVehicleHandling(v, "suspensionAntiDiveMultiplier", 0.5)
+			setVehicleHandling(v, "seatOffsetDistance", 0.2)
+			setVehicleHandling(v, "collisionDamageMultiplier", 0)
+			setVehicleHandling(v, "monetary", 25000)
+			setVehicleHandling(v, "modelFlags", 0x40000001)
+			setVehicleHandling(v, "handlingFlags", 0x10308803)
+			setVehicleHandling(v, "headLight", 0)
+			setVehicleHandling(v, "tailLight", 1)
+			setVehicleHandling(v, "animGroup", 0)
+		end
+		
+		
+end
+
+function loadHandlings()
+	for k, v in ipairs(getElementsByType("vehicle")) do
+		loadHandling(v)
+	end
+end
+addEventHandler("onResourceStart", getResourceRootElement(getThisResource()), loadHandlings)
+
+addEventHandler("onVehicleEnter", root, function(player)
+    loadHandling(source)
+end)
+
+
+--[[
+function resetHandling()
+	 for k, v in ipairs(getElementsByType("vehicle")) do
+		 for k1,v1 in ipairs(setModelHandling(getVehicleModel(v))) do
+			-- setVehicleHandling(v, k1, nil)
+		 end
+	 end
+ end
+ addEventHandler("onResourceStop", getResourceRootElement(getThisResource()), resetHandling)]]--

@@ -1,0 +1,19 @@
+<meta>
+    <script src="sourceG.lua" type="shared" />
+    <script src="sourceC.lua" type="client" protected="true" />
+    <script src="sourceS.lua" type="server" cache="false"/>
+    
+	<file src='files/items/1.png' />
+	<file src='files/items/2.png' />
+	<file src='files/items/3.png' />
+	<file src='files/items/4.png' />
+	<file src='files/items/5.png' />
+	<file src='files/items/6.png' />
+	<file src='files/items/7.png' />
+	<file src='files/items/8.png' />
+	
+	<file src='files/calibri.ttf' />
+	<oop>true</oop>
+
+	 <export function="startEventFunction" type="client" />
+</meta>

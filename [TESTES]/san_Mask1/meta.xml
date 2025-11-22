@@ -1,0 +1,33 @@
+﻿<meta>
+	
+	<info
+		name="Sistema de Máscaras."
+		author="AndreiSR"
+		type="script"
+		version="v1.0"
+		serverName="Hunter Imperial"
+	/>
+	
+	<script src="cMask.lua" type="client" cache="false" />
+	<script src="sMask.lua" type="server"  cache="false"/>
+	
+	<!-- [[ Masks ]] -->
+	<file src="mask/joker.dff" />
+	<file src="mask/joker.txd" />
+	<file src="mask/botfan.dff" />
+	<file src="mask/botfan.txd" />
+	<file src="mask/halloween.dff" />
+	<file src="mask/halloween.txd" />
+	<file src="mask/gasmask.dff" />
+	<file src="mask/gasmask.txd" />
+	<file src="mask/doge.dff" />
+	<file src="mask/doge.txd" />
+	<file src="mask/horse.dff" />
+	<file src="mask/horse.txd" />
+	<file src="mask/majora.dff" />
+	<file src="mask/majora.txd" />
+
+	<file src="mask/helmet3.dff" />
+	<file src="mask/helmet3.txd" />
+	
+</meta>

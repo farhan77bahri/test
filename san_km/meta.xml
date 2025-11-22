@@ -1,0 +1,133 @@
+<meta>
+
+	<script src="saver_s.lua" type="server" />
+    <script src="s_vehicle_interiors.lua" type="server" />
+	<export function="add"/>
+	<export function="isNearExit"/>
+
+    <script src="g_functions.lua" type="server" />
+    <export function="isVehicleWindowUp" type="server" />
+    <export function="hasVehicleWindows" type="server" />
+    <export function="hasVehicleRoof" type="server" />
+    
+    <script src="util.lua" type="client" protected="true"/>
+    <script src="util_server.lua" type="server" />
+    
+
+    
+    <script src="g_functions.lua" type="client" protected="true"/>
+    <export function="isVehicleWindowUp" type="client" protected="true"/>
+    <export function="hasVehicleWindows" type="client" protected="true"/>
+    <export function="hasVehicleRoof" type="client" protected="true"/>
+    
+    <script src="s_vehicle_system.lua" type="server" />
+    <export function="createShopVehicle" type="server" />
+    <export function="clearCharacterName" type="server" />
+    <export function="getCharacterName" type="server" />
+    <export function="getCharacterName" type="server" />
+    <export function="reloadVehicle" type="server" />
+    <export function="loadOneVehicle" type="server" />
+    <export function="addSafe" type="server" />
+    <export function="getSafe" type="server" />
+    
+
+    <script src="s_windows.lua" type="server" />
+    <script src="s_tint.lua" type="server" />
+    <script src="c_vehicle_rightclick.lua" type="client" protected="true"/>
+    <export function="openColorPicker" type="client" />
+    
+    <script src="g_doors.lua" type="server" />
+    <script src="g_doors.lua" type="client" protected="true"/>
+    <script src="c_doors.lua" type="client" protected="true"/>
+    <script src="s_doors.lua" type="server" />
+    
+    <script src="kocsicontroll_server.lua" type="server" />
+    <script src="kocsicontroll_client.lua" type="client" protected="true"/>
+	
+	
+	
+	
+	
+	<file src="ds-digi.ttf"/>
+	<script src="c_indicators.lua" type="client" cache="false" />
+	<script src="c_speedo.lua" type="client" cache="false" />
+	<script src="handbrakec.lua" type="client" />
+	<script src="handbrakes.lua" type="server" />
+	<script src="kezifek.lua" />
+	<export function="hideSpeedo" type="client"/>
+	<export function="showSpeedo" type="client"/>
+	
+	<file src="files/lock.mp3" />
+    <file src="files/open.mp3" />
+    <!--file src="files/kulcs.mp3" /-->
+ 
+    <file src="files/distancefont.ttf" />
+	<file src="files/opensans.ttf" />
+	<file src="files/vehiclestatefont.ttf" />
+ 
+ 
+	<file src="files/handbrake.wav"/>
+	<file src="files/turnsignal.mp3"/>
+	<file src="files/lightswitch.mp3"/>
+	<file src="files/handbrakepointer.png"/>
+	<file src="files/handbrakebg.png"/>
+	<file src="files/turbo.wav" />
+    <file src="files/key.mp3" />
+	<file src="files/speedo/checkengine.png"/>
+	<!--file src="files/speedo/checkengine_med.png"/-->
+	<file src="files/speedo/checkengine_on.png"/>
+	<!--file src="files/speedo/checkengine_on_med.png"/>
+	<file src="files/speedo/checkengine_on_sml.png"/>
+	<file src="files/speedo/checkengine_sml.png"/-->
+	<file src="files/speedo/dash.png"/>
+	<!--file src="files/speedo/dash_med.png"/>
+	<file src="files/speedo/dash_sml.png"/-->
+	<file src="files/speedo/ds-digi.ttf"/>
+	<file src="files/speedo/guage.png"/>
+	<!--file src="files/speedo/guage_med.png"/>
+	<file src="files/speedo/guage_sml.png"/-->
+	<file src="files/speedo/handbrake.png"/>
+	<!--file src="files/speedo/handbrake_med.png"/-->
+	<file src="files/speedo/handbrake_on.png"/>
+	<!--file src="files/speedo/handbrake_on_med.png"/>
+	<file src="files/speedo/handbrake_on_sml.png"/>
+	<file src="files/speedo/handbrake_sml.png"/-->
+	<file src="files/speedo/left.png"/>
+	<!--file src="files/speedo/left_med.png"/-->
+	<file src="files/speedo/left_on.png"/>
+	<!--file src="files/speedo/left_on_med.png"/>
+	<file src="files/speedo/left_on_sml.png"/>
+	<file src="files/speedo/left_sml.png"/-->
+	<file src="files/speedo/lowfuel.png"/>
+	<!--file src="files/speedo/lowfuel_med.png"/-->
+	<file src="files/speedo/lowfuel_on.png"/>
+	<!--file src="files/speedo/lowfuel_on_med.png"/>
+	<file src="files/speedo/lowfuel_on_sml.png"/>
+	<file src="files/speedo/lowfuel_sml.png"/-->
+	<file src="files/speedo/right.png"/>
+	<!--file src="files/speedo/right_med.png"/-->
+	<file src="files/speedo/right_on.png"/>
+	<!--file src="files/speedo/right_on_med.png"/>
+	<file src="files/speedo/right_on_sml.png"/>
+	<file src="files/speedo/right_sml.png"/-->
+	<file src="files/speedo/nitro/bar.png"/>
+	<!--file src="files/speedo/nitro/bar_med.png"/>
+	<file src="files/speedo/nitro/bar_sml.png"/-->
+	<file src="files/speedo/nitro/bg.png"/>
+	<!--file src="files/speedo/nitro/bg_med.png"/>
+	<file src="files/speedo/nitro/bg_sml.png"/-->
+	<file src="files/speedo/nitro/txt.png"/>
+	<!--file src="files/speedo/nitro/txt_med.png"/>
+	<file src="files/speedo/nitro/txt_sml.png"/-->
+	<file src="files/speedo/nitro/nitro1.png"/>
+	<file src="files/speedo/nitro/nitro2.png"/>
+	<file src="files/speedo/lightoff.png"/>
+	<file src="files/speedo/lighton.png"/>
+	<file src="files/speedo/door1.png"/>
+	<file src="files/speedo/door2.png"/>
+	
+	<file src="files/speedo/fuel.png"/>
+	<file src="files/speedo/fuelarrow.png"/>	
+	
+
+</meta>

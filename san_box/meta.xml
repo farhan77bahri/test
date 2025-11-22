@@ -1,0 +1,26 @@
+<meta>
+    <script src="sourcec.lua" type="client" cache="false" />
+	<script src="sources.lua" type="server" />
+    
+    <file src="files/adasveteli.png" />
+	<file src="files/aranyrog.png" />
+	<file src="files/aranyrud.png" />
+	<file src="files/bankrob.png" />
+	<file src="files/checkengine.png" />
+	<file src="files/csonttores.png" />
+	<file src="files/fejes.png" />
+	<file src="files/fizu.png" />
+	<file src="files/halal.png" />
+	<file src="files/hazvasarlas.png" />
+	<file src="files/jailed.png" />
+	<file src="files/onduty.png" />
+	<file src="files/securicar1.png" />
+	<file src="files/securicar2.png" />
+	<file src="files/szinkronizalas.png" />
+	<file src="files/trafi.png" />
+	<file src="files/zarva.png" />
+	<file src="files/zsaruticket.png" />
+	<file src="files/sound.wav" />
+	
+	<export function="showBox" type="client"/>
+</meta>

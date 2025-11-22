@@ -1,0 +1,344 @@
+﻿--[[Mrandom = {}
+Sramdom = {}
+myBlip  = {}
+markV   = {}
+
+
+function startFunction (thePlayer)
+     if not (getElementData(thePlayer, "JOB")) then
+		 setElementData(thePlayer, "JOB", true)
+		 setElementData(thePlayer, "ILEGAIS:Job", 2)
+		 outputChatBox("#7cc576[ILEGAIS] #FFFFFFAo longo do dia será enviado missões.", thePlayer, 255,255,255, true)
+		 outputChatBox("#7cc576[ILEGAIS] #FFFFFFRealize e ganhe seu #7cc576D$.", thePlayer, 255,255,255, true)
+		 outputChatBox("#7cc576[TEMPO] #FFFFFFCada serviço tem o intervalo de #7cc57620 a 30 Minutos .", thePlayer, 255,255,255, true)
+		 startFunction(thePlayer)
+		 else
+		 outputChatBox("#7cc576[BTC ERROR] #FFFFFFVocê já está em um serviço ilegal #7cc576digite #FFFFFFo comando #7cc576/demitir #FFFFFFpara sair.", thePlayer, 255,255,255, true)
+	 end
+end
+addEvent("JOB:Matador", true)
+addEventHandler("JOB:Matador", root, startFunction)
+
+function startFunction(thePlayer)
+     if (getElementData(thePlayer, "ILEGAIS:Job") == 2) then
+	     timerExec  = math.random(25, 30)
+		 bankTimer = setTimer(execFunction, timerExec*60000, 1, thePlayer)
+	 end
+end
+addEvent("Matador", true)
+addEventHandler("Matador", root, startFunction)
+
+
+function getTimeLeftForBankRob()
+	local remaining = getTimerDetails(bankTimer)
+	return remaining
+end
+
+addCommandHandler("mtempo",
+function (player)
+	if (getElementData(player, "ILEGAIS:Job") == 2) then
+
+	if isTimer(bankTimer) then
+	local minutes, seconds = convertTime(getTimeLeftForBankRob())
+	--exports.btc_hud:drawNote('Vitima', '* A proxima vitima vai aparecer em : ( '.. math.floor(minutes) ..' minutos )!', player, 255, 255, 0, 10000)
+
+
+	triggerClientEvent(player,"JoinQuitGtaV:notifications", player,"MatadorDeAluguel", "* A proxima vitima vai aparecer em : ( ".. math.floor(minutes) .." minutos ) : ( ".. math.floor(seconds) .." segundos )!", 15 )
+
+
+	else
+
+	triggerClientEvent(player,"JoinQuitGtaV:notifications", player,"MatadorDeAluguel", "* Sua vitima já foi marcada!", 15 )
+	--exports.btc_hud:drawNote('Vitima', '* Sua vitima já foi marcada!!', player, 255, 255, 0, 10000)
+	end
+end
+end)
+
+function convertTime(ms)
+    local min = math.floor ( ms/60000 )
+    local sec = math.floor( (ms/1000)%60 )
+    return min, sec
+end
+
+
+
+
+function execFunction (thePlayer)
+     if (getElementData(thePlayer, "ILEGAIS:Job") == 2) then
+         selectVitima (thePlayer)
+	 end
+end
+
+local allowed = { { 48, 57 }, { 65, 90 }, { 97, 122 } } 
+
+function generateString ( len )
+    if tonumber ( len ) then
+        math.randomseed ( getTickCount () )
+        local str = ""
+        for i = 1, len do
+            local charlist = allowed[math.random ( 1, 3 )]
+            str = str .. string.char ( math.random ( charlist[1], charlist[2] ) )
+        end
+        return str
+    end
+    return false
+    
+end
+
+function selectVitima (thePlayer)
+local randomPlayer = getRandomPlayer ( )
+
+
+	if getElementData(randomPlayer, "acc:admin") >= 1 then
+	selectVitima (thePlayer)
+	return
+	end
+
+	     if (randomPlayer == thePlayer) then
+	         selectVitima (thePlayer)
+		     return
+	     end
+	     if (getElementData(randomPlayer, "playerVitima")) then
+	         selectVitima (thePlayer)
+		     return
+	     end
+	 	 local money = math.random(15000, 25000)
+		 local idAction = generateString (20)
+		 local x,y,z = getElementPosition(randomPlayer)
+	     outputChatBox(" ", thePlayer, 255,255,255, true)
+	     outputChatBox(" ", thePlayer, 255,255,255, true)
+	     outputChatBox(" ", thePlayer, 255,255,255, true)
+	     outputChatBox(" ", thePlayer, 255,255,255, true)
+		 outputChatBox(" ", thePlayer, 255,255,255, true)
+		 outputChatBox(" ", thePlayer, 255,255,255, true)
+		 
+		triggerClientEvent(thePlayer,"JoinQuitGtaV:notifications", thePlayer,"MatadorDeAluguel", "Surgiu um serviço para você Nome: "..getPlayerName ( randomPlayer ).." Idade: "..math.random(23, 35).." Anos, Recompensa: "..tonumber(money).." para cancelar a missão digite /cancelarm", 15 )
+
+
+	    outputChatBox("#7cc576[MATADOR] #FFFFFFSurgiu um serviço para você!.", thePlayer, 255,255,255, true)
+	    outputChatBox("#7cc576[MATADOR] #FFFFFFNome: #7cc576"..getPlayerName ( randomPlayer ).." #FFFFFFIdade: #7cc576"..math.random(23, 35).." #FFFFFFAnos.", thePlayer, 255,255,255, true)
+		outputChatBox("#7cc576[MATADOR] #FFFFFFRecompensa: #7cc576"..tonumber(money), thePlayer, 255,255,255, true)
+	    setElementData(randomPlayer, "playerVitima", true)
+	    setElementData(thePlayer, "idAction", idAction)
+	    setElementData(randomPlayer, "idActionV", idAction)
+		setElementData(thePlayer, "moneyService", money)
+		
+		 --local x,y,z = getElementPosition(thePlayer)
+		exports.Script_futeis:setGPS(thePlayer, "Player", getPlayerName(randomPlayer))
+
+
+		 --myBlip[thePlayer] = createBlipAttachedTo ( randomPlayer, 62 )
+		 -- markV[thePlayer] = createMarker(x, y, z + 1.5, "arrow", 0.5 , 255, 0, 0, 200)
+		 --attachElements(markV[thePlayer], randomPlayer, 0, 0, 1.5 )
+	     --setElementVisibleTo (markV[thePlayer], root, false )
+		 --setElementVisibleTo (markV[thePlayer], thePlayer, true)
+	     --setElementVisibleTo (myBlip[thePlayer], root, false )
+		 --setElementVisibleTo (myBlip[thePlayer], thePlayer, true)
+end
+
+function wastedV (ammo, attacker, weapon)
+     if not (getElementData(source, "playerVitima")) then return end--else
+	 
+	if not (attacker) then
+         for _, player in ipairs(getElementsByType("player")) do
+			 if (getElementData(player, "idAction") == getElementData(source, "idActionV")) then
+			     if (getElementData(player, "idAction")) then
+					 outputChatBox(" ", player, 255,255,255, true)
+					 
+
+					 triggerClientEvent(thePlayer,"JoinQuitGtaV:notifications", thePlayer,"MatadorDeAluguel", "Sua vitima acabou morrendo de causas desconhecidas, Lamento mais essa missão foi cancelada sem lucro", 15 )
+
+
+
+	    			 outputChatBox("#7cc576[SISTEMA: #FFFFFFSua vitima acabou morrendo de causas desconhecidas.", player, 255,255,255, true)
+	     			 outputChatBox("#7cc576[SISTEMA: #FFFFFFLamento mais essa missão foi cancelada sem lucro.", player, 255,255,255, true)
+	     		     removeElementData(source, "playerVitima")
+	    		     removeElementData(source, "idActionV")
+	    		     removeElementData(player, "idAction")
+					 removeElementData(player, "moneyService")
+					
+					 	local x,y,z = getElementPosition(thePlayer)
+		 				exports.Script_futeis:setGPS(thePlayer, "Coordenada", x,y,z)
+
+                        -- if isElement(myBlip[player]) then 
+	         			--	 destroyElement(myBlip[player])
+		     			-- end
+                        -- if isElement(markV[player]) then 
+         				--	 destroyElement(markV[player])
+	 				-- end
+			     end
+			 end
+		 end
+	     if (attacker) then
+			     if (getElementData(attacker, "idAction") ~= getElementData(source, "idActionV")) then
+				     for _, player in ipairs(getElementsByType("player")) do
+					     if (getElementData(player, "idAction") == getElementData(source, "idActionV")) then
+				             outputChatBox(" ", player, 255,255,255, true)
+			     	         outputChatBox("#7cc576[SISTEMA: #FFFFFFSua vitima acabou morrendo de causas desconhecidas.", player, 255,255,255, true)
+							  outputChatBox("#7cc576[SISTEMA: #FFFFFFLamento mais essa missão foi cancelada sem lucro.", player, 255,255,255, true)
+							  
+							  triggerClientEvent(thePlayer,"JoinQuitGtaV:notifications", thePlayer,"MatadorDeAluguel", "Sua vitima acabou morrendo de causas desconhecidas, Lamento mais essa missão foi cancelada sem lucro", 15 )
+		        	         removeElementData(source, "playerVitima")
+		        	         removeElementData(source, "idActionV")
+		        	         removeElementData(player, "idAction")
+							 removeElementData(player, "moneyService")
+							 local x,y,z = getElementPosition(player)
+							 exports.Script_futeis:setGPS(player, "Coordenada", x,y,z)
+                            -- if isElement(myBlip[player]) then 
+	         	      		--	 destroyElement(myBlip[player])
+		     	    		-- end
+		     	    		-- if isElement(markV[player]) then 
+    		        		--	 destroyElement(markV[player])
+		     	    		-- end
+		         		 end
+		         	 end
+				 end
+			 end
+		  	 else
+		     outputChatBox(" ", source, 255,255,255, true)
+	         outputChatBox(" ", attacker, 255,255,255, true)
+			 outputChatBox(" ", attacker, 255,255,255, true)
+			 outputChatBox(" ", attacker, 255,255,255, true)
+			 outputChatBox(" ", attacker, 255,255,255, true)
+			 outputChatBox(" ", attacker, 255,255,255, true)
+
+			 triggerClientEvent(source,"JoinQuitGtaV:notifications", source,"MatadorDeAluguel", "Você foi morto por Assasino de Aluguel", 15 )
+
+
+			 triggerClientEvent(attacker,"JoinQuitGtaV:notifications", attacker,"MatadorDeAluguel", "Missão concluida com SUCESSO, Vitima: "..getPlayerName(source).." Foi apagada, Recompensa entregue: "..getElementData(attacker, "moneyService").." Foi paga.", 15 )
+
+
+		     outputChatBox("#7cc576[ASSASINATO]: #FFFFFFVocê foi morto por #7cc576Assasino de Aluguel", source, 255,255,255, true)
+			 outputChatBox("#7cc576[ASSASINATO]: #FFFFFFMissão concluida com SUCESSO.", attacker, 255,255,255, true)
+			 outputChatBox("#7cc576[ASSASINATO]: #FFFFFFVitima: #7cc576"..getPlayerName(source).."#FFFFFF Foi apagada.", attacker, 255,255,255, true)
+			 outputChatBox("#7cc576[ASSASINATO]: #FFFFFFRecompensa entregue: #7cc576"..getElementData(attacker, "moneyService").."#FFFFFF Foi paga.", attacker, 255,255,255, true)
+			 setElementData(attacker, "char:moneysujo", (getElementData(attacker, "char:moneysujo") or 0) + getElementData(attacker, "moneyService"))
+
+
+			 local x,y,z = getElementPosition(attacker)
+			 exports.Script_futeis:setGPS(attacker, "Coordenada", x,y,z)
+
+
+			 startFunction(attacker)
+			 removeElementData(source, "playerVitima")
+			 removeElementData(source, "idActionV")
+			 removeElementData(attacker, "idAction")
+			 removeElementData(attacker, "moneyService")
+		    -- if isElement(myBlip[attacker]) then 
+			--	 destroyElement(myBlip[attacker])
+			-- end
+		    -- if isElement(markV[source]) then 
+			--	 destroyElement(markV[source])
+		--	 end
+	     --end
+	 end
+end
+addEventHandler("onPlayerWasted", getRootElement(), wastedV)
+
+
+function wastedV2(thePlayer)
+	if (getElementData(thePlayer, "ILEGAIS:Job") == 2) then
+     if (getElementData(thePlayer, "idAction")) then 
+         for _, player in ipairs(getElementsByType("player")) do
+			 if (getElementData(player, "idActionV") == getElementData(thePlayer, "idAction")) then
+			     if (getElementData(player, "playerVitima")) then
+	     		     removeElementData(player, "playerVitima")
+	    		     removeElementData(player, "idActionV")
+	    		     removeElementData(thePlayer, "idAction")
+					 removeElementData(thePlayer, "moneyService")
+					 
+					 local x,y,z = getElementPosition(thePlayer)
+					 exports.Script_futeis:setGPS(thePlayer, "Coordenada", x,y,z)
+					 --setTimer(selectVitima, 10000, 1, player)
+					 startFunction(thePlayer)
+			 triggerClientEvent(thePlayer,"JoinQuitGtaV:notifications", thePlayer,"MatadorDeAluguel", "Você Cancelou a missão, embreve surgirá uma nova oferta!", 15 )
+
+end
+
+			     end
+			 end
+		 end
+     end
+end
+addCommandHandler("cancelarm", wastedV2)
+
+
+function wastedV (ammo, attacker, weapon)
+     if (getElementData(source, "idAction")) then 
+         for _, player in ipairs(getElementsByType("player")) do
+			 if (getElementData(player, "idActionV") == getElementData(source, "idAction")) then
+			     if (getElementData(player, "playerVitima")) then
+	     		     removeElementData(player, "playerVitima")
+	    		     removeElementData(player, "idActionV")
+	    		     removeElementData(source, "idAction")
+					 removeElementData(source, "moneyService")
+					 
+					 local x,y,z = getElementPosition(source)
+					 exports.Script_futeis:setGPS(source, "Coordenada", x,y,z)
+
+                         --if isElement(myBlip[source]) then 
+	         			--	 destroyElement(myBlip[source])
+		     			 --end
+                         --if isElement(markV[source]) then 
+         				--	 destroyElement(markV[source])
+	 				 --end
+			     end
+			 end
+		 end
+     end
+end
+addEventHandler("onPlayerWasted", getRootElement(), wastedV)
+
+function quitV ()
+     if (getElementData(source, "playerVitima")) then
+	     for _, player in ipairs(getElementsByType("player")) do
+		     if (getElementData(player, "idAction") == getElementData(source, "idActionV")) then
+			     outputChatBox(" ", player, 255,255,255, true)
+			     outputChatBox("#7cc576[OPS]: #FFFFFFSua vitima saiu da sessão.", player, 255,255,255, true)
+				 outputChatBox("#7cc576[Sistema]: #FFFFFFProcurando nova vitima.", player, 255,255,255, true)
+
+
+				 triggerClientEvent(player,"JoinQuitGtaV:notifications", player,"MatadorDeAluguel", "Sua vitima saiu da sessão, Procurando nova vitima", 15 )
+
+
+
+				 --if isElement(myBlip[player]) then 
+				 --    destroyElement(myBlip[player])
+				 --end
+
+				 local x,y,z = getElementPosition(player)
+				 exports.Script_futeis:setGPS(player, "Coordenada", x,y,z)
+
+			     removeElementData(player, "idAction")
+			     removeElementData(player, "moneyService")
+				 setTimer(selectVitima, 10000, 1, player)
+			 end
+		 end
+	 end
+end
+addEventHandler("onPlayerQuit", root, quitV)
+
+function quitHitV ()
+     if (getElementData(source, "idAction")) then
+	     for _, player in ipairs(getElementsByType("player")) do
+		     if (getElementData(player, "idActionV") == getElementData(source, "idAction")) then
+		        -- if isElement(myBlip[player]) then 
+				--     destroyElement(myBlip[player])
+			    -- end
+		        -- if isElement(markV[player]) then 
+			    -- 	 destroyElement(markV[player])
+			   --  end
+
+			   local x,y,z = getElementPosition(player)
+			   exports.Script_futeis:setGPS(player, "Coordenada", x,y,z)
+
+
+			     removeElementData(player, "playerVitima")
+			     removeElementData(player, "idActionV")
+			 end
+		 end
+	 end
+end
+addEventHandler("onPlayerQuit", root, quitHitV)
+
+]]--

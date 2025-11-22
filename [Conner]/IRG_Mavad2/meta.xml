@@ -1,0 +1,23 @@
+<meta>
+    <script src="Client/cAchievements.lua" type="client" />
+    <script src="Server/sAchievements.lua" type="server" />
+    
+    <script src="Server/Traficante/sourceS.lua" type="server" />
+    <script src="Client/Traficante/sourceC.lua" type="client" />
+    
+    <script src="Server/Matador/sourceS.lua" type="server" />
+    <script src="Client/Matador/sourceC.lua" type="client" />
+    
+    
+    <script src="Server/Orgaos/sourceS.lua" type="server" />
+    <script src="Client/Orgaos/sourceC.lua" type="client" />
+    
+    <script src="Server/Hacker/sourceS.lua" type="server" />
+    <script src="Client/Hacker/sourceC.lua" type="client" />
+    
+    <file src="model/drill.txd" />
+    <file src="model/drill.dff" />
+    
+    <file src="model/backgroundC.png" />
+    
+</meta>

@@ -1,0 +1,272 @@
+﻿addEventHandler("onPlayerLogin", root,
+  function()
+	 local time = getRealTime()
+	 local hours = time.hour
+	 if hours == 1 then
+	     setElementData(source, "temp:char", "16°")
+	 end
+	 if hours == 2 then
+	     setElementData(source, "temp:char", "14°")
+	 end
+	 if hours == 3 then
+	     setElementData(source, "temp:char", "13°")
+	 end
+	 if hours == 4 then
+	     setElementData(source, "temp:char", "10°")
+	 end
+	 if hours == 5 then
+	     setElementData(source, "temp:char", "4°°")
+	 end
+	 if hours == 6 then
+	     setElementData(source, "temp:char", "- 1°")
+	 end
+	 if hours == 7 then
+	     setElementData(source, "temp:char", "6°")
+	 end
+	 if hours == 8 then
+	     setElementData(source, "temp:char", "12°")
+	 end
+	 if hours == 9 then
+	     setElementData(source, "temp:char", "18°")
+	 end
+	 if hours == 10 then
+	     setElementData(source, "temp:char", "24°")
+	 end
+	 if hours == 11 then
+	     setElementData(source, "temp:char", "27°")
+	 end
+	 if hours == 12 then
+	     setElementData(source, "temp:char", "32°")
+	 end
+	 if hours == 13 then
+	     setElementData(source, "temp:char", "33°")
+	 end
+	 if hours == 14 then
+	     setElementData(source, "temp:char", "33°")
+	 end
+	 if hours == 15 then
+	     setElementData(source, "temp:char", "33°")
+	 end
+	 if hours == 16 then
+	     setElementData(source, "temp:char", "33°")
+	 end
+	 if hours == 17 then
+	     setElementData(source, "temp:char", "28°")
+	 end
+	 if hours == 18 then
+	     setElementData(source, "temp:char", "27°")
+	 end
+	 if hours == 19 then
+	     setElementData(source, "temp:char", "27°")
+	 end
+	 if hours == 20 then
+	     setElementData(source, "temp:char", "27°")
+	 end
+	 if hours == 21 then
+	     setElementData(source, "temp:char", "25°")
+	 end
+	 if hours == 22 then
+	     setElementData(source, "temp:char", "20°")
+	 end
+	 if hours == 23 then
+	     setElementData(source, "temp:char", "19°")
+	 end
+	 if hours == 24 then
+	     setElementData(source, "temp:char", "18°")
+     end
+	 local playerAccount = getPlayerAccount(source)
+	 if (getAccountData(playerAccount, "setIMG")) then
+	     setElementData(source, "setIMG", getAccountData(playerAccount, "setIMG"))
+	 end
+  end
+)
+
+function onPlayerQuit()
+      local playerAccount = getPlayerAccount(source) -- get his account
+      if (playerAccount) then -- if we got the account then
+            setAccountData(playerAccount, "setIMG", getElementData(source, "setIMG")) -- store his current money amount in his account data
+      end
+end
+addEventHandler("onPlayerQuit", getRootElement(), onPlayerQuit)
+
+players = getElementsByType ( "player" )
+for k,v in ipairs(players) do
+     if getElementData(v, "loggedin") then 
+	 local time = getRealTime()
+	 local hours = time.hour
+	 if hours == 1 then
+	     setElementData(v, "temp:char", "16°")
+	 end
+	 if hours == 2 then
+	     setElementData(v, "temp:char", "14°")
+	 end
+	 if hours == 3 then
+	     setElementData(v, "temp:char", "13°")
+	 end
+	 if hours == 4 then
+	     setElementData(v, "temp:char", "10°")
+	 end
+	 if hours == 5 then
+	     setElementData(v, "temp:char", "4°°")
+	 end
+	 if hours == 6 then
+	     setElementData(v, "temp:char", "- 1°")
+	 end
+	 if hours == 7 then
+	     setElementData(v, "temp:char", "6°")
+	 end
+	 if hours == 8 then
+	     setElementData(v, "temp:char", "12°")
+	 end
+	 if hours == 9 then
+	     setElementData(v, "temp:char", "18°")
+	 end
+	 if hours == 10 then
+	     setElementData(v, "temp:char", "24°")
+	 end
+	 if hours == 11 then
+	     setElementData(v, "temp:char", "27°")
+	 end
+	 if hours == 12 then
+	     setElementData(v, "temp:char", "32°")
+	 end
+	 if hours == 13 then
+	     setElementData(v, "temp:char", "33°")
+	 end
+	 if hours == 14 then
+	     setElementData(v, "temp:char", "33°")
+	 end
+	 if hours == 15 then
+	     setElementData(v, "temp:char", "33°")
+	 end
+	 if hours == 16 then
+	     setElementData(v, "temp:char", "33°")
+	 end
+	 if hours == 17 then
+	     setElementData(v, "temp:char", "- 28°")
+	 end
+	 if hours == 18 then
+	     setElementData(v, "temp:char", "- 27°")
+	 end
+	 if hours == 19 then
+	     setElementData(v, "temp:char", "- 27°")
+	 end
+	 if hours == 20 then
+	     setElementData(v, "temp:char", "- 27°")
+	 end
+	 if hours == 21 then
+	     setElementData(v, "temp:char", "25°")
+	 end
+	 if hours == 22 then
+	     setElementData(v, "temp:char", "20°")
+	 end
+	 if hours == 23 then
+	     setElementData(v, "temp:char", "19°")
+	 end
+	 if hours == 24 then
+	     setElementData(v, "temp:char", "18°")
+	 end
+     end
+end
+
+setTimer(function()
+players = getElementsByType ( "player" )
+for k,v in ipairs(players) do
+     if getElementData(v, "loggedin") then 
+	 local time = getRealTime()
+	 local hours = time.hour
+	 if hours == 1 then
+	     setElementData(v, "temp:char", "16°")
+	 end
+	 if hours == 2 then
+	     setElementData(v, "temp:char", "14°")
+	 end
+	 if hours == 3 then
+	     setElementData(v, "temp:char", "13°")
+	 end
+	 if hours == 4 then
+	     setElementData(v, "temp:char", "10°")
+	 end
+	 if hours == 5 then
+	     setElementData(v, "temp:char", "4°°")
+	 end
+	 if hours == 6 then
+	     setElementData(v, "temp:char", "- 1°")
+	 end
+	 if hours == 7 then
+	     setElementData(v, "temp:char", "6°")
+	 end
+	 if hours == 8 then
+	     setElementData(v, "temp:char", "12°")
+	 end
+	 if hours == 9 then
+	     setElementData(v, "temp:char", "18°")
+	 end
+	 if hours == 10 then
+	     setElementData(v, "temp:char", "24°")
+	 end
+	 if hours == 11 then
+	     setElementData(v, "temp:char", "27°")
+	 end
+	 if hours == 12 then
+	     setElementData(v, "temp:char", "32°")
+	 end
+	 if hours == 13 then
+	     setElementData(v, "temp:char", "33°")
+	 end
+	 if hours == 14 then
+	     setElementData(v, "temp:char", "33°")
+	 end
+	 if hours == 15 then
+	     setElementData(v, "temp:char", "33°")
+	 end
+	 if hours == 16 then
+	     setElementData(v, "temp:char", "33°")
+	 end
+	 if hours == 17 then
+	     setElementData(v, "temp:char", "- 28°")
+	 end
+	 if hours == 18 then
+	     setElementData(v, "temp:char", "- 27°")
+	 end
+	 if hours == 19 then
+	     setElementData(v, "temp:char", "- 27°")
+	 end
+	 if hours == 20 then
+	     setElementData(v, "temp:char", "- 27°")
+	 end
+	 if hours == 21 then
+	     setElementData(v, "temp:char", "25°")
+	 end
+	 if hours == 22 then
+	     setElementData(v, "temp:char", "20°")
+	 end
+	 if hours == 23 then
+	     setElementData(v, "temp:char", "19°")
+	 end
+	 if hours == 24 then
+	     setElementData(v, "temp:char", "18°")
+	 end
+     end
+end
+end, 60000 * 60, 0)
+
+
+
+
+
+function togValaszolasok(thePlayer, commandName)
+	
+		local allapot = getElementData(thePlayer, "hud")
+		
+		if allapot == false then
+			--outputChatBox("Você desligou a #7cc576hud#ffffff", thePlayer, 255, 255, 255, true)
+			setElementData(thePlayer, "hud", true)
+			showChat(false)
+		else
+			--outputChatBox("Você ligou a #7cc576hud", thePlayer, 255, 255, 255, true)
+			setElementData(thePlayer, "hud", false)
+			showChat(true)
+	end
+end
+addCommandHandler("hud", togValaszolasok, false, false)

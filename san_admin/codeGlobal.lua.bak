@@ -1,0 +1,74 @@
+﻿function checkLogged(p)
+	local isLogged = getElementData(p,"loggedin")
+	if isLogged then
+		return true
+	else
+		return false
+	end
+end
+
+local adminTitle = {
+	[1] = {"Trial_Helper"},
+	[2] = {"Helper"},
+	[3] = {"Head_Helper"},
+	[4] = {"Trial-Admin"},
+	[5] = {"ADMIN"},
+	[6] = {"ADMIN II"},
+	[7] = {"ADMIN III"},
+	[8] = {"Senior_Admin"},
+	[9] = {"Supervisor"},
+	[10] = {"Head_Admin"},
+	[11] = {"Management"},
+	[12] = {"Manager"},
+	[13] = {"Owner"},
+	[14] = {"Founder"},
+	[15] = {"Game-Master"},
+}
+
+local asTitle = {
+	[1] = {"Administrador Temporário -"},
+	[2] = {"Assistente de administração -"},
+}
+
+function checkAdmin(p)
+	local admin = getElementData(p,"acc:admin")
+	if admin >= 1 then
+		return true
+	end
+end
+
+function isAdminDuty(p)
+	local aduty = getElementData(p,"char:adminduty")
+	if aduty == 1 then
+		return true
+	end
+end
+
+function getPlayerAdminLevel(p)
+	return adminTitle[getElementData(p,"acc:admin")][1]
+end
+--[[
+function getPlayerAsLevel(p)
+	return asTitle[getElementData(p,"acc:admin")][1]
+end
+]]--
+function checkNagyonAdmin(p)
+	local admin = getElementData(p,"acc:admin")
+	if admin <= 7 then
+		return true
+	end
+end
+
+function checkPermission(p,szint)
+	local admin = getElementData(p,"acc:admin")
+	if admin >= tonumber(szint) then
+		return true
+	end
+end
+
+function checkPermissionIG(p,szint)
+	local admin = getElementData(p,"acc:admin")
+	if admin <= tonumber(szint) then
+		return true
+	end
+end

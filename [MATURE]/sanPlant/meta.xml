@@ -1,0 +1,9 @@
+<meta>
+    <script src="sourceC.lua" type="client" />
+    <script src="sourceG.lua" type="shared" />
+    <script src="sourceS.lua" type="server" />
+    <file src="files/calibri.ttf" />
+    
+    <export function="createPlant" type="server" />
+    
+</meta>

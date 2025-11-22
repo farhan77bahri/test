@@ -1,0 +1,95 @@
+﻿local connection = exports['san_mysql']:getConnection()
+
+function buyVehicle(player, modellID, r, g, b, money, jelenVeh, number)
+	if isElement(player) then 
+		if (tonumber(player:getData("char:money") or 0) >= tonumber(money)) then
+			local myCars = 0
+			for _, value in ipairs(getElementsByType("vehicle")) do
+				if value:getData("veh:owner") == player:getData("acc:id") then
+					myCars = myCars+1
+				end
+			end
+		
+			if tonumber(myCars) < tonumber(player:getData("char:vehSlot")) then 
+				x,y,z = 2227.9260253906, -2407.681640625, 14.041325569153
+				local carshopPos = {
+				
+				    [1] = {
+					
+					{2220.9992675781, -2405.7685546875, 14.046875},
+					{2213.9169921875, -2403.619140625, 14.046875},
+					
+					
+					},
+				}
+				
+				--outputChatBox(number)
+				--outputChatBox(carshopPos[number][1][1])
+				local randed = math.random(1, #carshopPos[number])
+				local pos = toJSON({carshopPos[number][randed][1], carshopPos[number][randed][2], carshopPos[number][randed][3], 44 ,44})
+				
+				local insterT = dbQuery(connection, "INSERT INTO vehicle SET pos=?,model=?,owner=?,color=?, fuel=?", 
+					pos,modellID,getElementData(player,"acc:id"),toJSON({r, g, b, 0, 0, 0}), 10)
+		
+				local QueryEredmeny, _, Beszurid = dbPoll(insterT, -1)
+				if QueryEredmeny then
+					exports["san_vehicle"]:addVehicle(getElementData(player,"acc:id"), modellID, carshopPos[number][randed][1], carshopPos[number][randed][2], carshopPos[number][randed][3], Beszurid, r, g, b)
+					triggerClientEvent(player,"returnVasarlas2",player,Beszurid)
+					dbExec(connection,"UPDATE characters SET money = ? WHERE id = ?", player:getData("char:money")-money, getElementData(player,"acc:id"))
+					player:setData("char:money",player:getData("char:money")-money)
+					--exports.san_item:giveItem(player, 34, Beszurid, 1,0)	
+				end	
+			else
+				outputChatBox("#00aeef[IRG - Carshop] #ffffffNão a #F7CA18'Slots' #ffffffsuficiente para comprar.",player,255,255,255,true)
+			end
+		else
+			outputChatBox("#00aeef[IRG - Carshop] #ffffffVocê não tem #87D37C'dinheiro'#ffffff suficiente para comprar.",player,255,255,255,true)
+		end 
+	end
+end
+addEvent("buyVehicleSever2", true)
+addEventHandler("buyVehicleSever2", root, buyVehicle)
+
+function buyVehiclePP(player, modellID, r, g, b, money, jelenVeh, number)
+	if isElement(player) then 
+		if (tonumber(player:getData("char:pp")) >= tonumber(money)) then
+			local myCars = 0
+			for _, value in ipairs(getElementsByType("vehicle")) do
+				if value:getData("veh:owner") == player:getData("acc:id") then
+					myCars = myCars+1
+				end
+			end
+		
+			if tonumber(myCars) < tonumber(player:getData("char:vehSlot")) then 
+			
+			    local x,y,z = 2160.5551757813, -2158.9963378906, 13.546875
+			    
+			    if number == 1 then
+				    x,y,z = 2160.5551757813, -2158.9963378906, 13.546875
+				elseif number == 2 then
+				    x,y,z = 2160.5551757813, -2158.9963378906, 13.546875
+				end
+				--player:setData("char:pp",player:getData("char:pp") - money)
+				local pos = toJSON({x,y,z, 44 ,44})
+				
+				local insterT = dbQuery(connection, "INSERT INTO vehicle SET pos=?,model=?,owner=?,color=?, fuel=?", 
+					pos,modellID,getElementData(player,"acc:id"),toJSON({r, g, b, 0, 0, 0}), 10)
+		
+				local QueryEredmeny, _, Beszurid = dbPoll(insterT, -1)
+				if QueryEredmeny then
+					exports["san_vehicle"]:addVehicle(getElementData(player,"acc:id"), modellID, x, y, z, Beszurid, r, g, b)
+					triggerClientEvent(player,"returnVasarlas2",player,Beszurid)
+					dbExec(connection,"UPDATE characters SET premiumpont = ? WHERE id = ?", player:getData("char:pp")-money, getElementData(player,"acc:id"))
+					player:setData("char:pp",player:getData("char:pp") - money)
+					--exports.san_item:giveItem(player, 34, Beszurid, 1,0)
+				end	
+			else
+				outputChatBox("#00aeef[IRG - Carshop] #ffffffNincs elég #F7CA18'Slotod'#ffffff a vásárláshoz.",player,255,255,255,true)
+			end
+		else
+			outputChatBox("#00aeef[IRG - Carshop] #ffffffVocê não tem #19B5FE'Dinheiro vip'#ffffff suficiente para comprar.",player,255,255,255,true)
+		end
+	end
+end
+addEvent("buyVehiclePPSever2", true)
+addEventHandler("buyVehiclePPSever2", root, buyVehiclePP)

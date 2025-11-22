@@ -1,0 +1,65 @@
+﻿
+local tollPrice = 250  
+local allowedTypes = { ["Automobile"]=true; ["Bike"]=true; ["Monster Truck"]=true; }    -- Разрешенные типы транспортных средств
+
+--[[
+local tollbarrierLSLV = createObject (968, 1745.19, 509.79, 28.6, 0, 90, 340)   -- gate LS > LV
+local tollbarrierLSLV2 = createObject (968, 1736.8, 513.2, 28.6, 0, 89, 338)    -- gate LS > LV 2
+local tollbarrierLVLS = createObject (968, 1723.5, 510.5, 28.9, 0, 270, 338)    -- gate LV > LS
+local tollbarrierLVLS2 = createObject (968, 1731.9, 507.64, 28.9, 0, 271, 338)  -- gate LV > LS 2
+local tollbarrierLVSF = createObject (968, -1401.1, 826.2, 47.6, 0, 270, 318)   -- gate LV > SF
+local tollbarrierLVSF2 = createObject (968, -1407.9, 832, 47.6, 0, 270, 316)    -- gate LV > SF 2
+local tollbarrierSFLV = createObject (968, -1395.1, 829.2, 47.6, 0, 90, 316)    -- gate SF > LV
+local tollbarrierSFLV2 = createObject (968, -1389, 823.4, 47.6, 0, 90, 316)     -- gate SF > LV 2
+local tollbarrierTRSF = createObject (968, -2691.69, 1271.3, 55.5, 0, 270, 0)   -- gate TR > SF
+local tollbarrierTRSF2 = createObject (968, -2683, 1271.19, 55.5, 0, 270, 0)    -- gate TR > SF 2
+local tollbarrierSFTR = createObject (968, -2671.2, 1277.7, 55.5, 0, 90, 0)     -- gate SF > TR
+local tollbarrierSFTR2 = createObject (968, -2680.8, 1278.19, 55.5, 0, 90, 0)   -- gate SF > TR 2
+local tollbarrierLSSF = createObject (968, 51.7, -1528.1, 5.2, 0, 90, 85)       -- gate LS > SF
+local tollbarrierSFLS = createObject (968, 53.7, -1535, 5.2, 0, 270, 85)        -- gate SF > LS
+---]]
+
+-- Markers
+local tollboothLSLV = createMarker (1746, 499, 27.5, "cylinder", 7, 0, 0, 0, 0)
+local tollboothLSLV2 = createMarker (1736.69, 503.2, 27.5, "cylinder", 7.0, 0, 0, 0, 0)
+local tollboothLVLS = createMarker (1725, 524, 27.5, "cylinder", 7, 0, 0, 0, 0)
+local tollboothLVLS2 = createMarker (1732.19, 518.2, 27.1, "cylinder", 7.0, 0, 0, 0, 0)
+local tollboothLVSF = createMarker (-1397, 836, 47, "cylinder", 7, 0, 0, 100, 0)
+local tollboothLVSF2 = createMarker (-1403.59, 839.79, 46, "cylinder", 4.0, 0, 0, 0, 0)
+local tollboothSFLV = createMarker (-1399, 820, 47, "cylinder", 7, 0, 0, 0, 0)
+local tollboothSFLV2 = createMarker (-1394.09, 813.7, 46, "cylinder", 4.0, 0, 0, 0, 0)
+local tollboothTRSF = createMarker (-2696, 1283, 54, "cylinder", 7, 0, 0, 0, 0)
+local tollboothTRSF2 = createMarker (-2686.3, 1281.8, 54, "cylinder", 7, 0, 0, 0, 0)
+local tollboothSFTR = createMarker (-2667, 1268, 54, "cylinder", 7, 0, 0, 0, 0)
+local tollboothSFTR2 = createMarker (-2677, 1267.3, 54, "cylinder", 7, 0, 0, 0, 0)
+local tollboothLSSF = createMarker (57.59, -1525.3, 4, "cylinder", 7, 0, 0, 0, 0)
+local tollboothSFLS = createMarker (46.79, -1537.09, 4, "cylinder", 7, 0, 0, 0, 0)
+local tollboothSFLS2 = createMarker (-21.316, -1337.714, 10.852, "cylinder", 7, 0, 0, 0, 0)
+local tollboothSFLS3 = createMarker (-1.97, -1362.278, 10.523, "cylinder", 7, 0, 0, 0, 0)
+local tollboothLSLV = createMarker (2907.5710449219,2403.1938476563,10.671875, "cylinder", 7, 0, 0, 0, 0)
+
+function isPlayerInTeam(player, team)
+    assert(isElement(player) and getElementType(player) == "player", "Bad argument 1 @ isPlayerInTeam [player expected, got " .. tostring(player) .. "]")
+    assert((not team) or type(team) == "string" or (isElement(team) and getElementType(team) == "team"), "Bad argument 2 @ isPlayerInTeam [nil/string/team expected, got " .. tostring(team) .. "]")
+    return getPlayerTeam(player) == (type(team) == "string" and getTeamFromName(team) or (type(team) == "userdata" and team or (getPlayerTeam(player) or true)))
+end
+
+addEventHandler ("onMarkerHit", root,
+     function (hitElement, dimension) 
+        local s = source
+         if s == tollboothLSLV or s == tollboothLVLS or s == tollboothSFLS2 or s == tollboothSFLS3 or s == tollboothLVSF or s == tollboothSFLV or s == tollboothTRSF or s == tollboothSFTR or s == tollboothLSLV2 or s == tollboothLVLS2 or s ==       tollboothLVSF2 or s == tollboothSFLV2 or s == tollboothTRSF2 or s == tollboothSFTR2 or s == tollboothLSSF or s == tollboothSFLS and dimension then
+             if getElementType (hitElement) == "player" and isPedInVehicle (hitElement) then
+                 if getElementData(hitElement, "char:money") >= 100 then
+					 if getElementModel(getPedOccupiedVehicle(hitElement)) ~= 561 or isPlayerInTeam(hitElement, "Policia") or isPlayerInTeam(hitElement, "Detran") or isPlayerInTeam(hitElement, "Mecanico") or isPlayerInTeam(hitElement, "Medico") or isPlayerInTeam(hitElement, "Samu") then
+					     outputChatBox("#7cc576[4i20 - Pedagio] #FFFFFFO governo pagou o pedágio.", hitElement, 255,255,255, true)
+					     return
+					 end
+			         setElementData(hitElement, "char:money", getElementData(hitElement, "char:money") - 100)
+		        	 outputChatBox(" ", hitElement, 255,255,255, true)
+				     outputChatBox(" ", hitElement, 255,255,255, true)
+				     outputChatBox("#7cc576[4i20 - Pedagio] #FFFFFFPedagio automatico descontou #7cc576R$ 100,00 .", hitElement, 255,255,255, true)
+				 end
+             end
+         end
+     end
+)

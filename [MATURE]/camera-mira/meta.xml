@@ -1,0 +1,12 @@
+<meta>
+    <script src="exClient.lua" type="client" protected="true"/>
+
+    <oop>true</oop>
+    
+
+    <file src="crosshair.png" />
+    <file src="texreplace.fx" />
+
+   
+
+</meta>

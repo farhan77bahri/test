@@ -1,0 +1,15 @@
+<meta>
+    <script src="client.lua" cache="false" type="client"  ></script>
+    <script src="server.lua" type="server" cache="false" ></script>
+    <script src="levelG.lua" type="shared" />
+    
+    <export function="getPlayerLevel" type="shared" />
+    <file src="font.ttf"/>
+
+    <file src="card.png"/>
+    <file src="money.png"/>
+
+    <export function="givePlayerExp" type="server" />
+	
+	
+</meta>

@@ -1,0 +1,8 @@
+<meta>
+    <info autostart="true" type="script"/>
+		
+    <script src="Clothes_C.lua" type="client" protected="true"/>
+	<script src="CJ_C.lua" type="client" protected="true"/>
+	<script src="Clothes_S.lua" type="server" cache="false"/>
+	
+</meta>

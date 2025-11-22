@@ -1,0 +1,321 @@
+﻿availableTuningMarkers = {
+	-- x y z cameramatrix (1-6)
+	{395.14569091797, -1823.1356201172, 7.8808903694153}, -- Dokkok
+}
+
+availableWheelSizes = {
+	["front"] = {
+		["verynarrow"] = {0x100, 1},
+		["narrow"] = {0x200, 2},
+		["wide"] = {0x400, 4},
+		["verywide"] = {0x800, 5}
+	},
+	["rear"] = {
+		["verynarrow"] = {0x1000, 1},
+		["narrow"] = {0x2000, 2},
+		["wide"] = {0x4000, 4},
+		["verywide"] = {0x8000, 5}
+	}
+}
+
+tuningMenu = {
+	[1] = {
+		["categoryName"] = "Poder",
+		
+		["subMenu"] = {
+			[1] = {
+				["categoryName"] = "Motor",
+				["upgradeData"] = "engine",
+				["cameraSettings"] = {"bonnet_dummy", 110, 15, 6, true},
+				["handlingFlags"] = {{"engineAcceleration", 0.6}, {"maxVelocity", 9.5}, {"dragCoeff", -0.05}},
+
+				["subMenu"] = {
+					[1] = {["categoryName"] = "Pacote de fábrica", ["tuningPrice"] = 0, ["priceIgMoney"] = true},
+					[2] = {["categoryName"] = "Pacote de rua", ["tuningPrice"] = 3200 , ["priceIgMoney"] = true},
+					[3] = {["categoryName"] = "Pacote profissional", ["tuningPrice"] = 4800 , ["priceIgMoney"] = true},
+					[4] = {["categoryName"] = "Pacote de Competição", ["tuningPrice"] = 7900 , ["priceIgMoney"] = true},
+					[5] = {["categoryName"] = "Pacote VIP", ["tuningPrice"] = 800  , ["priceIgMoney"] = false}
+				}
+			},
+
+			[2] = {
+				["categoryName"] = "Turbo",
+				["upgradeData"] = "turbo",
+				["cameraSettings"] = {"bonnet_dummy", 110, 15, 6, true},
+				["handlingFlags"] = {{"engineAcceleration", 0.6}},
+
+				["subMenu"] = {
+					[1] = {["categoryName"] = "Pacote de fábrica", ["tuningPrice"] = 0, ["priceIgMoney"] = true},
+					[2] = {["categoryName"] = "Pacote de rua", ["tuningPrice"] = 3300, ["priceIgMoney"] = true},
+					[3] = {["categoryName"] = "Pacote profissional", ["tuningPrice"] = 4900, ["priceIgMoney"] = true},
+					[4] = {["categoryName"] = "Pacote de Competição", ["tuningPrice"] = 8400, ["priceIgMoney"] = true},
+					[5] = {["categoryName"] = "Pacote VIP", ["tuningPrice"] = 800, ["priceIgMoney"] = false}
+				}
+			},
+
+			[3] = {
+				["categoryName"] = "projeto de lei",
+				["upgradeData"] = "gearbox",
+				["handlingFlags"] = {{"maxVelocity", 6}},
+
+				["subMenu"] = {
+					[1] = {["categoryName"] = "Pacote de fábrica", ["tuningPrice"] = 0, ["priceIgMoney"] = true},
+					[2] = {["categoryName"] = "Pacote de rua", ["tuningPrice"] = 3000, ["priceIgMoney"] = true},
+					[3] = {["categoryName"] = "Pacote profissional", ["tuningPrice"] = 5200, ["priceIgMoney"] = true},
+					[4] = {["categoryName"] = "Pacote de Competição", ["tuningPrice"] = 9400, ["priceIgMoney"] = true},
+					[5] = {["categoryName"] = "Pacote VIP", ["tuningPrice"] = 800, ["priceIgMoney"] = false}
+				}
+			},
+
+			[4] = {
+				["categoryName"] = "ECU",
+				["upgradeData"] = "ecu",
+				["handlingFlags"] = {{"dragCoeff", -0.2}},
+
+				["subMenu"] = {
+					[1] = {["categoryName"] = "Pacote de fábrica", ["tuningPrice"] = 0, ["priceIgMoney"] = true},
+					[2] = {["categoryName"] = "Pacote de rua", ["tuningPrice"] = 3500, ["priceIgMoney"] = true},
+					[3] = {["categoryName"] = "Pacote profissional", ["tuningPrice"] = 5100, ["priceIgMoney"] = true},
+					[4] = {["categoryName"] = "Pacote de Competição", ["tuningPrice"] = 9500, ["priceIgMoney"] = true},
+					[5] = {["categoryName"] = "Pacote VIP", ["tuningPrice"] = 800, ["priceIgMoney"] = false}
+				}				
+			},
+
+
+			[5] = {
+				["categoryName"] = "pneus",
+				["upgradeData"] = "tires",
+				["cameraSettings"] = {"wheel_rb_dummy", 60, 10, 4},
+				["handlingFlags"] = {{"tractionMultiplier", 0.05}, {"tractionLoss", 0.02}},
+
+				["subMenu"] = {
+					[1] = {["categoryName"] = "Pacote de fábrica", ["tuningPrice"] = 0, ["priceIgMoney"] = true},
+					[2] = {["categoryName"] = "Pacote de rua", ["tuningPrice"] = 2500, ["priceIgMoney"] = true},
+					[3] = {["categoryName"] = "Pacote profissional", ["tuningPrice"] = 4000, ["priceIgMoney"] = true},
+					[4] = {["categoryName"] = "Pacote de Competição", ["tuningPrice"] = 5900, ["priceIgMoney"] = true},
+					[5] = {["categoryName"] = "Pacote VIP", ["tuningPrice"] = 800, ["priceIgMoney"] = false}
+				}
+			},
+
+			[6] = {
+				["categoryName"] = "freios",
+				["upgradeData"] = "brakes",
+				["handlingFlags"] = {{"brakeDeceleration", 0.02}, {"brakeBias", 0.08}},
+				["cameraSettings"] = {"wheel_rf_dummy", 35, 5, 2, true},
+
+
+				["subMenu"] = {
+					[1] = {["categoryName"] = "Pacote de fábrica", ["tuningPrice"] = 0, ["priceIgMoney"] = true},
+					[2] = {["categoryName"] = "Pacote de rua", ["tuningPrice"] = 3000, ["priceIgMoney"] = true},
+					[3] = {["categoryName"] = "Pacote profissional", ["tuningPrice"] = 4200, ["priceIgMoney"] = true},
+					[4] = {["categoryName"] = "Pacote de Competição", ["tuningPrice"] = 6900, ["priceIgMoney"] = true},
+					[5] = {["categoryName"] = "Pacote VIP", ["tuningPrice"] = 800, ["priceIgMoney"] = false}
+				}
+			}
+		}
+	},
+
+	[2] = {
+		["categoryName"] = "Utilidades",
+		["availableUpgrades"] = {},
+		["subMenu"] = {
+			-- default tunings
+			[1] = {["categoryName"] = "Amortecedor dianteiro", ["upgradeSlot"] = 14, ["tuningPrice"] = 2200, ["cameraSettings"] = {"bump_front_dummy", 130, 10, 6}},
+			[2] = {["categoryName"] = "Amortecedor traseiro", ["upgradeSlot"] = 15, ["tuningPrice"] = 2200, ["cameraSettings"] = {"door_lf_dummy", -65, 3, 8}},
+			[3] = {["categoryName"] = "Capô", ["upgradeSlot"] = 0, ["tuningPrice"] = 1800},
+			[4] = {["categoryName"] = "escape", ["upgradeSlot"] = 13, ["tuningPrice"] = 1900, ["cameraSettings"] = {"door_lf_dummy", -65, 3, 8}},
+			[5] = {["categoryName"] = "Spoiler", ["upgradeSlot"] = 2, ["tuningPrice"] = 2000, ["cameraSettings"] = {"boot_dummy", -65, 3, 8}},
+			[6] = {["categoryName"] = "Rodas", ["upgradeSlot"] = 12, ["tuningPrice"] = 2200},
+			[7] = {["categoryName"] = "limiar", ["upgradeSlot"] = 3, ["tuningPrice"] = 2200, ["cameraSettings"] = {"ug_wing_right", 65, 3, 4}},
+			[8] = {["categoryName"] = "Spoiler telhado", ["upgradeSlot"] = 7, ["tuningPrice"] = 2400},
+			[9] = {["categoryName"] = "hidráulica", ["upgradeSlot"] = 9, ["tuningPrice"] = 10},
+	
+		}
+	},
+
+	[3] = {
+		["categoryName"] = "Cor",
+
+		["subMenu"] = {
+			[1] = {["categoryName"] = "Primeira cor", ["tuningPrice"] = 4000},
+			[2] = {["categoryName"] = "Segunda cor", ["tuningPrice"] = 4000},
+			[3] = {["categoryName"] = "Iluminação do farol", ["tuningPrice"] = 4000}
+		}
+	},
+
+	[4] = {
+		["categoryName"] = "Extra",
+
+		["subMenu"] = {
+			[1] = {
+				["categoryName"] = "Largura da roda dianteira",
+				["upgradeData"] = "wheelsize_f",
+
+				["subMenu"] = {
+					[1] = {["categoryName"] = "Extra estreito", ["tuningPrice"] = 6000, ["priceIgMoney"] = true, ["tuningData"] = "verynarrow"},
+					[2] = {["categoryName"] = "estreito", ["tuningPrice"] = 4000, ["priceIgMoney"] = true, ["tuningData"] = "narrow"},
+					[3] = {["categoryName"] = "normal", ["tuningPrice"] = 2000, ["priceIgMoney"] = true, ["tuningData"] = "default"},
+					[4] = {["categoryName"] = "grande", ["tuningPrice"] = 4000, ["priceIgMoney"] = true, ["tuningData"] = "wide"},
+					[5] = {["categoryName"] = "Extra grande", ["tuningPrice"] = 6000, ["priceIgMoney"] = true, ["tuningData"] = "verywide"}
+				}
+			},
+
+			[2] = {
+				["categoryName"] = "Largura da roda traseira",
+				["upgradeData"] = "wheelsize_r",
+
+				["subMenu"] = {
+					[1] = {["categoryName"] = "Extra estreito", ["tuningPrice"] = 6000, ["priceIgMoney"] = true, ["tuningData"] = "verynarrow"},
+					[2] = {["categoryName"] = "Estreito", ["tuningPrice"] = 4000, ["priceIgMoney"] = true, ["tuningData"] = "narrow"},
+					[3] = {["categoryName"] = "Normal", ["tuningPrice"] = 2000, ["priceIgMoney"] = true, ["tuningData"] = "default"},
+					[4] = {["categoryName"] = "Grande", ["tuningPrice"] = 4000, ["priceIgMoney"] = true, ["tuningData"] = "wide"},
+					[5] = {["categoryName"] = "Extra Grande", ["tuningPrice"] = 6000, ["priceIgMoney"] = true, ["tuningData"] = "verywide"}
+				}
+			},
+
+			[3] = {
+				["categoryName"] = "Porta LSD",
+				["subMenu"] = {
+					[1] = {["categoryName"] = "Tirar", ["tuningPrice"] = 0, ["priceIgMoney"] = true, ["tuningData"] = false},
+					[2] = {["categoryName"] = "Equipar", ["tuningPrice"] = 1200, ["priceIgMoney"] = false, ["tuningData"] = true}
+				}
+			},	
+
+			[4] = {
+				["categoryName"] = "Paintjob",
+				["upgradeData"] = "paintjob", 
+
+				["subMenu"] = {}
+			},				
+			
+			[5] = {
+				["categoryName"] = "Air-Ride",
+				["cameraSettings"] = {"wheel_rf_dummy", 35, 5, 2, true},
+				["upgradeSlot"] = 17,
+				["subMenu"] = {
+					[1] = {["categoryName"] = "Tirar", ["tuningPrice"] = 0, ["priceIgMoney"] = true, ["tuningData"] = false},
+					[2] = {["categoryName"] = "Equipar", ["tuningPrice"] = 8000, ["priceIgMoney"] = true, ["tuningData"] = true}
+				}
+			},	
+			
+			[6] = {
+				["categoryName"] = "Propulsão",
+				["cameraSettings"] = {"wheel_rf_dummy", 35, 5, 2, true},
+				["upgradeSlot"] = 17,
+				["subMenu"] = {
+					[1] = {["categoryName"] = "Tração dianteira", ["tuningPrice"] = 7000, ["priceIgMoney"] = true, ["tuningData"] = "fwd"},
+					[2] = {["categoryName"] = "Tração 4x4", ["tuningPrice"] = 10000, ["priceIgMoney"] = true, ["tuningData"] = "awd"},
+					[3] = {["categoryName"] = "Roda traseira", ["tuningPrice"] = 7000, ["priceIgMoney"] = true, ["tuningData"] = "rwd"}
+				}
+			},				
+			
+			[7] = {
+				["categoryName"] = "variante",
+				["subMenu"] = {
+					[1] = {["categoryName"] = "Tirar", ["tuningPrice"] = 0, ["priceIgMoney"] = true, ["tuningData"] = 255},
+					[2] = {["categoryName"] = "Variante 1", ["tuningPrice"] = 10000, ["priceIgMoney"] = true, ["tuningData"] = 0},
+					[3] = {["categoryName"] = "Variante 2", ["tuningPrice"] = 10000, ["priceIgMoney"] = true, ["tuningData"] = 1},
+					[4] = {["categoryName"] = "Variante 3", ["tuningPrice"] = 10000, ["priceIgMoney"] = true, ["tuningData"] = 2},
+					[5] = {["categoryName"] = "Variante 4", ["tuningPrice"] = 10000, ["priceIgMoney"] = true, ["tuningData"] = 3},
+					[6] = {["categoryName"] = "Variante 5", ["tuningPrice"] = 10000, ["priceIgMoney"] = true, ["tuningData"] = 4},
+					[7] = {["categoryName"] = "Variante 6", ["tuningPrice"] = 10000, ["priceIgMoney"] = true, ["tuningData"] = 5},
+					[8] = {["categoryName"] = "Variante 7", ["tuningPrice"] = 10000, ["priceIgMoney"] = true, ["tuningData"] = 6},
+				}
+			},				
+			
+			[8] = {
+				["categoryName"] = "Ângulo de viragem",
+				["cameraSettings"] = {"wheel_rf_dummy", 35, 5, 2, true},
+				["upgradeSlot"] = 17,
+				["subMenu"] = {
+					[1] = {["categoryName"] = "Tirar", ["tuningPrice"] = 0, ["priceIgMoney"] = true, ["tuningData"] = false},
+					[2] = {["categoryName"] = "30°", ["tuningPrice"] = 2000, ["priceIgMoney"] = true, ["tuningData"] = 30},
+					[3] = {["categoryName"] = "40°", ["tuningPrice"] = 2500, ["priceIgMoney"] = true, ["tuningData"] = 40},
+					[4] = {["categoryName"] = "50°", ["tuningPrice"] = 3000, ["priceIgMoney"] = true, ["tuningData"] = 50},
+					[5] = {["categoryName"] = "60°", ["tuningPrice"] = 3500, ["priceIgMoney"] = true, ["tuningData"] = 60}
+				}
+			},				
+			[9] = {
+				["categoryName"] = "número da placa",
+				["cameraSettings"] = {"door_lf_dummy", -65, 3, 8},
+				["upgradeSlot"] = 17,
+				["subMenu"] = {
+				},
+			},				
+			
+			[10] = {
+				["categoryName"] = "Neon",
+				["cameraSettings"] = {"chassis_dummy", 0, 3, 10},
+				["upgradeSlot"] = 19,
+				["subMenu"] = {
+					[1] = {["categoryName"] = "Tirar", ["tuningPrice"] = 0,["priceIgMoney"] = true, ["tuningData"] = false},
+					[2] = {["categoryName"] = "branco", ["tuningPrice"] = 5000, ["priceIgMoney"] = true, ["tuningData"] = "white"},
+					[3] = {["categoryName"] = "azul", ["tuningPrice"] = 5000, ["priceIgMoney"] = true, ["tuningData"] = "blue"},
+					[4] = {["categoryName"] = "verde", ["tuningPrice"] = 5000, ["priceIgMoney"] = true,["tuningData"] = "green"},
+					[5] = {["categoryName"] = "vermelho", ["tuningPrice"] = 5000, ["priceIgMoney"] = true,["tuningData"] = "red"},
+					[6] = {["categoryName"] = "citrina", ["tuningPrice"] = 5000, ["priceIgMoney"] = true, ["tuningData"] = "yellow"},
+					[7] = {["categoryName"] = "Rosa", ["tuningPrice"] = 5000, ["priceIgMoney"] = true, ["tuningData"] = "pink"},
+					[8] = {["categoryName"] = "laranja", ["tuningPrice"] = 5000, ["priceIgMoney"] = true, ["tuningData"] = "orange"},
+					[9] = {["categoryName"] = "A luz azul", ["tuningPrice"] = 5000, ["priceIgMoney"] = true, ["tuningData"] = "lightblue"},
+					[10] = {["categoryName"] = "dreadlocks", ["tuningPrice"] = 15000, ["priceIgMoney"] = true, ["tuningData"] = "rasta"},
+					[11] = {["categoryName"] = "Branco + Azul Claro", ["tuningPrice"] = 15000, ["priceIgMoney"] = true, ["tuningData"] = "ice"},
+				}
+			},				
+		}
+	}
+}
+
+function getMainCategoryIDByName(name)
+	if name then
+		for categoryID, row in ipairs(tuningMenu) do
+			if name == row["categoryName"] then
+				return categoryID
+			end
+		end
+	end
+	
+	return -1
+end
+
+function hasMoney(element, amount)
+	local money = element:getData("char:money")
+	if money >= amount then
+		return true
+	else
+		return false
+	end
+end
+
+function takeMoney(element, amount)
+	if hasMoney(element, amount) then
+		element:setData("char:money", element:getData("char:money") - amount)
+	end
+end
+
+function hasPremium(element, amount)
+	local pp = element:getData("char:pp")
+	if pp >= amount then
+		return true
+	else
+		return false
+	end
+end
+
+function takePremium(element, amount)
+	if hasPremium(element, amount) then
+		element:setData("char:pp", element:getData("char:pp") - amount)
+	end
+end
+
+function getVehicleHandlingProperty ( element, property )
+    if isElement ( element ) and getElementType ( element ) == "vehicle" and type ( property ) == "string" then -- Make sure there's a valid vehicle and a property string
+        local handlingTable = getVehicleHandling ( element ) -- Get the handling as table and save as handlingTable
+        local value = handlingTable[property] -- Get the value from the table
+        
+        if value then -- If there's a value (valid property)
+            return value -- Return it
+        end
+    end
+    
+    return false -- Not an element, not a vehicle or no valid property string. Return failure
+end

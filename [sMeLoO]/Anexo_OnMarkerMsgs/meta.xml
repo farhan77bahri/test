@@ -1,0 +1,15 @@
+<meta>
+	<script src="tipo1.lua" type="client" cache="false" />
+	<script src="tipo2.lua" type="client" cache="false" />
+	<script src="stipos.lua" type="server" cache="false" />
+	<export function="delete" type="client"/>
+	<export function="create" type="client"/>
+	<export function="delete" type="server"/>
+	<export function="create" type="server"/>
+
+	<export function="delete2" type="client"/>
+	<export function="create2" type="client"/>
+	<export function="delete2" type="server"/>
+	<export function="create2" type="server"/>
+	<file src="font.ttf"/>
+</meta>

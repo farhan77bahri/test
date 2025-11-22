@@ -1,0 +1,30 @@
+<meta>
+    <script src="Kliens.lua" type="client" protected="true" />
+
+
+       <script src="server.lua" type="server" />
+
+
+
+    <file src="files/roboto.ttf" />
+    
+    <file src="files/dev.png" />
+	 <file src="files/adminha.png" />
+	  <file src="files/super.png" />
+	   <file src="files/senior.png" />
+    <file src="files/owner.png" />
+    <file src="files/sa.png" />
+    <file src="files/admin.png" />
+    
+    <file src="files/typing.png" />
+    <file src="files/afk.png" />
+    <file src="files/console.png" />
+    <file src="files/adminduty.png" />
+    <file src="files/taz.png" />
+
+
+
+        <file src="weapon.txd" />
+        <file src="weapon.dff" />
+
+</meta>

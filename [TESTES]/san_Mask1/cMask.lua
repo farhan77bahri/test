@@ -1,0 +1,77 @@
+﻿
+mask = {}
+maskTable = {
+	[1] = {ID = 1667, dff = "mask/joker.dff", txd = "mask/joker.txd", posX = 0, posY = -0.002, posZ = -0.599, rotX = 0, rotY = 0, rotZ = 90},
+	[2] = {ID = 1666, dff = "mask/botfan.dff", txd = "mask/botfan.txd", posX = 0, posY = 0, posZ = -0.6, rotX = 0, rotY = 0, rotZ = 90},
+	[3] = {ID = 1455, dff = "mask/halloween.dff", txd = "mask/halloween.txd", posX = 0, posY = -0.002, posZ = -0.62, rotX = 0, rotY = 0, rotZ = 90},
+	[4] = {ID = 1484, dff = "mask/gasmask.dff", txd = "mask/gasmask.txd", posX = 0, posY = -0.002, posZ = -0.60, rotX = 0, rotY = 0, rotZ = 90},
+	[5] = {ID = 1510, dff = "mask/doge.dff", txd = "mask/doge.txd", posX = -0.03, posY = -0.001, posZ = -0.55, rotX = 0, rotY = 0, rotZ = 90},
+	--[5] = {ID = 1510, dff = "mask/doge.dff", txd = "mask/doge.txd", posX = -0.03, posY = -0.001, posZ = -0.55, rotX = 0, rotY = 0, rotZ = 90},
+	[6] = {ID = 1665, dff = "mask/horse.dff", txd = "mask/horse.txd", posX = 0, posY = -0.002, posZ = -0.60, rotX = 0, rotY = 0, rotZ = 90},
+	[7] = {ID = 1486, dff = "mask/majora.dff", txd = "mask/majora.txd", posX = 0, posY = -0.002, posZ = -0.60, rotX = 0, rotY = 0, rotZ = 180},
+	[8] = {ID = 1747, dff = "mask/helmet3.dff", txd = "mask/helmet3.txd", posX = 0, posY = 0.03, posZ = 0.07, rotX = 0.75, rotY = 0, rotZ = 180}	
+}
+
+addEventHandler("onClientResourceStart", resourceRoot,
+function()
+	for i, mask in pairs(maskTable) do
+		local dff = engineLoadDFF(mask.dff, mask.ID)
+		local txd = engineLoadTXD(mask.txd)
+		if (txd) then
+			engineImportTXD(txd, mask.ID)
+		end
+		if (dff) then
+			engineReplaceModel(dff, mask.ID)
+		end
+		engineSetModelLODDistance(mask.ID, 2000)
+	end
+end)
+
+function addMask(player, id)
+	local id = tonumber(id)
+	if (player) and (id) then
+		removeMask(player)
+		local x, y, z = getElementPosition(player)
+		mask[player] = createObject(maskTable[id].ID, x, y, z)
+		setElementData(mask[player], "id:mask", id)
+		exports.bone_attach:attachElementToBone(
+		mask[player], 
+		player, 
+		1, 
+		maskTable[id].posX, 
+		maskTable[id].posY, 
+		maskTable[id].posZ,
+		maskTable[id].rotX,
+		maskTable[id].rotY,
+		maskTable[id].rotZ
+		)
+	end
+end
+
+function removeMask(player)
+	if (player) then
+		if (mask[player]) then
+			if (exports.bone_attach:isElementAttachedToBone(mask[player])) then
+				setElementData(mask[player], "id:mask", nil)
+				exports.bone_attach:detachElementFromBone(mask[player])
+				if isElement(mask[player]) then destroyElement(mask[player]) end
+				mask[player] = nil
+			end
+		end
+	end
+end
+
+addEvent("removeMask", true)
+addEventHandler("removeMask", root,
+function()
+	removeMask(source)
+end)
+
+addEvent("addMask", true)
+addEventHandler("addMask", root,
+function(id)
+	if (id == 0) then return removeMask(source); end
+	if (maskTable[id]) then
+		addMask(source, id)
+	end
+end)

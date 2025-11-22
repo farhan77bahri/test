@@ -1,0 +1,5 @@
+<meta>
+    <script src="codeServer.lua" type="server" cache="false"/>
+	
+	<export function="loadCharacter" type="server"/>
+</meta>

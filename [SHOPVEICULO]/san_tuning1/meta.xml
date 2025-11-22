@@ -1,0 +1,49 @@
+<meta>
+    <script src="exOOP.lua" type="shared" cache="false"/>
+    
+    <script src="exClient.lua" type="client" protected="true"/>
+    <script src="exGearbox.lua" type="client" protected="true"/>
+    <script src="exColorpicker.lua" type="client" protected="true"/>
+    <script src="exGlobal.lua" type="shared" />
+    <script src="exServer.lua" type="server" />
+    
+    <script src="color/sourceC.lua" type="client" protected="true"/>
+    
+    <script src="airride/sourceC.lua" type="client" protected="true"/>
+    <script src="airride/sourceS.lua" type="server" />
+    
+    <script src="neon/sourceC.lua" type="client" protected="true"/>
+    <script src="neon/sourceS.lua" type="server" />
+    
+    <script src="door/sourceC.lua" type="client" protected="true"/>
+    
+    <file src="files/font.ttf" />
+    <file src="files/myriadproregular.ttf" />
+    
+    
+    <file src="files/airride.mp3" />
+    <file src="files/BOV2.wav" />
+    <file src="files/light.png" />
+    <file src="files/palette.png" />
+    <file src="files/hoveredrow.png" />
+    
+    <file src="files/blur.dds" />
+    
+    <file src="files/neons/neonCollision.col" />
+    <file src="files/neons/blue.dff" />
+    <file src="files/neons/green.dff" />
+    <file src="files/neons/pink.dff" />
+    <file src="files/neons/red.dff" />
+    <file src="files/neons/white.dff" />
+    <file src="files/neons/yellow.dff" />
+    <file src="files/neons/orange.dff" />
+    <file src="files/neons/lightblue.dff" />
+    <file src="files/neons/rasta.dff" />
+    <file src="files/neons/ice.dff" />
+    
+    <export function="loadHandlingFlags" type="server" />
+    <export function="loadOpticalUpgrades" type="server" />
+    <export function="loadWheelSize" type="server" />
+    
+    <oop>true</oop>
+</meta>

@@ -1,0 +1,18 @@
+<meta>
+    <script src="sourceC.lua" type="client" />
+    
+    <script src="sourceS.lua" type="server" />
+    
+    <file src="files/myriadproregular.ttf" />
+    <file src="files/logo.png" />
+	 <file src="cuff.dff" />
+	  <file src="cuff.txd" />
+    
+
+<export function="setCuffPlayer" type='server'/>
+<export function="cuff" type='server'/>
+
+    
+    <oop>true</oop>
+    <min_mta_version client="1.3.1-9.04935" server="1.3.1-9.04935" />
+</meta>

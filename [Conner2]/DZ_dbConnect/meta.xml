@@ -1,0 +1,5 @@
+<meta>
+     <script src="db.lua" type="server" cache="false" />
+     <export function="getSQLData" type="server" />
+     <export function="SQL_Logok" type="server" />
+</meta>

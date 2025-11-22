@@ -1,0 +1,101 @@
+﻿----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 27 Jul 2014
+-- Resource: busdriver/bus_driver.slua
+-- Version: 1.0
+----------------------------------------->>
+
+local vehIDs = {
+	[431] = 1.000,	-- Bus
+		-- 142 stops/hour
+	[437] = 1.000,	-- Coach
+		-- 142 stops/hour
+}
+
+local TIME_BTWN_CHAT = 1000	-- How often a person can use the radio
+local radioSpam = {}	-- Table of Last Radio Chat
+
+-- Complete Mission
+-------------------->>
+	
+	
+	
+	local blip = createBlip (1225.6229248047,-1815.5437011719,16.59375, 42)
+	setElementData(blip,"blip >> name", "Bus Driver")
+		
+		
+function completeMission()
+	local vehicle = getPedOccupiedVehicle(client)
+	--local vehOffset = vehIDs[getElementModel(vehicle)]
+	--local pay = exports.san_employment:getPlayerJobPayment(client, "Motorista")
+	--local hrPay = exports.san_employment:getPlayerHourlyPay(client)
+	--local hrExp = exports.san_employment:getHourlyExperience()
+	
+	--local pay = math.ceil( pay * vehOffset )
+	--local Exp = math.ceil( (pay/hrPay)*hrExp 	* vehOffset )
+	--local pay = math.ceil( math.random( pay*0.9, pay*1.1 ) )
+	
+	local pay = math.random(50,110)
+	setElementData(client,"char:money", getElementData(client,"char:money") + pay)
+	exports.san_hud:dm("Shoma +$"..pay.." Daryaft Kardid!", client, 255, 200, 0)
+	
+	local ganho = math.random (10, 30)
+	exports.san_Level:givePlayerExp(client, ganho )
+	
+	
+end
+addEvent("busdriver.completeMission", true)
+addEventHandler("busdriver.completeMission", root, completeMission)
+
+-- Job Radio
+------------->>
+
+function busDriverRadio(player, cmd, ...)
+	if (exports.san_employment:getPlayerJob(player, true) ~= "Motorista") then return end
+	if (radioSpam[player]) then 
+		outputChatBox("Você só pode usar o rádio uma vez a cada segundo.", player, 255, 25, 25)
+	return end
+	
+	local message = table.concat({...}, " ")
+	if (string.gsub(message, "%s", "") == "") then return end
+	
+	radioSpam[player] = true
+	setTimer(function(player) radioSpam[player] = nil end, TIME_BTWN_CHAT, 1, player)
+	
+	for i,plr in ipairs(getElementsByType("player")) do
+		if (exports.san_employment:getPlayerJob(plr, true) == "Motorista") then
+			outputChatBox("* (RADIO): "..getPlayerName(player)..": #FFFFFF"..message..", câmbio.", plr, 255, 175, 0, true)
+		end
+	end
+end
+addCommandHandler("r", busDriverRadio)
+
+timer = {}
+
+function removeHelmetOnExit ( thePlayer, seat, jacked )
+    if ( getElementModel ( source ) == 431 ) then -- if its a nrg
+         if (getElementData(thePlayer, "job") == "Motorista") then
+		     outputChatBox("#FFA000*san #FFFFFFVocê tem #FFA00010 Segundos #FFFFFFpara entrar no veiculo novamente", thePlayer, 255,255,255, true)
+			 exports.san_hud:dm("*san Você tem 10 Segundos para entrar no veiculo novamente", thePlayer, 255, 255, 255)
+		     timer[thePlayer] = setTimer(destroyElement, 10000, 1, getPedOccupiedVehicle(thePlayer))
+		 end
+    end
+end
+addEventHandler ( "onVehicleStartExit", getRootElement(), removeHelmetOnExit )
+
+function addHelmetOnEnter ( thePlayer, seat, jacked )
+    if ( getElementModel ( source ) == 431 ) then
+         if isTimer(timer[thePlayer]) then
+		     killTimer(timer[thePlayer])
+		 end
+    end
+end
+addEventHandler ( "onVehicleEnter", getRootElement(), addHelmetOnEnter )
+
+function notifyAboutExplosion()
+     if ( getElementModel ( source ) == 431 ) then
+	     destroyElement(source)
+	 end
+end
+addEventHandler("onVehicleExplode", getRootElement(), notifyAboutExplosion)

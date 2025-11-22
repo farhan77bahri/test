@@ -1,0 +1,169 @@
+﻿----------------------------------------->>
+-- Grand Theft International (GTi)
+-- Author: JT Pennington (JTPenn)
+-- Date: 03 Jun 2013
+-- Resource: GTImech/mech.slua
+-- Version: 1.0
+----------------------------------------->>
+
+local HOURLY_PROG = 1175	-- HP Per Hour
+
+local repair_vehicle
+
+-- Diagnose Problems
+--------------------->>
+
+function sendDiagnosis()
+	local vehicle = source
+	if (not isElement(vehicle) or getElementType(vehicle) ~= "vehicle") then return end
+	local veh_info = {}
+
+	veh_info["name"] = getVehicleName(vehicle)
+
+--[[
+	local owner = getElementData(vehicle, "veh:oname") --exports.san_vehicles:getVehicleOwner(vehicle)
+	if (owner) then
+		veh_info["owner"] = getPlayerName(owner)
+	else
+		veh_info["owner"] = " "
+	end]]--
+
+	veh_info["engine"] = 0 --exports.san_vehicles:getVehicleEngineDamage(vehicle)
+      	veh_info["engine_repair"] = 0 --exports.san_vehicles:getVehicleEngineRepairCost(vehicle)
+	veh_info["body"] = 0 --exports.san_vehicles:getVehicleBodyDamage(vehicle)
+	veh_info["body_repair"] = " " --exports.san_vehicles:getVehicleBodyRepairCost(vehicle)
+	veh_info["fuel"] = getElementData(vehicle, "fuel") or 50
+	veh_info["total"] = " " --exports.san_vehicles:getVehicleRepairCost(vehicle)
+
+	--triggerClientEvent(client, "GTImech.processDiagnosis", vehicle, veh_info)
+end
+addEvent("GTImech.sendDiagnosis", true)
+addEventHandler("GTImech.sendDiagnosis", root, sendDiagnosis)
+
+-- Repair Vehicle
+------------------>>
+
+function notifyRepair()
+	local vehicle = source
+
+	--local owner = getElementData(vehicle, "owner") --exports.san_vehicles:getVehicleOwner(vehicle)
+	--if (not owner) then
+	--	exports.san_hud:dm("This vehicle has no owner. You can only repair vehicles that have owners.", client, 255, 125, 0)
+	--else
+
+
+		--Check if the vehicle is being repaired by another mechanic (Jack)
+		if (getElementData(vehicle, "repairing")) then
+			exports.san_hud:dm("Este veículo está sendo consertado por outro mecânico.", client, 255, 125, 0)
+			return
+		end
+
+		--Check the vehicle's health. If it's 100% then there's no need for a repair.
+		if (getElementHealth(vehicle) >= 1000) then
+			exports.san_hud:dm("Este veículo não precisa de reparo.", client, 255, 125, 0)
+			return
+		end
+		
+		triggerEvent("GTImech.acceptRepair", vehicle, client, client)
+--[[
+		if (owner ~= client) then
+			local cost = 0 --exports.san_vehicles:getVehicleRepairCost(vehicle)
+			triggerClientEvent(owner, "GTImech.sendNotice", vehicle, client, cost)
+			exports.san_hud:dm("O proprietário deste veículo foi notificado. Aguardando resposta...", client, 255, 125, 0)
+		else
+			triggerEvent("GTImech.acceptRepair", vehicle, client, client)
+		end
+		]]--
+	--end
+end
+addEvent("GTImech.notifyRepair", true)
+addEventHandler("GTImech.notifyRepair", root, notifyRepair)
+
+
+--setElementData(source, "repairing", false)
+
+
+function acceptRepair(mech, owner)
+    	if (getElementData(mech, "char:dutyfaction") ~= 3) then return end
+	if (not client) then client = owner end
+	--if (not isElement(mech)) then
+	--	exports.san_hud:dm("O mecânico que notificou você de um reparo não existe mais.", client, 255, 125, 0)
+	--	return
+	--end
+	if (not isElement(source)) then
+		exports.san_hud:dm("O veículo não pode ser encontrado.", client, 255, 125, 0)
+		exports.san_hud:dm("O veículo não pode ser encontrado.", mech, 255, 125, 0)
+		return
+	end
+	
+	--Check if the mechanic is in a vehicle. If so, decline! (Jack)
+	if (isPedInVehicle(mech)) then	
+		exports.san_hud:dm("Você não pode reparar um veículo enquanto estiver em um veículo!", mech, 255, 125, 0)
+		--exports.san_hud:dm("O mecânico que notificou você está indisponível no momento.", client, 225, 125, 0)
+		return
+	end
+
+
+	local repair_cost = 0 --exports.san_vehicles:getVehicleRepairCost(source)
+--[[
+	local cash = getPlayerMoney(client)
+	if (repair_cost > cash) then
+		exports.san_hud:dm("You cannot afford to repair this vehicle. ($"..exports.san_util:tocomma(repair_cost - cash).." needed)", client, 255, 125, 0)
+		exports.san_hud:dm("Your customer cannot afford to repair this vehicle.", mech, 255, 125, 0)
+		return
+	end]]--
+
+	local damage = 100 --exports.san_vehicles:getVehicleEngineDamage(source) + exports.san_vehicles:getVehicleBodyDamage(source)
+	setElementFrozen(mech, true)
+	setElementFrozen(source, true)
+	setPedAnimation(mech, "RYDER", "RYD_Beckon_03", -1, true, false, false, true)
+	setTimer(repairVehicle, (damage*100)+1000, 1, client, mech, source, repair_cost)
+	setElementData(source, "repairing", true) --set "repairing" to true so other mechanics can't repair it also.
+end
+addEvent("GTImech.acceptRepair", true)
+addEventHandler("GTImech.acceptRepair", root, acceptRepair)
+
+function repairVehicle(owner, mech, vehicle, cost)
+	if (not isElement(owner) and not isElement(mech)) then return end
+
+	if (getElementData(mech, "char:dutyfaction") ~= 3) then return end
+
+--[[
+	if (not isElement(owner) and isElement(mech)) then
+		exports.san_hud:dm("The vehicle's owner has disappeared.", mech, 255, 25, 25)
+		return
+	end
+]]--
+	--if (isElement(owner) and not isElement(mech)) then
+
+if (not isElement(mech)) then
+		if (not isElement(vehicle)) then
+			--exports.san_hud:dm("The mechanic and the vehicle has disappeared.", owner, 255, 25, 25)
+			setPedAnimation(mech)
+		else
+			--exports.san_hud:dm("The mechanic has disappeared.", owner, 255, 25, 25)
+		end
+		return
+	end
+	if (not isElement(vehicle)) then
+		setPedAnimation(mech)
+		--exports.san_hud:dm("The vehicle has disappeared.", owner, 255, 25, 25)
+		exports.san_hud:dm("O veículo desapareceu.", mech, 255, 25, 25)
+		return
+	end
+
+	setPedAnimation(mech)
+	setElementFrozen(mech, false)
+	setElementFrozen(vehicle, false)
+	if (owner ~= mech) then
+		exports.san_hud:dm("Seu "..getVehicleName(vehicle).." foi reparado por $"..exports.san_util:tocomma(cost), owner, 255, 200, 0)
+		exports.san_hud:dm("Você consertou o veiculo "..getVehicleName(vehicle).." e ganhou $"..exports.san_util:tocomma(cost), mech, 255, 200, 0)
+	else
+		exports.san_hud:dm("Você consertou o veiculo "..getVehicleName(vehicle), owner, 255, 200, 0)
+	end
+	--exports.san_vehicles:repairVehicle(vehicle)
+  	fixVehicle(vehicle)
+       setVehicleDamageProof (vehicle, false ) 
+	removeElementData(vehicle, "repairing") --set repairing to nil so mechanics can repair the vehicle in future.
+end
+--end

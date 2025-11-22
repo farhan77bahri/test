@@ -1,0 +1,9 @@
+<meta>
+    <script src="async.lua" type="shared" />
+    <script src="sourceG.lua" type="shared" />
+    <script src="sourceC.lua" type="client" cache="false" />
+    <script src="sourceS.lua" type="server" />
+    
+    <file src="files/Calibri.ttf" />
+    <file src="files/shopIcon.png" />
+</meta>

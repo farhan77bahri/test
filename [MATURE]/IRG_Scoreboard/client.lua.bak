@@ -1,0 +1,646 @@
+﻿
+
+--[[
+local screenW, screenH = guiGetScreenSize()
+local x,y = (screenW/1280), (screenH/720)
+--(screenW/1280), (screenH/720)
+local rotz     = 0
+
+local l_0_1 = false
+local l_0_4 = dxCreateScreenSource(screenW, screenH)
+
+local panelState = true
+
+
+font2 = dxCreateFont("files/font02.ttf",17) or "defaul-bold"
+font = dxCreateFont("files/font01.ttf",30) or "defaul-bold"
+
+
+
+function getClothes ()
+		local texture = {}
+		local model = {}
+		for i=0, 17, 1 do
+			local clothesTexture, clothesModel = getPedClothes(localPlayer, i)
+			if ( clothesTexture ~= false ) then
+				table.insert(texture, clothesTexture)
+				table.insert(model, clothesModel)
+			else
+				table.insert(texture, " ")
+				table.insert(model, " ")
+			end	
+		end
+		local allTextures = table.concat(texture, ",")
+		local allModels = table.concat(model, ",")
+		clothesallTextures = allTextures
+		clothesallModels = allModels
+		texture = {}
+		model = {}	
+		setPedClothes ()
+end
+
+function convertNumber ( number )  
+	local formatted = number  
+	while true do      
+		formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1.%2')    
+		if ( k==0 ) then      
+			break   
+		end  
+	end  
+	return formatted
+end
+
+cashBank = {}
+cashCard = {}
+
+local root = getRootElement()
+local player = getLocalPlayer()
+local counter = 0
+local starttick
+local currenttick
+addEventHandler("onClientRender",root,
+	function()
+		if not starttick then
+			starttick = getTickCount()
+		end
+		counter = counter + 1
+		currenttick = getTickCount()
+		if currenttick - starttick >= 1000 then
+			setElementData(player,"FPS",counter)
+			counter = 0
+			starttick = false
+		end
+	end
+)
+
+addEvent("attHud", true)
+addEventHandler("attHud", root, 
+function (cashB, cashC)
+   cashBank[localPlayer] = cashB
+   cashCard[localPlayer] = cashC
+end) 
+
+
+function creatPedProjection()
+    if  panelState then 
+  if (getElementData(localPlayer, "Tab") == false) then
+     x1, y1, z1 = getCameraMatrix()
+	 myElement = createPed (getElementModel(localPlayer), x1, y1, z1)
+	 if (getElementModel(localPlayer) == 0) then
+	     getClothes ()
+	 end
+    -- myObject = exports.object_preview:createObjectPreview(myElement, 3, 3, 0, x*517, y*190, x*330, y*340, false, true, true) 
+	-- exports.object_preview:setRotation(myObject,-0, 0, 160)
+	 setElementData(localPlayer, "Tab", true)
+   end
+end
+end
+
+function setPedClothes ()
+		local textureString = clothesallTextures
+		local modelString = clothesallModels
+		local textures2 = split(textureString, 44)
+		local models2 = split(modelString, 44)
+		for i=0, 17, 1 do
+			if ( textures2[i+1] ~= " " ) then
+				addPedClothes(myElement, textures2[i+1], models2[i+1], i)
+			end
+		end
+		textures2 = {}
+		models2 = {}
+end
+
+function resetPedProjection ()
+  -- exports.object_preview:destroyObjectPreview(myObject)
+		myElement = nil
+		myObject = nil
+end
+
+function printMessageFunction()
+   if  panelState then 
+   if selectIMG then return end
+    if getElementData(localPlayer, "SEQUESTRANDO:Vitima") then return end
+
+valueGasoline = gasolineBuy
+	
+
+	if (getKeyState( "Tab" ) == true) then
+         setElementData(localPlayer, "TabActive", true)
+	     creatPedProjection()
+		-- showChat(false)
+		 l_0_1 = true
+  else
+    if (getElementData(localPlayer, "TabActive") == true) then
+	 if isCursorShowing () then
+         setElementData(localPlayer, "TabActive", true)
+	     creatPedProjection()
+		-- showChat(false)
+		 l_0_1 = true
+	 else
+	     setElementData(localPlayer, "TabActive", false)
+		 setElementData(localPlayer, "Tab", false)
+		 if isElement(myElement) then
+            destroyElement(myElement)
+         end
+		-- exports.object_preview:destroyObjectPreview(myObject)
+		 showChat(true)
+		 l_0_1 = false
+	 end
+  end
+end
+end
+end
+setTimer(printMessageFunction, 100, 0)
+
+daysemana = {
+     {1, "2 Shanbeh"},
+	 {2, "3 Shanbeh"},
+	 {3, "4 Shanbeh"},
+	 {4, "5 Shanbeh"},
+	 {5, "Jome"},
+	 {6, "Shanbeh"},
+	 {0, "1 Shanbeh"},
+}
+
+daysmes = {
+     {0, "1"},
+	 {1, "2"},
+	 {2, "3"},
+	 {3, "4"},
+	 {4, "5"},
+	 {5, "6"},
+	 {6, "7"},
+	 {7, "8"},
+	 {8, "9"},
+	 {9, "10"},
+	 {10, "11"},
+	 {11, "12"},
+}
+
+day = {}
+mes = {}
+
+addEventHandler("onClientRender", root,
+	function()
+		--if getElementData(getLocalPlayer(), "hud") then return end
+     if not (getElementData(localPlayer, "TabActive")) then return end
+        if getElementData(getLocalPlayer(), "loggedin") then
+ 	 local count = #getElementsByType("player")
+	 local ping = getPlayerPing(getLocalPlayer())
+ 	 local time = getRealTime()
+	 local hours = time.hour
+	 local minutes = time.minute
+	 local seconds = time.second
+	 local zeroh = ""
+	 local zerom = ""
+
+     local monthday = time.monthday
+	 local month = time.month
+	 local year = time.year
+	 
+	 local yearday = time.yearday
+	 local weekday = time.weekday
+
+	 local ano = tostring(time.year):sub(-2)
+     
+     if hours < 10 then
+	     zeroh = 0
+     end	 
+     if hours > 9 then
+	     zeroh = ""
+     end	
+	 
+     if minutes < 10 then
+	     zerom = 0
+     end	 
+     if minutes > 9 then
+	     zerom = ""
+     end
+
+     for _,semana in pairs(daysemana) do
+	     if weekday == semana[1] then
+		     day = semana[2]
+		 end
+	 end
+	 
+     for _,mess in pairs(daysmes) do
+	     if month == mess[1] then
+		     meses = mess[2]
+		 end
+	 end
+		
+	    exports["sanBlur"]:dxDrawBluredRectangle(x*0, y*0, x*1280, y*720, tocolor(255,255,255))
+        dxDrawImage(screenW * 0.2260, screenH * 0.2250, screenW * 0.5651, screenH * 0.5620, "files/0"..(getElementData(localPlayer, "setIMG") or 1)..".png", 0, 0, 0, tocolor(255, 255, 255, 240), false)
+        dxDrawText("Belle-Ville Roleplay", screenW * 0.4205, screenH * 0.2426, screenW * 0.6406, screenH * 0.2778, tocolor(255, 254, 254, 255), x*0.60, font, "center", "center", false, false, true, false, false)
+        dxDrawText(getElementData(localPlayer, "char:leiras") or "", screenW * 0.4205, screenH * 0.2685, screenW * 0.6406, screenH * 0.3037, tocolor(255, 254, 254, 255), x*0.5, font2, "center", "center", false, false, true, false, false)
+    
+		dxDrawText(zeroh..""..hours..":"..zerom..""..minutes, screenW * 0.6645, screenH * 0.4400, screenW * 0.3521, screenH * 0.7574, tocolor(255, 255, 255, 255), x*1.0, font, "left", "center", false, false, false, false, false)
+       -- dxDrawText(day..", "..monthday..". "..meses..".20"..ano, screenW * 0.6385, screenH * 0.5000, screenW * 0.3531, screenH * 0.7611, tocolor(255, 255, 255, 255), x*0.5, font2, "left", "center", false, false, false, false, false)
+ 
+		dxDrawText(getElementData(localPlayer, "char:id") or "Desconhecido", screenW * 0.2720, screenH * 0.1710, screenW * 0.2990, screenH * 0.4509, tocolor(255, 255, 255, 150), x*0.5, font2, "left", "center", false, false, false, false, false)
+        dxDrawText(getElementData(localPlayer, "char:name") or "Desconhecido", screenW * 0.3320, screenH * 0.1710, screenW * 0.4260, screenH * 0.4509, tocolor(255, 255, 255, 150), x*0.5, font2, "left", "center", false, false, false, false, false)
+        dxDrawText("SEU XP "..getElementData(localPlayer, "LSys:EXP") or "Desconhecido", screenW * 0.2720, screenH * 0.2085, screenW * 0.3312, screenH * 0.4861, tocolor(255, 255, 255, 150), x*0.5, font2, "left", "center", false, false, false, false, false)
+        dxDrawText("LEVEL "..getElementData(localPlayer, "Sys:Level") or "Desconhecido", screenW * 0.3660, screenH * 0.2085, screenW * 0.4260, screenH * 0.4861, tocolor(255, 255, 255, 150), x*0.5, font2, "left", "center", false, false, false, false, false)
+       
+		dxDrawRectangle(screenW * 0.2720, screenH * 0.3780, screenW * 0.1578, screenH * 0.0065, tocolor(0, 0, 0, 255), false)
+		dxDrawRectangle(screenW * 0.2720, screenH * 0.3780, screenW * 0.1578 /100 * getElementHealth(localPlayer), screenH * 0.0065, tocolor(253, 0, 0, 116), false)
+		
+		dxDrawRectangle(screenW * 0.2720, screenH * 0.4160, screenW * 0.1578, screenH * 0.0065, tocolor(0, 0, 0, 255), false)
+        dxDrawRectangle(screenW * 0.2720, screenH * 0.4160, screenW * 0.1578 /100 * getPlayerArmor(localPlayer), screenH * 0.0065, tocolor(154, 154, 154, 204), false)
+		
+		dxDrawRectangle(screenW * 0.2720, screenH * 0.4500, screenW * 0.1578, screenH * 0.0065, tocolor(0, 0, 0, 255), false)
+        dxDrawRectangle(screenW * 0.2720, screenH * 0.4500, screenW * 0.1578 /1000 * math.floor (getPedOxygenLevel( getLocalPlayer() )), screenH * 0.0065, tocolor(0, 107, 253, 204), false)
+		
+		dxDrawRectangle(screenW * 0.2720, screenH * 0.4880, screenW * 0.1578, screenH * 0.0065, tocolor(0, 0, 0, 255), false)
+        dxDrawRectangle(screenW * 0.2720, screenH * 0.4880, screenW * 0.1578  /100 * getElementData(localPlayer, "char:thirst") or 0, screenH * 0.0065, tocolor(240, 243, 8, 204), false)
+		
+		dxDrawRectangle(screenW * 0.2720, screenH * 0.5260, screenW * 0.1578, screenH * 0.0065, tocolor(0, 0, 0, 255), false)
+        dxDrawRectangle(screenW * 0.2720, screenH * 0.5260, screenW * 0.1578  /100 * getElementData(localPlayer, "char:hunger"), screenH * 0.0065, tocolor(124, 249, 1, 204), false)
+	
+		dxDrawText(count.." JOGADORES", screenW * 0.5260, screenH * 0.4900, screenW * 0.7430, screenH * 0.2778, tocolor(255, 255, 255, 255), x*0.40, font, "right", "center", false, false, false, false, false)
+
+        dxDrawText("TEMPERATURA ATUAL DA CIDADE", screenW * 0.2720, screenH * 0.8600, screenW * 0.7240, screenH * 0.3213, tocolor(255, 255, 255, 255), x*0.5, font2, "left", "center", false, false, false, false, false)
+        dxDrawText(getElementData(localPlayer, "temp:char") or "0", screenW * 0.0190, screenH * 0.8710, screenW * 0.7724, screenH * 0.3954, tocolor(255, 255, 255, 255), x*1.0, font, "center", "center", false, false, false, false, false)
+		if hours > 6 and hours < 16 then
+		     dxDrawImage(screenW * 0.2790, screenH * 0.6000, screenW * 0.1172, screenH * 0.1343, "files/tempdia.png", 0, 0, 0, tocolor(255, 255, 255, 240), false)
+			 else
+			 dxDrawImage(screenW * 0.2790, screenH * 0.6000, screenW * 0.1172, screenH * 0.1343, "files/tempnoite.png", 0, 0, 0, tocolor(255, 255, 255, 240), false)
+		end
+   end
+end)
+
+
+
+addEventHandler("onClientRender", root,
+	function()
+		
+		
+	--if getChatboxLayout() then return end
+	 if selectIMG then
+	 if not isCursorShowing() then selectIMG = false return end
+	 if (getElementData(localPlayer, "TabActive")) then selectIMG = false end
+        dxDrawRectangle(screenW * 0.3500, screenH * 0.3870, screenW * 0.2552, screenH * 0.2037, tocolor(1, 0, 0, 142), false)
+        dxDrawRectangle(screenW * 0.3500, screenH * 0.3870, screenW * 0.2578, screenH * 0.0278, tocolor(1, 0, 0, 142), false)
+        dxDrawText("MENU IMAGENS - IRAN GAMING", screenW * 0.3500, screenH * 0.3870, screenW * 0.6078, screenH * 0.4167, tocolor(255, 254, 254, 131), x*0.80, "default-bold", "center", "center", false, false, false, false, false)
+	     if myIMG > 1 then
+		 cor[1]  = tocolor(255,255,255,100)
+ 		 if isCursorOnElement(screenW * 0.3552, screenH * 0.4509, screenW * 0.0786, screenH * 0.0796) then cor[1] = tocolor(255,255,255, 215) end
+		     dxDrawImage(screenW * 0.3552, screenH * 0.4509, screenW * 0.0786, screenH * 0.0796, "files/0"..(myIMG - 1)..".png", 0, 0, 0, tocolor(255,255,255, 120), false)
+			 dxDrawText("<", screenW * 0.3552, screenH * 0.4444, screenW * 0.4307, screenH * 0.5463, cor[1], x*2.00, "pricedown", "center", "center", false, false, false, false, false)
+		 end
+		 if myIMG < 5 then
+		 cor[2]  = tocolor(255,255,255,100)
+ 		 if isCursorOnElement(screenW * 0.5240, screenH * 0.4509, screenW * 0.0786, screenH * 0.0796) then cor[2] = tocolor(255,255,255, 215) end
+		     dxDrawImage(screenW * 0.5240, screenH * 0.4509, screenW * 0.0786, screenH * 0.0796, "files/0"..(myIMG + 1)..".png", 0, 0, 0, tocolor(255,255,255, 120), false)
+			 dxDrawText(">", screenW * 0.5271, screenH * 0.4444, screenW * 0.6026, screenH * 0.5463, cor[2], x*2.00, "pricedown", "center", "center", false, false, false, false, false)
+		 end
+		 if myIMG > 0 then
+		     dxDrawImage(screenW * 0.4255, screenH * 0.4352, screenW * 0.1057, screenH * 0.1046, "files/0"..myIMG..".png", 0, 0, 0, tocolor(255, 255, 255, 240), false)
+		 end
+		 cor[3]  = tocolor(0, 0, 0,100)
+ 		 if isCursorOnElement(screenW * 0.4151, screenH * 0.5537, screenW * 0.1266, screenH * 0.0278) then cor[3] = tocolor(144,238,144, 215) end
+        dxDrawRectangle(screenW * 0.4151, screenH * 0.5537, screenW * 0.1266, screenH * 0.0278, cor[3] , false)
+        dxDrawText("APLICAR", screenW * 0.4151, screenH * 0.5556, screenW * 0.5417, screenH * 0.5824, tocolor(255, 255, 255, 255), x*0.80, "default-bold", "center", "center", false, false, false, false, false)
+		end
+    end
+)
+
+cor = {}
+
+
+
+function selectC ( button,state,thePlayer )
+	if not getElementData(localPlayer,"loggedin") then return end
+     if (getElementData(localPlayer, "TabActive")) then
+	-- if getChatboxLayout() then return end
+          if  state == "down"  then 
+                if  isCursorOnElement(screenW * 0.7573, screenH * 0.7204, screenW * 0.0187, screenH * 0.0287) then
+                     selectIMG = true
+					 myIMG = 1
+	                 setElementData(localPlayer, "TabActive", false)
+		             setElementData(localPlayer, "Tab", false)
+		             if isElement(myElement) then
+                         destroyElement(myElement)
+                     end
+		            -- exports.object_preview:destroyObjectPreview(myObject)
+		             showChat(true)
+		             l_0_1 = false
+                end
+          end
+    end
+end
+addEventHandler("onClientClick",getRootElement(),  selectC)
+
+function MenuModos ( button,state,thePlayer )
+    if selectIMG then
+          if  state == "down"  then 
+                if  isCursorOnElement(screenW * 0.5240, screenH * 0.4509, screenW * 0.0786, screenH * 0.0796) then
+                  if myIMG < 5 then
+                        myIMG = myIMG + 1 
+					end
+                end
+          end
+    end
+end
+addEventHandler("onClientClick",getRootElement(), MenuModos)
+
+function MenuModos2 ( button,state,thePlayer )
+     if selectIMG == true then
+       if  state == "down"  then 
+            if isCursorOnElement(screenW * 0.3552, screenH * 0.4509, screenW * 0.0786, screenH * 0.0796) then
+              if myIMG > 1 then
+                 myIMG = myIMG - 1 
+              end				 
+           end
+       end
+   end
+end
+addEventHandler("onClientClick",getRootElement(), MenuModos2)
+
+function selectIMGT ( button,state,thePlayer )
+     if selectIMG == true then
+       if  state == "down"  then 
+            if isCursorOnElement(screenW * 0.4151, screenH * 0.5537, screenW * 0.1266, screenH * 0.0278) then
+                 setElementData(localPlayer, "setIMG", myIMG)
+				 selectIMG = false			 
+           end
+       end
+   end
+end
+addEventHandler("onClientClick",getRootElement(), selectIMGT)
+
+local moneyTick = 0
+
+
+local screenW2, screenH2 = guiGetScreenSize()
+local x,y = (screenW2/1360), (screenH2/768)
+
+function convertNumber ( number )  
+	local formatted = number  
+	while true do      
+		formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1.%2')    
+		if ( k==0 ) then      
+			break   
+		end  
+	end  
+	return formatted
+end
+
+function handleMinimize()
+    panelState = false 
+end
+addEventHandler( "onClientMinimize", root, handleMinimize )
+
+function handleRestore( didClearRenderTargets )
+    panelState = true 
+	
+end
+addEventHandler("onClientRestore",root,handleRestore)
+
+
+
+addEventHandler("onClientPreRender", root,
+	function()
+	    
+		
+		if getElementData(getLocalPlayer(), "hud") then return end
+        if panelState  then
+        if getElementData(getLocalPlayer(), "loggedin") then
+	 local ping = getPlayerPing(getLocalPlayer())
+	 if (ping < 200) then
+         cor[3] = "#FFFFFF"
+	 end
+	 if (ping >= 210) then
+         cor[3] = "#FF0000"
+	 end		
+	  local fps = getFPSLimit ()
+	  fps = fps - 5
+      if getElementData(localPlayer, "FPS") <= 20 then 
+        cor[1] = "#FF0000"
+     elseif getElementData(localPlayer, "FPS") >= 20 and getElementData(localPlayer, "FPS") <= 30 then 
+        cor[1] = "#FFA000"
+     elseif getElementData(localPlayer, "FPS") >= 31 then 
+        cor[1] = "#FFFFFF"
+     end
+	 
+	     
+		 
+	 
+	 
+        if (getElementData(localPlayer, "TabActive") == false) then
+		
+        --dxDrawImage(x*1180, y*-10, x*220, y*120, "files/logo.png", 0, 0, 0, tocolor(255, 254, 254, 255), false)
+		
+		if not getElementData(localPlayer, "ILEGAIS:Job") then
+       -- dxDrawText(getElementData(localPlayer, "job"), x*979-1, y*43-1, x*1340-1, y*142-1, tocolor(0, 0, 0, 255), 1, "pricedown", "right", "center")
+        --dxDrawText(getElementData(localPlayer, "job"), x*979, y*43, x*1340, y*142, tocolor(255, 255, 255, 255), 1, "pricedown", "right", "center")
+    else
+        if (getElementData(localPlayer, "ILEGAIS:Job") == 1) then
+            dxDrawText("Traficante de Drogas", x*979-1, y*43-1, x*1340-1, y*142-1, tocolor(0, 0, 0, 255), 1, "pricedown", "right", "center")
+            dxDrawText("Traficante de Drogas", x*979, y*43, x*1340, y*142, tocolor(255, 255, 255, 255), 1, "pricedown", "right", "center")
+        elseif (getElementData(localPlayer, "ILEGAIS:Job") == 2) then
+            dxDrawText("Matador de Aluguel", x*979-1, y*43-1, x*1340-1, y*142-1, tocolor(0, 0, 0, 255), 1, "pricedown", "right", "center")
+            dxDrawText("Matador de Aluguel", x*979, y*43, x*1340, y*142, tocolor(255, 255, 255, 255), 1, "pricedown", "right", "center")
+        elseif (getElementData(localPlayer, "ILEGAIS:Job") == 3) then
+            dxDrawText("Traficante de Orgãos", x*979-1, y*43-1, x*1340-1, y*142-1, tocolor(0, 0, 0, 255), 1, "pricedown", "right", "center")
+            dxDrawText("Traficante de Orgãos", x*979, y*43, x*1340, y*142, tocolor(255, 255, 255, 255), 1, "pricedown", "right", "center")
+        elseif (getElementData(localPlayer, "ILEGAIS:Job") == 5) then
+            dxDrawText("Hacker", x*979-1, y*43-1, x*1340-1, y*142-1, tocolor(0, 0, 0, 255), 1, "pricedown", "right", "center")
+            dxDrawText("Hacker", x*979, y*43, x*1340, y*142, tocolor(255, 255, 255, 255), 1, "pricedown", "right", "center")
+        end
+		end
+
+        if moneyTick >= getTickCount() then
+            dxDrawText(moneyChange, x * 979 -1, y * 150 -1, x*1340 -1, y*142 -1, tocolor(0, 0, 0, 255), x*0.8, "pricedown", "right", "center")      
+            dxDrawText(moneyChange, x * 979, y * 150, x*1340, y*142, cor[2], x*0.8, "pricedown", "right", "center")
+        end		
+	end
+	local theVehicle = getPedOccupiedVehicle (localPlayer)
+	 if theVehicle then
+        --[[dxDrawText("Ping: "..(ping or "0").."    FPS: ".. (getElementData(localPlayer, "FPS") or "0"), (screenW * 0.0362) - 1, (screenH * 0.7378) - 1, (screenW * 0.1525) - 1, (screenH * 0.7644) - 1, tocolor(0, 0, 0, 255), x*0.80, "pricedown", "left", "center", false, false, false, false, false)
+        dxDrawText("Ping: "..(ping or "0").."    FPS: ".. (getElementData(localPlayer, "FPS") or "0"), (screenW * 0.0362) + 1, (screenH * 0.7378) - 1, (screenW * 0.1525) + 1, (screenH * 0.7644) - 1, tocolor(0, 0, 0, 255), x*0.80, "pricedown", "left", "center", false, false, false, false, false)
+        dxDrawText("Ping: "..(ping or "0").."    FPS: ".. (getElementData(localPlayer, "FPS") or "0"), (screenW * 0.0362) - 1, (screenH * 0.7378) + 1, (screenW * 0.1525) - 1, (screenH * 0.7644) + 1, tocolor(0, 0, 0, 255), x*0.80, "pricedown", "left", "center", false, false, false, false, false)
+        dxDrawText("Ping: "..(ping or "0").."    FPS: ".. (getElementData(localPlayer, "FPS") or "0"), (screenW * 0.0362) + 1, (screenH * 0.7378) + 1, (screenW * 0.1525) + 1, (screenH * 0.7644) + 1, tocolor(0, 0, 0, 255), x*0.80, "pricedown", "left", "center", false, false, false, false, false)
+        dxDrawText((cor[3] or "#FFFFFF").."Ping: "..(ping or "0").."    "..(cor[1] or "#FFFFFF").."FPS: ".. (getElementData(localPlayer, "FPS") or "0"), screenW * 0.0362, screenH * 0.7378, screenW * 0.1525, screenH * 0.7644, tocolor(255, 255, 255, 255), x*0.80, "pricedown", "left", "center", false, false, false, true, false)
+     ]]
+	 else
+       --[[ dxDrawText("Ping: "..(ping or "0").."    FPS: ".. (getElementData(localPlayer, "FPS") or "0"), (screenW * 0.0362) - 1, (screenH * 0.9578) - 1, (screenW * 0.1525) - 1, (screenH * 0.9844) - 1, tocolor(0, 0, 0, 255), x*0.80, "pricedown", "left", "center", false, false, false, false, false)
+        dxDrawText("Ping: "..(ping or "0").."    FPS: ".. (getElementData(localPlayer, "FPS") or "0"), (screenW * 0.0362) + 1, (screenH * 0.9578) - 1, (screenW * 0.1525) + 1, (screenH * 0.9844) - 1, tocolor(0, 0, 0, 255), x*0.80, "pricedown", "left", "center", false, false, false, false, false)
+        dxDrawText("Ping: "..(ping or "0").."    FPS: ".. (getElementData(localPlayer, "FPS") or "0"), (screenW * 0.0362) - 1, (screenH * 0.9578) + 1, (screenW * 0.1525) - 1, (screenH * 0.9844) + 1, tocolor(0, 0, 0, 255), x*0.80, "pricedown", "left", "center", false, false, false, false, false)
+        dxDrawText("Ping: "..(ping or "0").."    FPS: ".. (getElementData(localPlayer, "FPS") or "0"), (screenW * 0.0362) + 1, (screenH * 0.9578) + 1, (screenW * 0.1525) + 1, (screenH * 0.9844) + 1, tocolor(0, 0, 0, 255), x*0.80, "pricedown", "left", "center", false, false, false, false, false)
+        dxDrawText((cor[3] or "#FFFFFF").."Ping: "..(ping or "0").."    "..(cor[1] or "#FFFFFF").."FPS: ".. (getElementData(localPlayer, "FPS") or "0"), screenW * 0.0220, screenH * 0.9578, screenW * 0.1525, screenH * 0.9844, tocolor(255, 254, 254, 255), x*0.80, "pricedown", "center", "center", false, false, true, true, false)
+		--(255, 255, 255, 255), x*0.80, "pricedown", "left", "center", false, false, false, true, false)
+	   -- dxDrawText("#FFFFFF").."Ping:", screenW * 0.4205, screenH * 0.2426, screenW * 0.6406, screenH * 0.2778, tocolor(255, 254, 254, 255), x*0.60, font, "center", "center", false, false, true, false, false)
+	 local weaponType = getPlayerWeapon (localPlayer)
+	 if weaponType == 31 or weaponType == 30 then
+	     slots = getElementData(localPlayer, "balas-fuzil")
+	 end
+	 if weaponType == 29 or weaponType == 32 then
+	     slots = getElementData(localPlayer, "balas-submetralhadora")
+	 end
+	 if weaponType == 25 or weaponType == 27 then
+	     slots = getElementData(localPlayer, "balas-shotgun")
+	 end
+	 if weaponType == 23 or weaponType == 24 then
+	     slots = getElementData(localPlayer, "balas-pistola")
+	 end
+	 if weaponType == 31 or weaponType == 30 or weaponType == 23 or weaponType == 24 or weaponType == 29 or weaponType == 32 or weaponType == 25 or weaponType == 27 then
+        dxDrawText("Ammunition: "..slots or "0", (screenW * 0.0362) - 1, (screenH * 0.9333) - 1, (screenW * 0.1050) - 1, (screenH * 0.9544) - 1, tocolor(0, 0, 0, 255), 0.90, "pricedown", "left", "center", false, false, true, false, false)
+        dxDrawText("Ammunition: "..slots or "0", (screenW * 0.0362) + 1, (screenH * 0.9333) - 1, (screenW * 0.1050) + 1, (screenH * 0.9544) - 1, tocolor(0, 0, 0, 255), 0.90, "pricedown", "left", "center", false, false, true, false, false)
+        dxDrawText("Ammunition: "..slots or "0", (screenW * 0.0362) - 1, (screenH * 0.9333) + 1, (screenW * 0.1050) - 1, (screenH * 0.9544) + 1, tocolor(0, 0, 0, 255), 0.90, "pricedown", "left", "center", false, false, true, false, false)
+        dxDrawText("Ammunition: "..slots or "0", (screenW * 0.0362) + 1, (screenH * 0.9333) + 1, (screenW * 0.1050) + 1, (screenH * 0.9544) + 1, tocolor(0, 0, 0, 255), 0.90, "pricedown", "left", "center", false, false, true, false, false)
+        dxDrawText("Ammunition: "..slots or "0", screenW * 0.0362, screenH * 0.9333, screenW * 0.1050, screenH * 0.9544, tocolor(255, 255, 255, 255), 0.90, "pricedown", "left", "center", false, false, true, false, false)	 
+	end]]
+end
+end
+end
+end
+)
+addEventHandler('onClientRender', root, function()
+
+--  dxDrawImageSection(400, 200, 64, 64, 0, 10, 64, 64, 'files/tempnoite.png') -- Draw a certain section
+--  dxDrawImage(400, 300, 128, 128, 'files/tempnoite.png') -- Draw the whole image to be able to identify the difference
+   --dxDrawImage(x*1140, y*20, x*160, y*160, "files/logo.png", 0, 0, 0, tocolor(255, 254, 254, 255), false)
+end)
+
+
+
+
+addEventHandler("onClientElementDataChange", root, function(dataName, oldValue)
+	if source == localPlayer and dataName == "char:money" and getElementData(localPlayer, "loggedin") then
+        local newValue = getElementData(source, "char:money") or 0
+        if newValue then
+            moneyTick = getTickCount() + 5000
+
+            moneyChange = math.abs(newValue - oldValue)
+            if newValue < oldValue then
+            	moneyChange = "-$"..moneyChange
+				cor[2] = tocolor(255, 0, 0, 255)
+            else
+            	moneyChange = "+$"..moneyChange
+				cor[2] = tocolor(0, 255, 0, 255)
+            end
+
+			playSound("money.mp3", false)
+        end
+    elseif source == localPlayer and dataName == "loggedin" then
+    	--loadStats()
+	end
+end)
+
+
+
+function getMoney()
+	local maxDrawNull = 8
+	local actualCharMoney = maxDrawNull - string.len(tostring(getElementData(localPlayer,"char:money")))
+	finalConvert = ""
+			  
+		
+        
+		
+		
+	--for i = 0, actualCharMoney, 1 do
+	--	finalConvert = finalConvert .. "0"
+	--end
+
+	if getElementData(localPlayer, "char:money") >= 0 then
+		finalConvert = "".. thousandsStepper(getElementData(localPlayer, "char:money"))
+	else
+		finalConvert = "-" .. thousandsStepper(math.abs(getElementData(localPlayer, "char:money")))
+	end
+
+	return finalConvert
+end
+
+
+function thousandsStepper(amount)
+	local formatted = amount
+	
+	while true do  
+		formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1 %2')
+		if k == 0 then
+			break
+		end
+	end
+
+	return formatted
+end
+
+
+]]
+
+
+warning = 0
+setTimer(function()
+    if getElementData(localPlayer, "loggedin") and getElementData(localPlayer, "char:adminduty") == 0 then
+        local hunger = getElementData(localPlayer, "char:hunger")
+        if getElementData(localPlayer, "adminjail") == 1 then
+			return
+		end
+		
+		if hunger > 7 then
+            random = math.random(4, 7)
+            setElementData(localPlayer, "char:hunger", hunger - random)
+        elseif hunger ~= 0 and hunger <= 7 then
+            setElementData(localPlayer, "char:hunger", 0)
+        else
+            if warning ~= 3 then
+                outputChatBox("#7cc576[IRG-MTA] #ffffffBe Ghaza Niyaz Dary!!",255, 255, 255, true)
+
+                --triggerEvent(localPlayer,"JoinQuitGtaV:notifications", localPlayer,"comida", "*Ei, Você está ficando com fome! Come alguma coisa!", 5 )
+                
+                exports.JoinQuitGtaV:createNotification("comida", "*Be Ghaza Niyaz Dary!", 5)
+
+                warning = warning + 1
+            else
+                setElementHealth(localPlayer, getElementHealth(localPlayer) - 3)
+            end
+        end
+    end
+end, 1000 * 60 * 5, 0)
+
+
+setTimer(function()
+    if getElementData(localPlayer, "loggedin") and getElementData(localPlayer, "char:adminduty") == 0 then
+        local hunger = getElementData(localPlayer, "char:thirst")
+        if getElementData(localPlayer, "adminjail") == 1 then
+			return
+		end
+		
+		if hunger > 7 then
+            random = math.random(4, 7)
+            setElementData(localPlayer, "char:thirst", hunger - random)
+        elseif hunger ~= 0 and hunger <= 7 then
+            setElementData(localPlayer, "char:thirst", 0)
+        else
+            if warning ~= 3 then
+                outputChatBox("#7cc576[IRG-MTA] #ffffff*Be Noshidani Ehtiyaj Dar!",255, 255, 255, true)
+
+                exports.JoinQuitGtaV:createNotification("comida", "*Be Noshidani Ehtiyaj Dari!", 5)
+
+
+                warning = warning + 1
+            else
+                setElementHealth(localPlayer, getElementHealth(localPlayer) - 10)
+            end
+        end
+    end
+end, 10000, 0)
+
+local x,y = guiGetScreenSize()
+ function isCursorOnElement(x,y,w,h)
+	local mx,my = getCursorPosition ()
+	local fullx,fully = guiGetScreenSize()
+	cursorx,cursory = mx*fullx,my*fully
+	if cursorx > x and cursorx < x + w and cursory > y and cursory < y + h then
+		return true
+	else
+		return false
+	end
+end
+
+
+
+
+
+

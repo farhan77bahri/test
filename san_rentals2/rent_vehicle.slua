@@ -1,0 +1,137 @@
+----------------------------------------->>
+-- GTI: Grand Theft International
+-- Date: 08 May 2014
+-- Resource: GTIrentVehicle/rent_vehicle.slua
+-- Type: Server Side
+-- Author: JT Pennington (JTPenn)
+----------------------------------------->>
+
+local rentVehicles = {}			-- Storage of Job Vehicles
+local activeRentals = {}		-- Storage of Players by Job Vehicle
+local rentTime = {}				-- Storage of Rental Time by Job Vehicle
+local isCost = {}				-- Is Rental Vehicle Free?
+local MAX_HR_PAYMENT = 1000		-- Highest Amount to charge per hour
+local MAX_RENT_COST = 2500		-- Highest Amount to charge, period
+
+local NEVADA = 553
+
+-- Rent Vehicle
+---------------->>
+
+function rentVehicle(player, vehicleID, x, y, z, rot, int, dim, color, cost)
+	if (int and getElementInterior(player) ~= int) then return end
+	if (dim and getElementDimension(player) ~= dim) then return end
+	returnRentVehicle(player)
+
+	if (vehicleID == NEVADA) then z = z + 1 end
+
+	local vehicle = createVehicle(vehicleID, x, y, z, 0, 0, rot)
+	setVehiclePlateText( vehicle, getElementData(player,"char:id") )
+	setElementData(vehicle, "veh:jobvehID", 1)
+	setElementInterior(vehicle, int or 0)
+	setElementDimension(vehicle, dim or 0)
+
+	if (color) then
+		local v = color
+		setVehicleColor(vehicle, v[1], v[2], v[3], v[4], v[5], v[6], v[7], v[8], v[9], v[10], v[11], v[12])
+	end
+
+	setElementData(vehicle, "owner", getElementData(player, "acc:id"))
+	setElementData(vehicle, "veh:fuel", 100)
+
+	setTimer(function(player, vehicle, x, y, z)
+		if (not isElement(player) or not isElement(vehicle)) then return false end
+		setElementPosition(player, x, y, z)
+		warpPedIntoVehicle(player, vehicle)
+		setCameraTarget(player, player)
+	end, 250, 1, player, vehicle, x, y, z)
+	activeRentals[vehicle] = player
+	rentVehicles[player] = vehicle
+	if (cost) then
+		isCost[vehicle] = true
+	end
+	rentTime[vehicle] = getRealTime().timestamp
+
+	triggerEvent("onVehicleRent", vehicle, player, x, y, z, rot, int, dim, color)
+	triggerClientEvent(player, "onClientVehicleRent", vehicle, x, y, z, rot, int, dim, color)
+	return true
+end
+
+-- Return Rental Vehicle
+------------------------->>
+
+function returnRentVehicle(player)
+	if (not rentVehicles[player]) then return false end
+	local vehicle = rentVehicles[player]
+	if (not isElement(vehicle)) then return end
+
+	local rent_time = getVehicleRentTime(vehicle)
+	local rent_cost = math.floor(getHourlyRentalCost(vehicle) * rent_time)
+	if (rent_cost > MAX_RENT_COST) then rent_cost = MAX_RENT_COST end
+	
+	--[[
+	if (isCost[vehicle] and rent_cost > 0) then
+		exports.bgo_bank:TPM(player, rent_cost, "Rentals: "..getVehicleName(vehicle).." Rental Cost")
+		outputChatBox("* Rental Vehicle Fee: $"..exports.bgo_util:tocomma(rent_cost).." ("..getVehicleRentTime(vehicle, true).." minutes)", player, 255, 25, 25)
+	end]]--
+	
+	rentTime[vehicle] = nil
+	activeRentals[vehicle] = nil
+	isCost[vehicle] = nil
+	destroyElement(rentVehicles[player])
+	rentVehicles[player] = nil
+	return true
+end
+
+function returnOnQuit()
+	returnRentVehicle(source)
+end
+addEvent("onPlayerQuitJob", true)
+addEventHandler("onPlayerQuitJob", root, returnOnQuit)
+addEventHandler("onPlayerQuit", root, returnOnQuit)
+addEventHandler("onPlayerWasted", root, returnOnQuit)
+
+function hideRentVehicleCommand(player)
+	local vehicle = rentVehicles[player]
+	if (not isElement(vehicle)) then return end
+	if (exports.bgo_util:getElementSpeed(vehicle) > 5 and getVehicleOccupant(vehicle) == player) then 
+		--outputChatBox("* You cannot hide your vehicle while you are driving it.", player, 255, 128, 0)
+	return end
+	
+	triggerEvent("onRentalVehicleHide", vehicle, player)
+	triggerClientEvent(player, "onClientRentalVehicleHide", vehicle, player)
+	returnRentVehicle(player)
+end
+addCommandHandler("hide", hideRentVehicleCommand)
+
+-- Utilities
+------------->>
+
+function getPlayerRentalVehicle(player)
+	return rentVehicles[player] or false
+end
+
+function getHourlyRentalCost(vehicle)
+	local payment
+	if (isElement(vehicle)) then
+		payment = 0 --math.floor( exports.bgo_vehicles:getVehicleCost(getElementModel(vehicle)) / 333 )
+	else
+		payment = 0 --math.floor( exports.bgo_vehicles:getVehicleCost(vehicle) / 333 )
+	end
+	if (payment > MAX_HR_PAYMENT) then payment = MAX_HR_PAYMENT end
+	return payment
+end
+
+function getVehicleRentTime(vehicle, mins)
+	if (not rentTime[vehicle]) then return false end
+	if (mins) then
+		return math.floor( (getRealTime().timestamp - rentTime[vehicle]) / 60 )
+	end
+	return (getRealTime().timestamp - rentTime[vehicle]) / 3600
+end
+
+function isVehicleRental(vehicle)
+	if (not isElement(vehicle) or getElementType(vehicle) ~= "vehicle") then return false end
+	if (resourceRoot == vehicle) then return true end
+	return false
+end

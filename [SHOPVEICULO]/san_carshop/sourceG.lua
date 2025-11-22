@@ -1,0 +1,160 @@
+sellVehicle = {
+	-- ID, NÉV,Pénz,PP,limit
+	
+	--[[
+    {419,"Fiat palio",20000,14010, 0},
+    {401,"Golg3",24010,19000, 0},
+	{533,"Gol-G5",30000,20000, 0},
+    {438,"Corolla",60000,40000, 0},
+    {492,"Jetta TSI",100000,80000, 0},
+	{560,"BMW X5",200000,100000, 0},
+]]--
+{489,"Shevrolet Blazer",4259,50000, 50,146,16.5,2.137,7},
+{526,"Alfaromeo 159",4380,25000, 50,251,26.5,2.30,6},
+{401,"Folox Golf  GIT",5670,50000, 50,260,23,2.40,8},
+{458,"subaro",6000,10000, 50,181,16.5,2.15,6},
+{439,"Dodge Chalenger RT",6000,10000, 50,230,42.5,2.10,5},
+{603,"coronet 440",6500,50000, 50,400,0,0,0},
+{482,"Ford Econoline 150",7390,20000, 55,168,15,2.03,4},
+{436,"BMW M4",7390,10000, 50,237,42.4,2.73,7},
+{551,"BMW e36",9800,150000, 50,400,0,0,0},
+{429,"BMW Z4",10870,5000, 55,400,0,0,0},
+{585,"aodi a6",12560,90000, 50,400,0,0,0},
+{411,"dodge chalaenger",17650,130000, 55,400,0,0,0},
+{580,"aodi rs4",23524,80000, 50,400,0,0,0},
+{587,"BMW M6",26899,20000, 55,400,0,0,0},
+{445,"BMW M5",34980,50000, 50,400,0,0,0},
+{494,"SLS",50981,10000, 50,400,0,0,0},
+{579,"Gclass G65",55879,20000, 50,400,0,0,0},
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	--{562,"KOENIGSEGG",30000,10000, 1},
+	--{506,"skyline",30000,10000, 1},
+	--{429,"Ford Mustang",1000000,10000, 1},
+}
+
+
+
+
+
+
+allVehicleName = {	
+	[458] = "subaro",
+	[526] = "Alfaromeo 159",
+    [439] = "Dodge Chalenger RT", 	
+	[580] = "aodi rs4", 
+	[585] = "aodi a6",
+	[429] = "BMW Z4",
+	[579] = "Gclass G65",
+	[401] = "Folox Golf  GIT",
+	[603] = "coronet 440",
+	[587] = "BMW M6",
+	[411] = "dodge chalaenger",
+	[482] = "Ford Econoline 150",
+	[551] = "BMW e36",
+	[445] = "BMW M5",
+	[489] = "Shevrolet Blazer",
+	[436] = "BMW M4",
+	[494] = "SLS",
+	[502] = "123",
+	[503] = "4",
+	[579] = "5",
+	
+}
+
+
+
+
+
+
+
+function getVehicleRealName(vehicleid)
+	if allVehicleName[vehicleid] then
+		return allVehicleName[vehicleid]
+	else 
+		return "NoName"
+	end 
+end
+
+function getVehicleShopCost(vehicleid)
+	if allVehicleName[vehicleid] then
+		for k, v in ipairs(sellVehicle) do
+			if sellVehicle[k][1] == vehicleid then
+				local cost = sellVehicle[k][3]
+				return cost
+			end
+		end
+	else 
+		return "NoName"
+	end 
+end
+
+
+
+
+function speed(vehicleid)
+	if allVehicleName[vehicleid] then
+		for k, v in ipairs(sellVehicle) do
+			if sellVehicle[k][1] == vehicleid then
+				local speedd = sellVehicle[k][6]
+				return speedd
+			end
+		end
+	else 
+		return "0"
+	end 
+end
+
+
+function shetab(vehicleid)
+	if allVehicleName[vehicleid] then
+		for k, v in ipairs(sellVehicle) do
+			if sellVehicle[k][1] == vehicleid then
+				local speedd = sellVehicle[k][7]
+				return speedd
+			end
+		end
+	else 
+		return "0"
+	end 
+end
+
+
+function traction(vehicleid)
+	if allVehicleName[vehicleid] then
+		for k, v in ipairs(sellVehicle) do
+			if sellVehicle[k][1] == vehicleid then
+				local speedd = sellVehicle[k][8]
+				return speedd
+			end
+		end
+	else 
+		return "0"
+	end 
+end
+
+
+function tormoz(vehicleid)
+	if allVehicleName[vehicleid] then
+		for k, v in ipairs(sellVehicle) do
+			if sellVehicle[k][1] == vehicleid then
+				local speedd = sellVehicle[k][9]
+				return speedd
+			end
+		end
+	else 
+		return "0"
+	end 
+end
+
+
+
+--speed (getElementModel(car))

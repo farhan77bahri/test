@@ -1,0 +1,7 @@
+<meta>
+	<script src="Server.lua" type="server" cache="false"/>
+	<file src="Fonte.ttf" type="client"/>
+		<script src="Client.lua" type="client" protected="true"/>
+		
+		
+</meta>

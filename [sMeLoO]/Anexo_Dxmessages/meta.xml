@@ -1,0 +1,22 @@
+<meta>
+    <info name="Simple Notifications" version="1.0.2" type="script" />
+    
+    <script src="c.lua" type="client" cache="false" />
+    <script src="s.lua" type="server" cache="false" />
+    
+	<file src="files/background.png" />
+	
+    <file src="files/fonts/roboto.ttf" />
+    <file src="files/fonts/icons.ttf" />
+    
+
+    <file src="files/img/info.png" />
+    <file src="files/img/warning.png" />
+    <file src="files/img/succes.png" />
+    <file src="files/img/error.png" /> 
+
+    <file src="files/sfx/sound.mp3" /> 
+
+    <export function="createNotification" type="client" />
+    <export function="outputDx" type="server" />
+</meta>

@@ -1,0 +1,13 @@
+<meta>
+    <script src="sourceS.lua" />
+    <script src="sourceC.lua" type="client" protected="true"/>
+    <export function="sendGroupMessage" type="shared" />
+    <export function="adminJail" type="server" cache="false"/>
+   
+
+    <file src="files/duty.png" />
+    <file src="files/myriadproregular.ttf" />
+    <file src="files/gov.mp3" />
+    <file src="files/taxi.mp3" />
+    <file src="files/click.mp3" />
+</meta>
